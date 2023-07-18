@@ -37,7 +37,6 @@ html {
   height: 100%;
   overflow-x: hidden;
   overflow-y: overlay;
-  scrollbar-gutter: stable;
 }
 
 body.no-scroll::-webkit-scrollbar {

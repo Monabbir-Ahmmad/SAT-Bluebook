@@ -12,10 +12,7 @@ export default function page() {
         <LoginForm />
         <p>
           Don&apos;t have an account?{" "}
-          <Link
-            className="daisy-link-primary font-semibold"
-            href="/auth/signup"
-          >
+          <Link className="link-primary font-semibold" href="/auth/signup">
             Register
           </Link>
         </p>

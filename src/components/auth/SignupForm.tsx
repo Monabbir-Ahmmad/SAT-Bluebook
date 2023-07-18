@@ -91,9 +91,7 @@ function SignupForm() {
         )}
       />
 
-      <button className="daisy-btn daisy-btn-primary mt-5 rounded">
-        Create Account
-      </button>
+      <button className="btn btn-primary mt-5 rounded">Create Account</button>
     </form>
   );
 }

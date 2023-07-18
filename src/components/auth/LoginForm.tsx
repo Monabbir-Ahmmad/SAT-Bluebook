@@ -69,9 +69,7 @@ function LoginForm() {
         )}
       />
 
-      <button className="daisy-btn daisy-btn-primary mt-5 rounded">
-        Login
-      </button>
+      <button className="btn btn-primary mt-5 rounded">Login</button>
     </form>
   );
 }
