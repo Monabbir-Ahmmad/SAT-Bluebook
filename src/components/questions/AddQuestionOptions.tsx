@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Control,
   FieldValues,
@@ -10,16 +12,8 @@ import {
 import AddIcon from "remixicon-react/AddLineIcon";
 import QuestionOption from "./QuestionOption";
 
-interface AddQuestionOptionsProps {
-  control: Control<FieldValues>;
-  register: UseFormRegister<FieldValues>;
-  formState: FormState<FieldValues>;
-}
-
 function AddQuestionOptions() {
-  const { control } = useFormContext<{
-    options: { text: string }[];
-  }>();
+  const { control, setValue } = useFormContext<QuestionDTO>();
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -28,6 +22,24 @@ function AddQuestionOptions() {
 
   return (
     <div className="space-y-4">
+      <div className="flex gap-5 items-center">
+        <label className="block font-semibold text-base mb-2">
+          Answer Options
+        </label>
+
+        <div className="form-control">
+          <label className="cursor-pointer label">
+            <input
+              type="checkbox"
+              className="toggle toggle-primary"
+              onChange={(e) =>
+                setValue("optionType", e.target.checked ? "image" : "text")
+              }
+            />
+            <span className="label-text mx-2">Image Options</span>
+          </label>
+        </div>
+      </div>
       {fields.map((option, index) => (
         <QuestionOption
           key={option.id}
@@ -39,7 +51,7 @@ function AddQuestionOptions() {
       <button
         type="button"
         className="btn btn-primary btn-sm"
-        onClick={() => append({ text: "" })}
+        onClick={() => append({ data: "" })}
       >
         <AddIcon /> Add Option
       </button>

@@ -1,7 +1,5 @@
-import CheckIcon from "remixicon-react/CheckboxBlankCircleLineIcon";
 import DeleteIcon from "remixicon-react/CloseLineIcon";
 import FileDrop from "../common/input/FileDrop";
-import ImageIcon from "remixicon-react/ImageLineIcon";
 import Input from "../common/input/Input";
 import { useFormContext } from "react-hook-form";
 
@@ -21,17 +19,16 @@ function QuestionOption({
     setValue,
     getValues,
     watch,
-  } = useFormContext<{
-    answer: string;
-    options: {
-      text: string;
-      answer?: boolean;
-      image?: File | string;
-    }[];
-  }>();
+  } = useFormContext<QuestionDTO>();
 
   const pickAnswer = () => {
-    setValue("answer", getValues("options")[index]?.text);
+    const options = getValues("options");
+    const newOptions = options.map((option, i) => ({
+      ...option,
+      isAnswer: i === index,
+    }));
+
+    setValue("options", newOptions);
   };
 
   return (
@@ -41,24 +38,25 @@ function QuestionOption({
         type="radio"
         name="answer"
         className="radio radio-primary"
-        onChange={() => pickAnswer()}
       />
 
-      <Input
-        {...register(`options.${index}.text`, {
-          required: "Option is required",
-        })}
-        placeholder={"Option"}
-        inputCss="input-sm"
-        error={!!errors?.options?.[index]?.text}
-        {...rest}
-      />
-
-      <FileDrop
-        className="w-96"
-        onChange={(file) => setValue(`options.${index}.image`, file as File)}
-        value={watch(`options.${index}.image`)}
-      />
+      {watch("optionType") === "text" ? (
+        <Input
+          {...register(`options.${index}.data`, {
+            required: "Option is required",
+          })}
+          placeholder={"Option"}
+          inputCss="input-sm"
+          error={!!errors?.options?.[index]?.data}
+          {...rest}
+        />
+      ) : (
+        <FileDrop
+          className="w-96"
+          onChange={(file) => setValue(`options.${index}.data`, file as File)}
+          value={watch(`options.${index}.data`)}
+        />
+      )}
 
       <button
         className="btn btn-circle btn-ghost btn-sm"
