@@ -1,19 +1,47 @@
-import CheckIcon from "remixicon-react/CheckLineIcon";
-import DeleteIcon from "remixicon-react/SubtractLineIcon";
-import Input from "../common/input/Input";
-import React from "react";
+import {
+  Control,
+  FieldValues,
+  FormState,
+  UseFormRegister,
+  useFieldArray,
+  useFormContext,
+} from "react-hook-form";
 
-interface AddQuestionOptionsProps {}
+import AddIcon from "remixicon-react/AddLineIcon";
+import QuestionOption from "./QuestionOption";
+
+interface AddQuestionOptionsProps {
+  control: Control<FieldValues>;
+  register: UseFormRegister<FieldValues>;
+  formState: FormState<FieldValues>;
+}
 
 function AddQuestionOptions() {
+  const { control } = useFormContext<{
+    options: { text: string }[];
+  }>();
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "options",
+  });
+
   return (
-    <div className="flex gap-2 items-center">
-      <Input placeholder={"Option "} />
-      <button className="btn btn-primary btn-square btn-outline">
-        <CheckIcon />
-      </button>
-      <button className="btn btn-error btn-square btn-outline">
-        <DeleteIcon />
+    <div className="space-y-4">
+      {fields.map((option, index) => (
+        <QuestionOption
+          key={option.id}
+          index={index}
+          onRemoveClick={() => remove(index)}
+        />
+      ))}
+
+      <button
+        type="button"
+        className="btn btn-primary btn-sm"
+        onClick={() => append({ text: "" })}
+      >
+        <AddIcon /> Add Option
       </button>
     </div>
   );
