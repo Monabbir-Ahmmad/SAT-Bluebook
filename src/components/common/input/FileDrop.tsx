@@ -1,4 +1,4 @@
-import React, { ChangeEvent, DragEvent } from "react";
+import React, { ChangeEvent, DragEvent, useRef } from "react";
 
 import Image from "next/image";
 import RemoveIcon from "remixicon-react/CloseLineIcon";
@@ -12,8 +12,9 @@ interface ImagePreviewProps {
 interface FileDropProps {
   maxSizeKB?: number;
   allowedMimeTypes?: string[];
-  onChange: (file: File | null) => any;
+  onChange: (file: File | undefined) => any;
   value?: File | string;
+  error?: boolean;
   className?: string;
 }
 
@@ -46,6 +47,7 @@ const FileDrop: React.FC<FileDropProps> = ({
   allowedMimeTypes = ["image/png", "image/jpg", "image/jpeg"],
   onChange,
   value,
+  error,
   className,
 }) => {
   const handlePreventDefault = (e: DragEvent<HTMLDivElement>) =>
@@ -78,7 +80,15 @@ const FileDrop: React.FC<FileDropProps> = ({
     }
   };
 
-  const handleRemoveImage = () => onChange(null);
+  const handleRemoveImage = () => onChange(undefined);
+
+  const handelClick = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = allowedMimeTypes.join(",");
+    input.onchange = (e) => handleFileInputChange(e as any);
+    input.click();
+  };
 
   return (
     <div
@@ -92,24 +102,18 @@ const FileDrop: React.FC<FileDropProps> = ({
       <ImagePreview image={value} onRemoveClick={handleRemoveImage} />
 
       {!value && (
-        <div>
-          <label
-            htmlFor="file-drop-input"
-            className="cursor-pointer overflow-hidden w-full p-4 flex flex-col items-center justify-center border-2 border-divider border-dashed rounded bg-slate-50 hover:bg-slate-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 transition-colors"
-          >
-            <p className="mb-2 text-sm">
-              <span className="font-semibold">Click to upload</span> or drag and
-              drop
-            </p>
-            <p className="text-xs">PNG, JPG or JPEG (MAX. 5MB)</p>
-            <input
-              id="file-drop-input"
-              type="file"
-              accept={allowedMimeTypes.join(",")}
-              onChange={handleFileInputChange}
-              className="hidden"
-            />
-          </label>
+        <div
+          onClick={handelClick}
+          className={twMerge(
+            "cursor-pointer overflow-hidden w-full p-4 flex flex-col items-center justify-center border-2 border-divider border-dashed rounded bg-slate-50 hover:bg-slate-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 transition-colors",
+            error && "border-error"
+          )}
+        >
+          <p className="mb-2 text-sm">
+            <span className="font-semibold">Click to upload</span> or drag and
+            drop
+          </p>
+          <p className="text-xs">PNG, JPG or JPEG (MAX. 5MB)</p>
         </div>
       )}
     </div>

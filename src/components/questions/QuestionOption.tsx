@@ -1,7 +1,10 @@
+import { ChangeEvent, useEffect, useState } from "react";
+import { set, useFormContext } from "react-hook-form";
+
 import DeleteIcon from "remixicon-react/CloseLineIcon";
 import FileDrop from "../common/input/FileDrop";
 import Input from "../common/input/Input";
-import { useFormContext } from "react-hook-form";
+import { get } from "http";
 
 interface QuestionOptionProps extends React.HTMLAttributes<HTMLInputElement> {
   index: number;
@@ -21,12 +24,23 @@ function QuestionOption({
     watch,
   } = useFormContext<QuestionDTO>();
 
-  const pickAnswer = () => {
-    const options = getValues("options");
-    const newOptions = options.map((option, i) => ({
-      ...option,
-      isAnswer: i === index,
-    }));
+  const pickAnswer = (e: ChangeEvent<HTMLInputElement>) => {
+    const { options } = getValues();
+    const newOptions = options.map((option: any, i: number) =>
+      i === index
+        ? { ...option, isAnswer: true }
+        : { ...option, isAnswer: false }
+    );
+
+    setValue("options", newOptions);
+  };
+
+  const handleFileChange = (file: File | undefined) => {
+    const { options } = getValues();
+
+    const newOptions = options.map((option: any, i: number) =>
+      i === index ? { ...option, image: file } : option
+    );
 
     setValue("options", newOptions);
   };
@@ -36,25 +50,27 @@ function QuestionOption({
       <input
         required
         type="radio"
-        name="answer"
         className="radio radio-primary"
+        name="answer"
+        onChange={pickAnswer}
+        checked={watch(`options.${index}.isAnswer`)}
       />
 
       {watch("optionType") === "text" ? (
         <Input
-          {...register(`options.${index}.data`, {
+          {...register(`options.${index}.text`, {
             required: "Option is required",
           })}
           placeholder={"Option"}
           inputCss="input-sm"
-          error={!!errors?.options?.[index]?.data}
+          error={!!errors?.options?.[index]?.text}
           {...rest}
         />
       ) : (
         <FileDrop
           className="w-96"
-          onChange={(file) => setValue(`options.${index}.data`, file as File)}
-          value={watch(`options.${index}.data`)}
+          onChange={handleFileChange}
+          value={watch(`options.${index}.image`) as File | undefined}
         />
       )}
 

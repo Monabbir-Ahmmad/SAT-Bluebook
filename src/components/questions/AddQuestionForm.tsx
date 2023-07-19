@@ -9,6 +9,30 @@ import RichEditor from "../common/richEditor/RichEditor";
 import Select from "../common/input/Select";
 import { buttonListMini } from "../common/richEditor/buttonList";
 
+const subjects = [
+  { value: "maths", label: "Maths" },
+  {
+    value: "physics",
+    label: "Physics",
+  },
+  {
+    value: "chemistry",
+    label: "Chemistry",
+  },
+];
+
+const difficulties = [
+  { value: 1, label: "Easy" },
+  // {
+  //   value: 2,
+  //   label: "Medium",
+  // },
+  {
+    value: 3,
+    label: "Hard",
+  },
+];
+
 export default function AddQuestionForm() {
   const formMethods = useForm<QuestionDTO>();
 
@@ -54,35 +78,9 @@ export default function AddQuestionForm() {
               />
             </div>
 
-            <Select
-              label="Subject"
-              options={[
-                { value: "maths", label: "Maths" },
-                {
-                  value: "physics",
-                  label: "Physics",
-                },
-                {
-                  value: "chemistry",
-                  label: "Chemistry",
-                },
-              ]}
-            />
+            <Select label="Subject" options={subjects} />
 
-            <Select
-              label="Difficulty"
-              options={[
-                { value: 1, label: "Easy" },
-                // {
-                //   value: 2,
-                //   label: "Medium",
-                // },
-                {
-                  value: 3,
-                  label: "Hard",
-                },
-              ]}
-            />
+            <Select label="Difficulty" options={difficulties} />
 
             <Input label="Tags" placeholder="Enter tags" />
           </div>

@@ -10,12 +10,6 @@ export default function page() {
       >
         Add new question
       </Link>
-      <Link
-        href={"/questions/addnew"}
-        className="btn btn-outline btn-primary btn-wide"
-      >
-        Add new exam set
-      </Link>
     </div>
   );
 }

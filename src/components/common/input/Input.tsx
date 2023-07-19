@@ -23,7 +23,6 @@ const Input = forwardRef(
       name,
       type,
       label,
-      placeholder,
       helperText,
       error,
       startIcon: StartIcon,
@@ -48,7 +47,6 @@ const Input = forwardRef(
             id={name}
             name={name}
             type={showPassword ? "text" : type}
-            placeholder={placeholder}
             ref={ref}
             {...rest}
             className={twMerge(

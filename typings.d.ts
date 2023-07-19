@@ -6,7 +6,8 @@ interface QuestionDTO {
   tags: string[];
   optionType: "text" | "image";
   options: {
-    data: string | File;
+    text?: string;
+    image?: File;
     isAnswer?: boolean;
   }[];
 }

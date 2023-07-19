@@ -1,15 +1,7 @@
-"use client";
-
-import {
-  Control,
-  FieldValues,
-  FormState,
-  UseFormRegister,
-  useFieldArray,
-  useFormContext,
-} from "react-hook-form";
+import { useFieldArray, useFormContext } from "react-hook-form";
 
 import AddIcon from "remixicon-react/AddLineIcon";
+import { ChangeEvent } from "react";
 import QuestionOption from "./QuestionOption";
 
 function AddQuestionOptions() {
@@ -19,6 +11,11 @@ function AddQuestionOptions() {
     control,
     name: "options",
   });
+
+  const onOptionTypeChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setValue("optionType", e.target.checked ? "image" : "text");
+    setValue("options", []);
+  };
 
   return (
     <div className="space-y-4">
@@ -51,7 +48,7 @@ function AddQuestionOptions() {
       <button
         type="button"
         className="btn btn-primary btn-sm"
-        onClick={() => append({ data: "" })}
+        onClick={() => append({})}
       >
         <AddIcon /> Add Option
       </button>
