@@ -1,13 +1,15 @@
 interface QuestionDTO {
   question: string;
-  questionImage?: File;
+  questionImage?: string;
   subject: string;
-  difficulty: number;
+  difficulty: "easy" | "medium" | "hard";
   tags: string[];
   optionType: "text" | "image";
-  options: {
-    text?: string;
-    image?: File;
-    isAnswer?: boolean;
-  }[];
+  options: QuestionOptionDTO[];
+  answers: any[];
+}
+
+interface QuestionOptionDTO {
+  text?: string;
+  image?: string;
 }

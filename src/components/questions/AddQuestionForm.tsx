@@ -1,60 +1,64 @@
 "use client";
 
+import { Button, MultiSelect, SegmentedControl, Select } from "@mantine/core";
 import { FormProvider, useForm } from "react-hook-form";
+import RichEditor, { IRichEditor } from "../common/richEditor/RichEditor";
+import { useEffect, useRef } from "react";
 
 import AddQuestionOptions from "./AddQuestionOptions";
-import FileDrop from "../common/input/FileDrop";
-import Input from "../common/input/Input";
-import RichEditor from "../common/richEditor/RichEditor";
-import Select from "../common/input/Select";
+import FileDrop from "../common/fileDrop/FileDrop";
 import { buttonListMini } from "../common/richEditor/buttonList";
+import { questionFormValidator } from "@/constants/validators/formValidators";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const subjects = [
-  { value: "maths", label: "Maths" },
-  {
-    value: "physics",
-    label: "Physics",
-  },
-  {
-    value: "chemistry",
-    label: "Chemistry",
-  },
+  { value: "math", label: "Mathematics" },
+  { value: "english", label: "English" },
+  { value: "science", label: "Science" },
+  { value: "history", label: "History" },
 ];
 
 const difficulties = [
-  { value: 1, label: "Easy" },
-  // {
-  //   value: 2,
-  //   label: "Medium",
-  // },
-  {
-    value: 3,
-    label: "Hard",
-  },
+  { value: "easy", label: "Easy" },
+  { value: "medium", label: "Medium" },
+  { value: "hard", label: "Hard" },
 ];
 
 export default function AddQuestionForm() {
-  const formMethods = useForm<QuestionDTO>();
+  const richEditorRef = useRef<IRichEditor>(null);
+  const formMethods = useForm<QuestionDTO>({
+    resolver: zodResolver(questionFormValidator),
+    defaultValues: {
+      difficulty: "easy",
+      optionType: "text",
+      answers: [],
+      options: [{}],
+      tags: [],
+    },
+  });
+
+  useEffect(() => {
+    if (richEditorRef.current) {
+      richEditorRef.current.onChange = (content) => {
+        formMethods.setValue("question", content);
+      };
+    }
+  }, [formMethods, richEditorRef]);
 
   return (
     <FormProvider {...formMethods}>
-      <div className="flex gap-5 items-center justify-center">
+      <div className="flex items-center justify-center">
         <form
-          className="flex flex-col gap-4  max-w-4xl w-full"
+          className="flex-1 flex flex-col gap-4 max-w-4xl"
           onSubmit={formMethods.handleSubmit((data) => console.log(data))}
         >
-          <div className="flex gap-4 justify-between">
-            <h2 className="text-2xl font-semibold">Create Question</h2>
-            <button className="btn btn-primary">Submit Question</button>
-          </div>
+          <div className="p-6 shadow border-primary border-t-4 flex flex-col gap-4">
+            <h2 className="text-2xl font-semibold">Question</h2>
 
-          <div className="card p-6 bg-base-100 shadow-xl border-primary border-t-4 flex flex-col gap-4">
             <div>
-              <label className="block font-semibold text-base mb-2">
-                Question Text
-              </label>
+              <h6 className="font-semibold mb-2.5">Text</h6>
               <RichEditor
-                className="input border-2 focus:input-primary"
+                ref={richEditorRef}
                 minHeight="100px"
                 width="100%"
                 resizingBar={false}
@@ -64,30 +68,65 @@ export default function AddQuestionForm() {
             </div>
 
             <div>
-              <label className="block font-semibold text-base mb-2">
-                Question Image (optional)
-              </label>
+              <h6 className="font-semibold mb-2.5">Image (optional)</h6>
               <FileDrop
-                onChange={(file) =>
-                  formMethods.setValue(
-                    "questionImage",
-                    file as File | undefined
-                  )
-                }
+                onChange={(blob) => formMethods.setValue("questionImage", blob)}
                 value={formMethods.watch("questionImage")}
               />
             </div>
 
-            <Select label="Subject" options={subjects} />
+            <Select
+              size="md"
+              label="Subject"
+              labelProps={{ className: "text-lg mb-2.5" }}
+              placeholder="Pick a subject"
+              data={subjects}
+              onChange={(value) => formMethods.setValue("subject", value!)}
+              error={!!formMethods.formState.errors?.subject}
+            />
 
-            <Select label="Difficulty" options={difficulties} />
+            <div>
+              <h6 className="font-semibold mb-2.5">Difficulty</h6>
+              <SegmentedControl
+                fullWidth
+                size="md"
+                color="blue"
+                data={difficulties}
+                onChange={(value: "easy" | "medium" | "hard") =>
+                  formMethods.setValue("difficulty", value)
+                }
+              />
+            </div>
 
-            <Input label="Tags" placeholder="Enter tags" />
+            <MultiSelect
+              size="md"
+              label="Tags"
+              labelProps={{ className: "text-lg mb-2.5" }}
+              data={[]}
+              placeholder="Create or select multiple tags"
+              searchable
+              creatable
+              getCreateLabel={(query) => `+ Create ${query}`}
+              onChange={(value) => formMethods.setValue("tags", value)}
+              onCreate={(value) => {
+                formMethods.setValue("tags", [
+                  ...formMethods.getValues().tags,
+                  value,
+                ]);
+                return value;
+              }}
+              error={!!formMethods.formState.errors?.tags}
+            />
           </div>
 
-          <div className="card p-6 bg-base-100 shadow-xl border-primary border-l-4 flex flex-col gap-6">
+          <div className="p-6 shadow border-primary border-l-4 flex flex-col gap-4">
+            <h2 className="text-2xl font-semibold">Answer Options</h2>
             <AddQuestionOptions />
           </div>
+
+          <Button type="submit" size="lg">
+            Submit Question
+          </Button>
         </form>
       </div>
     </FormProvider>

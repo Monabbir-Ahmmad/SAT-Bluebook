@@ -1,57 +1,51 @@
-import { useFieldArray, useFormContext } from "react-hook-form";
+import { Button, SegmentedControl } from "@mantine/core";
+import { set, useFieldArray, useFormContext } from "react-hook-form";
 
 import AddIcon from "remixicon-react/AddLineIcon";
-import { ChangeEvent } from "react";
 import QuestionOption from "./QuestionOption";
 
 function AddQuestionOptions() {
-  const { control, setValue } = useFormContext<QuestionDTO>();
+  const { control, getValues, register, reset } = useFormContext<QuestionDTO>();
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: "options",
   });
 
-  const onOptionTypeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setValue("optionType", e.target.checked ? "image" : "text");
-    setValue("options", []);
+  const onOptionTypeChange = (value: "text" | "image") => {
+    reset({ ...getValues(), optionType: value, options: [{}], answers: [] });
   };
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-5 items-center">
-        <label className="block font-semibold text-base mb-2">
-          Answer Options
-        </label>
-
-        <div className="form-control">
-          <label className="cursor-pointer label">
-            <input
-              type="checkbox"
-              className="toggle toggle-primary"
-              onChange={(e) =>
-                setValue("optionType", e.target.checked ? "image" : "text")
-              }
-            />
-            <span className="label-text mx-2">Image Options</span>
-          </label>
-        </div>
-      </div>
-      {fields.map((option, index) => (
-        <QuestionOption
-          key={option.id}
-          index={index}
-          onRemoveClick={() => remove(index)}
+      <div className="space-y-2">
+        <label className="font-semibold text-base">Type</label>
+        <SegmentedControl
+          fullWidth
+          color="blue"
+          size="md"
+          data={[
+            { value: "text", label: "Text" },
+            { value: "image", label: "Image" },
+          ]}
+          onChange={onOptionTypeChange}
         />
-      ))}
+      </div>
 
-      <button
-        type="button"
-        className="btn btn-primary btn-sm"
-        onClick={() => append({})}
-      >
+      <div className="space-y-2">
+        <h6 className="font-semibold">Options</h6>
+        {fields.map((option, index) => (
+          <QuestionOption
+            key={option.id}
+            index={index}
+            onRemoveClick={() => remove(index)}
+          />
+        ))}
+      </div>
+
+      <Button onClick={() => append({})} variant="light">
         <AddIcon /> Add Option
-      </button>
+      </Button>
     </div>
   );
 }

@@ -1,9 +1,7 @@
 import "./globals.css";
 
-import { Inter } from "next/font/google";
+import Head from "next/head";
 import type { Metadata } from "next";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,7 +15,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <Head>
+        <link rel="shortcut icon" href="/favicon.svg" />
+      </Head>
+
+      <body>{children}</body>
     </html>
   );
 }

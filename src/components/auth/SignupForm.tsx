@@ -1,16 +1,21 @@
 "use client";
 
+import { Button, PasswordInput, TextInput } from "@mantine/core";
 import { Controller, useForm } from "react-hook-form";
 
-import Input from "../common/input/Input";
+import InvisibleIcon from "remixicon-react/EyeCloseLineIcon";
 import LockIcon from "remixicon-react/LockLineIcon";
 import MailIcon from "remixicon-react/MailLineIcon";
+import VisibleIcon from "remixicon-react/EyeLineIcon";
 
 function SignupForm() {
-  const { control, watch } = useForm();
+  const { control, watch, handleSubmit } = useForm();
 
   return (
-    <form className="flex flex-col gap-3 w-full">
+    <form
+      className="flex flex-col gap-3 w-full"
+      onSubmit={handleSubmit((data) => console.log(data))}
+    >
       <Controller
         name="email"
         control={control}
@@ -23,14 +28,14 @@ function SignupForm() {
           },
         }}
         render={({ field, fieldState: { error } }) => (
-          <Input
+          <TextInput
             {...field}
+            size="lg"
             type="email"
             label="Email"
             placeholder="Enter your email"
-            startIcon={MailIcon}
-            error={!!error}
-            helperText={error?.message}
+            icon={<MailIcon />}
+            error={error?.message}
           />
         )}
       />
@@ -57,14 +62,20 @@ function SignupForm() {
           },
         }}
         render={({ field, fieldState: { error } }) => (
-          <Input
+          <PasswordInput
             {...field}
-            type="password"
+            size="lg"
             label="Password"
             placeholder="Enter a strong password"
-            startIcon={LockIcon}
-            error={!!error}
-            helperText={error?.message}
+            icon={<LockIcon />}
+            visibilityToggleIcon={({ reveal, size }) =>
+              reveal ? (
+                <InvisibleIcon size={size} />
+              ) : (
+                <VisibleIcon size={size} />
+              )
+            }
+            error={error?.message}
           />
         )}
       />
@@ -79,19 +90,27 @@ function SignupForm() {
             value === watch("password") || "The passwords do not match",
         }}
         render={({ field, fieldState: { error } }) => (
-          <Input
+          <PasswordInput
             {...field}
-            type="password"
+            size="lg"
             label="Confirm Password"
             placeholder="Enter your password again"
-            startIcon={LockIcon}
-            error={!!error}
-            helperText={error?.message}
+            icon={<LockIcon />}
+            visibilityToggleIcon={({ reveal, size }) =>
+              reveal ? (
+                <InvisibleIcon size={size} />
+              ) : (
+                <VisibleIcon size={size} />
+              )
+            }
+            error={error?.message}
           />
         )}
       />
 
-      <button className="btn btn-primary mt-5 rounded">Create Account</button>
+      <Button type="submit" uppercase>
+        Create Account
+      </Button>
     </form>
   );
 }
