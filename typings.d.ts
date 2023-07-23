@@ -1,15 +1,19 @@
-interface QuestionDTO {
+type Difficulty = "easy" | "medium" | "hard";
+
+type OptionType = "mcq-text" | "mcq-image" | "grid-in";
+
+type QuestionDTO = {
   question: string;
   questionImage?: string;
   subject: string;
-  difficulty: "easy" | "medium" | "hard";
+  difficulty: Difficulty;
   tags: string[];
-  optionType: "text" | "image";
+  optionType: OptionType;
   options: QuestionOptionDTO[];
   answers: any[];
-}
+};
 
-interface QuestionOptionDTO {
+type QuestionOptionDTO = {
   text?: string;
   image?: string;
-}
+};

@@ -3,6 +3,7 @@
 import { Button, MultiSelect, SegmentedControl, Select } from "@mantine/core";
 import { FormProvider, useForm } from "react-hook-form";
 import RichEditor, { IRichEditor } from "../common/richEditor/RichEditor";
+import { difficulties, subjects } from "@/constants/data";
 import { useEffect, useRef } from "react";
 
 import AddQuestionOptions from "./AddQuestionOptions";
@@ -11,26 +12,13 @@ import { buttonListMini } from "../common/richEditor/buttonList";
 import { questionFormValidator } from "@/constants/validators/formValidators";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-const subjects = [
-  { value: "math", label: "Mathematics" },
-  { value: "english", label: "English" },
-  { value: "science", label: "Science" },
-  { value: "history", label: "History" },
-];
-
-const difficulties = [
-  { value: "easy", label: "Easy" },
-  { value: "medium", label: "Medium" },
-  { value: "hard", label: "Hard" },
-];
-
 export default function AddQuestionForm() {
   const richEditorRef = useRef<IRichEditor>(null);
   const formMethods = useForm<QuestionDTO>({
     resolver: zodResolver(questionFormValidator),
     defaultValues: {
       difficulty: "easy",
-      optionType: "text",
+      optionType: "mcq-text",
       answers: [],
       options: [{}],
       tags: [],
@@ -78,7 +66,7 @@ export default function AddQuestionForm() {
             <Select
               size="md"
               label="Subject"
-              labelProps={{ className: "text-lg mb-2.5" }}
+              labelProps={{ className: "text-lg mb-2.5 text-text-color" }}
               placeholder="Pick a subject"
               data={subjects}
               onChange={(value) => formMethods.setValue("subject", value!)}
@@ -92,7 +80,7 @@ export default function AddQuestionForm() {
                 size="md"
                 color="blue"
                 data={difficulties}
-                onChange={(value: "easy" | "medium" | "hard") =>
+                onChange={(value: Difficulty) =>
                   formMethods.setValue("difficulty", value)
                 }
               />
@@ -101,7 +89,7 @@ export default function AddQuestionForm() {
             <MultiSelect
               size="md"
               label="Tags"
-              labelProps={{ className: "text-lg mb-2.5" }}
+              labelProps={{ className: "text-lg mb-2.5 text-text-color" }}
               data={[]}
               placeholder="Create or select multiple tags"
               searchable
@@ -120,7 +108,7 @@ export default function AddQuestionForm() {
           </div>
 
           <div className="p-6 shadow border-primary border-l-4 flex flex-col gap-4">
-            <h2 className="text-2xl font-semibold">Answer Options</h2>
+            <h2 className="text-2xl font-semibold">Answer</h2>
             <AddQuestionOptions />
           </div>
 

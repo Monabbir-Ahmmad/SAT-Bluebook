@@ -1,18 +1,32 @@
-import { Button, SegmentedControl } from "@mantine/core";
-import { set, useFieldArray, useFormContext } from "react-hook-form";
+import { Button, SegmentedControl, TextInput } from "@mantine/core";
+import { useFieldArray, useFormContext } from "react-hook-form";
 
 import AddIcon from "remixicon-react/AddLineIcon";
 import QuestionOption from "./QuestionOption";
+import { answerType } from "@/constants/data";
+import { watch } from "fs";
 
 function AddQuestionOptions() {
-  const { control, getValues, register, reset } = useFormContext<QuestionDTO>();
+  const {
+    control,
+    getValues,
+    reset,
+    watch,
+    register,
+    formState: { errors },
+  } = useFormContext<QuestionDTO>();
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: "options",
   });
 
-  const onOptionTypeChange = (value: "text" | "image") => {
+  const onOptionTypeChange = (value: OptionType) => {
+    if (value === "grid-in") {
+      reset({ ...getValues(), optionType: value, options: [{}], answers: [0] });
+      return;
+    }
+
     reset({ ...getValues(), optionType: value, options: [{}], answers: [] });
   };
 
@@ -24,28 +38,41 @@ function AddQuestionOptions() {
           fullWidth
           color="blue"
           size="md"
-          data={[
-            { value: "text", label: "Text" },
-            { value: "image", label: "Image" },
-          ]}
+          data={answerType}
           onChange={onOptionTypeChange}
         />
       </div>
 
-      <div className="space-y-2">
-        <h6 className="font-semibold">Options</h6>
-        {fields.map((option, index) => (
-          <QuestionOption
-            key={option.id}
-            index={index}
-            onRemoveClick={() => remove(index)}
-          />
-        ))}
-      </div>
+      {watch("optionType") === "grid-in" && (
+        <TextInput
+          {...register("options.0.text")}
+          label="Text Answer"
+          labelProps={{
+            className: "font-semibold text-lg mb-2 text-text-color",
+          }}
+          size="lg"
+          placeholder="Type the answer here"
+          error={!!errors?.options?.[0]?.text}
+        />
+      )}
 
-      <Button onClick={() => append({})} variant="light">
-        <AddIcon /> Add Option
-      </Button>
+      {watch("optionType") !== "grid-in" && (
+        <>
+          <div className="space-y-2">
+            <h6 className="font-semibold">Options</h6>
+            {fields.map((option, index) => (
+              <QuestionOption
+                key={option.id}
+                index={index}
+                onRemoveClick={() => remove(index)}
+              />
+            ))}
+          </div>
+          <Button onClick={() => append({})} variant="light">
+            <AddIcon /> Add Option
+          </Button>
+        </>
+      )}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import theme from "tailwindcss/colors";
 
 const themeColors = {
+  "text-color": "var(--text-color)",
   primary: "#228be6",
 };
 
