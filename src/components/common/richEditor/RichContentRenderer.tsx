@@ -13,7 +13,7 @@ function RichContentRenderer({ content, className }: RichContentRendererProps) {
       dangerouslySetInnerHTML={{
         __html: content,
       }}
-      className={twMerge(className, "sun-editor-editable")}
+      className={twMerge("sun-editor-editable", className)}
     ></div>
   );
 }

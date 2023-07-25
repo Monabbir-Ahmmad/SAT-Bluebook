@@ -1,6 +1,9 @@
+"use client";
+
 import "./globals.css";
 
-import Head from "next/head";
+import { AppShell, Header, MantineProvider, Text } from "@mantine/core";
+
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -15,11 +18,29 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <Head>
+      <head>
         <link rel="shortcut icon" href="/favicon.svg" />
-      </Head>
+      </head>
 
-      <body>{children}</body>
+      <body>
+        <MantineProvider withNormalizeCSS withGlobalStyles>
+          <AppShell
+            padding="md"
+            header={
+              <Header height={60} p="xs">
+                <h1 className="text-2xl font-bold">
+                  SAT{" "}
+                  <Text component="span" inherit variant="gradient">
+                    Bluebook
+                  </Text>
+                </h1>
+              </Header>
+            }
+          >
+            {children}
+          </AppShell>
+        </MantineProvider>
+      </body>
     </html>
   );
 }

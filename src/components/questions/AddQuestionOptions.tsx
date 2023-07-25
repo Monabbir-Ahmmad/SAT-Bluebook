@@ -4,9 +4,10 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import AddIcon from "remixicon-react/AddLineIcon";
 import QuestionOption from "./QuestionOption";
 import { answerType } from "@/constants/data";
-import { watch } from "fs";
+import { useMediaQuery } from "@mantine/hooks";
 
 function AddQuestionOptions() {
+  const largeScreen = useMediaQuery("(min-width: 60em)");
   const {
     control,
     getValues,
@@ -35,6 +36,7 @@ function AddQuestionOptions() {
       <div className="space-y-2">
         <label className="font-semibold text-base">Type</label>
         <SegmentedControl
+          orientation={largeScreen ? "horizontal" : "vertical"}
           fullWidth
           color="blue"
           size="md"
