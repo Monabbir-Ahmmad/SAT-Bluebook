@@ -1,39 +1,33 @@
-import React, {
-  ChangeEvent,
-  DragEvent,
-  forwardRef,
-  useEffect,
-  useRef,
-} from "react";
+import { ChangeEvent, DragEvent, forwardRef } from "react";
 
-import Image from "next/image";
 import RemoveIcon from "remixicon-react/CloseLineIcon";
 import { twMerge } from "tailwind-merge";
 
 interface ImagePreviewProps {
   image?: string;
+  height?: number;
   onRemoveClick: () => any;
 }
 
 interface FileDropProps {
   maxSizeKB?: number;
   allowedMimeTypes?: string[];
-  onChange: (blob?: string) => any;
   value?: string;
   error?: boolean;
   className?: string;
+  previewHeight?: number;
+  onChange: (blob?: string) => any;
 }
 
-const ImagePreview = ({ image, onRemoveClick }: ImagePreviewProps) => {
+const ImagePreview = ({ image, height, onRemoveClick }: ImagePreviewProps) => {
   if (!image) return null;
   return (
-    <div className="relative">
-      <Image
+    <div className="relative w-fit">
+      <img
         src={image}
         alt="image preview"
-        width={500}
-        height={500}
-        className="object-cover max-h-64 h-full w-full rounded-xl"
+        className="object-cover rounded-xl"
+        style={{ height }}
       />
       <button
         onClick={onRemoveClick}
@@ -53,6 +47,7 @@ const FileDrop = forwardRef<HTMLDivElement, FileDropProps>(
       onChange,
       value,
       error,
+      previewHeight,
       className,
     },
     ref
@@ -107,7 +102,11 @@ const FileDrop = forwardRef<HTMLDivElement, FileDropProps>(
         onDragOver={handlePreventDefault}
         onDrop={handleDrop}
       >
-        <ImagePreview image={value} onRemoveClick={handleRemoveImage} />
+        <ImagePreview
+          image={value}
+          onRemoveClick={handleRemoveImage}
+          height={previewHeight}
+        />
 
         {!value && (
           <div

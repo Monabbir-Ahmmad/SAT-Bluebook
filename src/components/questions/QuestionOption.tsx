@@ -50,17 +50,17 @@ function QuestionOption({ index, onRemoveClick }: QuestionOptionProps) {
 
       {watch("optionType") === "mcq-image" && (
         <FileDrop
-          className="w-96"
           onChange={handleFileChange}
           value={watch(`options.${index}.image`)}
           error={!!errors?.options?.[index]?.image}
+          previewHeight={200}
         />
       )}
 
       {watch("optionType") === "mcq-text" && (
         <TextInput
           {...register(`options.${index}.text`)}
-          className="w-96"
+          className="w-full"
           placeholder={"Option Text"}
           error={!!errors?.options?.[index]?.text}
         />
