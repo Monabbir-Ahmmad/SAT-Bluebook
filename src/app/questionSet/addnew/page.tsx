@@ -1,55 +1,64 @@
 "use client";
 
+import { Button, TransferList, TransferListData } from "@mantine/core";
+
 import QuestionItem from "@/components/questionSet/QuestionItem";
 import { questions } from "@/constants/data";
 import { useState } from "react";
 
-export default function page() {
-  const [selectedQuestions, setSelectedQuestions] = useState<QuestionDTO[]>([]);
-  const [availableQuestions, setAvailableQuestions] =
-    useState<QuestionDTO[]>(questions);
+const mockdata = questions.map((question) => ({
+  value: question.id,
+  label: question.question,
+  group: question.subject,
+  ...question,
+}));
 
-  const onQuestionSelect = (question: QuestionDTO) => {
-    setAvailableQuestions((prev) => prev.filter((q) => q !== question));
-    setSelectedQuestions((prev) => [...prev, question]);
-  };
+export default function page() {
+  const [data, setData] = useState<TransferListData>([mockdata, []]);
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-3xl text-center uppercase font-semibold">
-        Create New Question Set
-      </h1>
-
-      <hr className="border-2 border-slate-300" />
-
-      <div className="flex divide-x-2">
-        <div className="flex flex-col gap-4 flex-1 p-5">
-          <h1 className="text-2xl font-semibold text-center">
-            Selected Questions
-          </h1>
-
-          {selectedQuestions.map((question) => (
-            <QuestionItem
-              key={question.question}
-              question={question}
-              onAddToSet={onQuestionSelect}
-            />
-          ))}
-        </div>
-
-        <div className="flex flex-col gap-4 flex-1 p-5">
-          <h1 className="text-2xl font-semibold text-center">
-            Available Questions
-          </h1>
-          {availableQuestions.map((question) => (
-            <QuestionItem
-              key={question.question}
-              question={question}
-              onAddToSet={onQuestionSelect}
-            />
-          ))}
-        </div>
+    <div>
+      <div className="px-6 py-2.5 bg-white shadow z-10 flex items-center justify-between sticky top-16">
+        <h1 className="text-2xl font-semibold">Create Question Set</h1>
+        <Button variant="gradient" uppercase>
+          Confirm
+        </Button>
       </div>
+
+      <TransferList
+        m={26}
+        value={data}
+        onChange={setData}
+        listHeight={700}
+        showTransferAll={false}
+        searchPlaceholder="Search for questions..."
+        nothingFound={
+          <h1 className="text-2xl font-semibold text-center uppercase">
+            Nothing to show!
+          </h1>
+        }
+        titles={["Available questions", "Selected questions"]}
+        breakpoint="sm"
+        itemComponent={QuestionItem}
+        filter={(query, item) =>
+          item.label.toLowerCase().includes(query.toLowerCase().trim())
+        }
+        styles={{
+          transferListTitle: {
+            fontSize: 20,
+            fontWeight: 600,
+            textTransform: "uppercase",
+          },
+          transferListSearch: {
+            fontSize: 18,
+          },
+          transferListItemHovered: { background: "transparent" },
+          separatorLabel: {
+            fontSize: 20,
+            fontWeight: 600,
+          },
+        }}
+      />
     </div>
   );
 }

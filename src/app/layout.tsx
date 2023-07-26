@@ -24,21 +24,16 @@ export default function RootLayout({
 
       <body>
         <MantineProvider withNormalizeCSS withGlobalStyles>
-          <AppShell
-            padding="md"
-            header={
-              <Header height={60} p="xs">
-                <h1 className="text-2xl font-bold">
-                  SAT{" "}
-                  <Text component="span" inherit variant="gradient">
-                    Bluebook
-                  </Text>
-                </h1>
-              </Header>
-            }
-          >
-            {children}
-          </AppShell>
+          <nav className="sticky h-16 top-0 px-6 py-4 flex items-center bg-white z-50 shadow">
+            <h1 className="text-2xl font-bold">
+              SAT{" "}
+              <Text component="span" inherit variant="gradient">
+                Bluebook
+              </Text>
+            </h1>
+          </nav>
+
+          {children}
         </MantineProvider>
       </body>
     </html>

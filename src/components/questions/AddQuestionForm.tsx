@@ -20,7 +20,7 @@ export default function AddQuestionForm() {
   const formMethods = useForm<QuestionDTO>({
     resolver: zodResolver(questionFormValidator),
     defaultValues: {
-      difficulty: "easy",
+      difficulty: 0,
       optionType: "mcq-text",
       answers: [],
       options: [{}],
@@ -84,8 +84,8 @@ export default function AddQuestionForm() {
                 size="md"
                 color="blue"
                 data={difficulties}
-                onChange={(value: Difficulty) =>
-                  formMethods.setValue("difficulty", value)
+                onChange={(value: string) =>
+                  formMethods.setValue("difficulty", parseInt(value))
                 }
               />
             </div>

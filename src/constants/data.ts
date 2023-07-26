@@ -4,10 +4,10 @@ export const answerType: { value: OptionType; label: string }[] = [
   { value: "grid-in", label: "Grid In" },
 ];
 
-export const difficulties: { value: Difficulty; label: string }[] = [
-  { value: "easy", label: "Easy" },
-  { value: "medium", label: "Medium" },
-  { value: "hard", label: "Hard" },
+export const difficulties: { value: string; label: string }[] = [
+  { value: "0", label: "Easy" },
+  { value: "1", label: "Medium" },
+  { value: "2", label: "Hard" },
 ];
 
 export const subjects: { value: string; label: string }[] = [
@@ -17,67 +17,75 @@ export const subjects: { value: string; label: string }[] = [
   { value: "history", label: "History" },
 ];
 
-export const questions: QuestionDTO[] = [
+export const questions: QuestionResDTO[] = [
   {
-    question: "What is the capital of India?",
+    id: "1",
+    question: "What is the capital of France?",
+    subject: "Social Studies",
+    difficulty: 2,
+    tags: ["Geography", "World Capitals"],
     optionType: "mcq-text",
-    difficulty: "easy",
-    subject: "history",
-    tags: ["india", "capital"],
-    answers: [0],
     options: [
-      { text: "Delhi" },
-      { text: "Mumbai" },
-      { text: "Kolkata" },
-      { text: "Chennai" },
+      { text: "London" },
+      { text: "Paris" },
+      { text: "Berlin" },
+      { text: "Rome" },
     ],
+    answers: [1],
   },
   {
-    question: "What is the capital of India?",
-    questionImage: "https://i.imgur.com/3t4iY9v.jpeg",
+    id: "2",
+    question: "Which planet is known as the 'Red Planet'?",
+    subject: "Science",
+    difficulty: 2,
+    tags: ["Astronomy", "Planets"],
     optionType: "mcq-text",
-    difficulty: "easy",
-    subject: "history",
-    tags: ["india", "capital"],
-    answers: [0],
     options: [
-      { text: "Delhi" },
-      { text: "Mumbai" },
-      { text: "Kolkata" },
-      { text: "Chennai" },
+      { text: "Venus" },
+      { text: "Mars" },
+      { text: "Jupiter" },
+      { text: "Saturn" },
     ],
+    answers: [1],
   },
   {
-    question: "What does this symbol mean in this image?",
-    questionImage: "https://i.imgur.com/3t4iY9v.jpeg",
-    optionType: "mcq-image",
-    difficulty: "easy",
-    subject: "science",
-    tags: ["symbol", "image"],
-    answers: [0],
-    options: [
-      {
-        image: "https://i.imgur.com/3t4iY9v.jpeg",
-      },
-      {
-        image: "https://i.imgur.com/3t4iY9v.jpeg",
-      },
-      {
-        image: "https://i.imgur.com/3t4iY9v.jpeg",
-      },
-      {
-        image: "https://i.imgur.com/3t4iY9v.jpeg",
-      },
-    ],
-  },
-
-  {
-    question: "What is the this equations value? 2x + 3 = 7",
+    id: "3",
+    question: "Solve: 5 + 7 * 2",
+    subject: "Math",
+    difficulty: 1,
+    tags: ["Arithmetic", "Order of Operations"],
     optionType: "grid-in",
-    difficulty: "easy",
-    subject: "math",
-    tags: ["equation", "math"],
-    answers: [2],
-    options: [{ text: "2" }],
+    options: [{ text: "24" }],
+    answers: [0],
+  },
+  {
+    id: "4",
+    question: "Which famous scientist formulated the theory of relativity?",
+    subject: "Science",
+    difficulty: 2,
+    tags: ["Physics", "Famous Scientists"],
+    optionType: "mcq-text",
+    options: [
+      { text: "Isaac Newton" },
+      { text: "Albert Einstein" },
+      { text: "Galileo Galilei" },
+      { text: "Marie Curie" },
+    ],
+    answers: [1],
+  },
+  {
+    id: "5",
+    question: "Which of the following is a primary color?",
+    subject: "Art",
+    difficulty: 2,
+    tags: ["Color Theory", "Art Basics"],
+    optionType: "mcq-text",
+    options: [
+      { text: "Red" },
+      { text: "Green" },
+      { text: "Black" },
+      { text: "Purple" },
+    ],
+    answers: [0],
   },
 ];

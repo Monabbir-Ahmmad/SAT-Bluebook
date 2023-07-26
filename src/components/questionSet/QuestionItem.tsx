@@ -1,14 +1,16 @@
-import { Badge, Button, Image, Text } from "@mantine/core";
+import {
+  Badge,
+  Image,
+  Text,
+  TransferListItemComponentProps,
+} from "@mantine/core";
 
 import CheckIcon from "remixicon-react/CheckboxCircleLineIcon";
 import CrossIcon from "remixicon-react/CloseCircleLineIcon";
 import RichContentRenderer from "../common/richEditor/RichContentRenderer";
+import { difficulties } from "@/constants/data";
 import { twMerge } from "tailwind-merge";
 
-type QuestionItemProps = {
-  question: QuestionDTO;
-  onAddToSet: (question: QuestionDTO) => void;
-};
 type AnswerOptionProps = {
   optionType: OptionType;
   option: QuestionOptionDTO;
@@ -48,49 +50,52 @@ function AnswerOption({ optionType, option, selected }: AnswerOptionProps) {
   );
 }
 
-function QuestionComponent({ question, onAddToSet }: QuestionItemProps) {
+function QuestionItem({ data, selected }: TransferListItemComponentProps) {
   return (
-    <div className="flex flex-col gap-4 w-full p-6 bg-white border rounded-lg">
+    <div
+      className={twMerge(
+        "text-base font-medium flex flex-col gap-4 w-full p-6 bg-white border rounded hover:bg-slate-50 hover:shadow-md",
+        selected && "border-primary border-t-8"
+      )}
+    >
       <h2 className="text-xl font-bold uppercase">
-        {question.subject} - {question.difficulty}
+        {data.subject} - {difficulties[data.difficulty].label}
       </h2>
 
       <div className="flex flex-wrap items-center gap-2">
         Tags:{" "}
-        {question.tags.map((tag) => (
+        {data.tags.map((tag: string) => (
           <Badge key={tag} size="lg">
             {tag}
           </Badge>
         ))}
       </div>
 
-      <hr className="border-2 border-slate-300" />
+      <hr className="border-slate-300" />
 
-      <RichContentRenderer content={question.question} className="text-lg" />
+      <RichContentRenderer content={data.question} className="text-lg" />
 
-      {question.questionImage && <Image src={question.questionImage} alt="" />}
+      {data.questionImage && <Image src={data.questionImage} alt="" />}
 
-      <hr className="border-2 border-slate-300" />
+      <hr className="border-slate-300" />
 
       <div className="flex flex-col gap-2">
         <h1 className="text-base uppercase font-bold">
-          {question.optionType !== "grid-in" ? "Options" : "Answer"}
+          {data.optionType !== "grid-in" ? "Options" : "Answer"}
         </h1>
 
-        {question.options.map((option, index) => (
+        {data.options.map((option: QuestionOptionDTO, index: number) => (
           <div key={index}>
             <AnswerOption
               option={option}
-              selected={question.answers.includes(index)}
-              optionType={question.optionType}
+              selected={data.answers.includes(index)}
+              optionType={data.optionType}
             />
           </div>
         ))}
       </div>
-
-      <Button onClick={() => onAddToSet(question)}>Add to Set</Button>
     </div>
   );
 }
 
-export default QuestionComponent;
+export default QuestionItem;
