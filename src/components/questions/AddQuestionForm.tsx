@@ -10,9 +10,12 @@ import AddQuestionOptions from "./AddQuestionOptions";
 import FileDrop from "../common/fileDrop/FileDrop";
 import { buttonListMini } from "../common/richEditor/buttonList";
 import { questionFormValidator } from "@/constants/validators/formValidators";
+import { useMediaQuery } from "@mantine/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function AddQuestionForm() {
+  const largeScreen = useMediaQuery("(min-width: 60em)");
+
   const richEditorRef = useRef<IRichEditor>(null);
   const formMethods = useForm<QuestionDTO>({
     resolver: zodResolver(questionFormValidator),
@@ -76,6 +79,7 @@ export default function AddQuestionForm() {
             <div>
               <h6 className="font-semibold mb-2.5">Difficulty</h6>
               <SegmentedControl
+                orientation={largeScreen ? "horizontal" : "vertical"}
                 fullWidth
                 size="md"
                 color="blue"

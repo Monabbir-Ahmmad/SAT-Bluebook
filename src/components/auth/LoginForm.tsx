@@ -7,7 +7,6 @@ import InvisibleIcon from "remixicon-react/EyeCloseLineIcon";
 import LockIcon from "remixicon-react/LockLineIcon";
 import MailIcon from "remixicon-react/MailLineIcon";
 import VisibleIcon from "remixicon-react/EyeLineIcon";
-import { date } from "zod";
 
 function LoginForm() {
   const { control, handleSubmit } = useForm();
