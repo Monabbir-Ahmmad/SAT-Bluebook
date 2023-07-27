@@ -13,7 +13,11 @@ import { questionFormValidator } from "@/constants/validators/formValidators";
 import { useMediaQuery } from "@mantine/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-export default function AddQuestionForm() {
+type AddQuestionFormProps = {
+  onSubmit: (data: QuestionDTO) => void;
+};
+
+export default function AddQuestionForm({ onSubmit }: AddQuestionFormProps) {
   const largeScreen = useMediaQuery("(min-width: 60em)");
 
   const richEditorRef = useRef<IRichEditor>(null);
@@ -41,7 +45,7 @@ export default function AddQuestionForm() {
       <div className="flex items-center justify-center">
         <form
           className="flex-1 flex flex-col gap-4 max-w-4xl"
-          onSubmit={formMethods.handleSubmit((data) => console.log(data))}
+          onSubmit={formMethods.handleSubmit(onSubmit)}
         >
           <div className="p-6 shadow border-primary border-t-4 flex flex-col gap-4">
             <h2 className="text-2xl font-semibold">Question</h2>

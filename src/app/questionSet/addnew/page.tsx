@@ -16,11 +16,20 @@ const mockdata = questions.map((question) => ({
 export default function page() {
   const [data, setData] = useState<TransferListData>([mockdata, []]);
 
+  const onSubmit = () => {
+    console.log(data[1]);
+  };
+
   return (
     <div>
       <div className="px-6 py-2.5 bg-white shadow z-10 flex items-center justify-between sticky top-16">
         <h1 className="text-2xl font-semibold">Create Question Set</h1>
-        <Button variant="gradient" uppercase>
+        <Button
+          variant="gradient"
+          uppercase
+          disabled={data[1].length === 0}
+          onClick={onSubmit}
+        >
           Confirm
         </Button>
       </div>

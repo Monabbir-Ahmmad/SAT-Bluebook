@@ -26,8 +26,10 @@ export const questions: QuestionResDTO[] = [
     tags: ["Geography", "World Capitals"],
     optionType: "mcq-text",
     options: [
-      { text: "London" },
       { text: "Paris" },
+      {
+        text: "Lorem asd asdch vinbna .asd  eer.we?as axv. orem asd asdch vinbna .asd  eer.we?as axv? orem asd asdch vinbna .asd  eer.we?as axv Lorem asd asdch vinbna .asd  eer.we?as axv. orem asd asdch vinbna .asd  eer.we?as axv? orem asd asdch vinbna .asd  eer.we?as axv Lorem asd asdch vinbna .asd  eer.we?as axv. orem asd asdch vinbna .asd  eer.we?as axv? orem asd asdch vinbna .asd  eer.we?as axv Lorem asd asdch vinbna .asd  eer.we?as axv. orem asd asdch vinbna .asd  eer.we?as axv? orem asd asdch vinbna .asd  eer.we?as axv ",
+      },
       { text: "Berlin" },
       { text: "Rome" },
     ],
