@@ -1,10 +1,9 @@
 "use client";
 
 import { Button } from "@mantine/core";
-import React from "react";
 import { useRouter } from "next/navigation";
 
-export default function page() {
+export default function Page() {
   const router = useRouter();
 
   return (

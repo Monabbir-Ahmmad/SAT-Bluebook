@@ -1,6 +1,6 @@
 type OptionType = "mcq-text" | "mcq-image" | "grid-in";
 
-type QuestionDTO = {
+interface QuestionDTO {
   question: string;
   questionImage?: string;
   subject: string;
@@ -9,9 +9,9 @@ type QuestionDTO = {
   optionType: OptionType;
   options: QuestionOptionDTO[];
   answers: number[]; //Index of the correct answer
-};
+}
 
-type QuestionResDTO = {
+interface QuestionResDTO {
   id: string;
   question: string;
   questionImage?: string;
@@ -21,9 +21,16 @@ type QuestionResDTO = {
   optionType: OptionType;
   options: QuestionOptionDTO[];
   answers: number[]; //Index of the correct answer
-};
+}
 
-type QuestionOptionDTO = {
+interface QuestionOptionDTO {
   text?: string;
   image?: string;
-};
+}
+
+interface ExamQuestionResDTO extends QuestionResDTO {
+  selectedOption?: number;
+  textAnswer?: string;
+  markedWrong?: number[];
+  markedForReview?: boolean;
+}

@@ -1,7 +1,8 @@
-import AddQuestionForm from "@/components/questions/AddQuestionForm";
-import React from "react";
+"use client";
 
-export default function page() {
+import AddQuestionForm from "@/components/questions/AddQuestionForm";
+
+export default function Page() {
   const onSubmit = (data: QuestionDTO) => {
     console.log(data);
   };

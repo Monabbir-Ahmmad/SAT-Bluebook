@@ -1,61 +1,64 @@
-import { Image, Text, TextInput } from "@mantine/core";
+import { Button, Image, TextInput } from "@mantine/core";
 
+import BookmarkIcon from "remixicon-react/Bookmark3LineIcon";
+import ExamAnswerOption from "./ExamAnswerOption";
 import RichContentRenderer from "../common/richEditor/RichContentRenderer";
-import { twMerge } from "tailwind-merge";
-
-type AnswerOptionProps = {
-  optionType: OptionType;
-  option: QuestionOptionDTO;
-  selected: boolean;
-  index: number;
-};
-
-function AnswerOption({
-  optionType,
-  option,
-  selected,
-  index,
-}: AnswerOptionProps) {
-  return (
-    <div
-      className={twMerge(
-        "cursor-pointer bg-white hover:shadow-md border-2 rounded-lg flex items-center py-2.5 px-4 gap-4 transition-shadow",
-        selected && "border-primary shadow-md"
-      )}
-    >
-      <span
-        className={twMerge(
-          "min-w-[2rem] w-8 aspect-square flex items-center justify-center rounded-full border-2 border-slate-300",
-          selected && "border-primary bg-primary text-white"
-        )}
-      >
-        {index + 1}
-      </span>
-
-      {optionType === "mcq-text" && <Text>{option?.text}</Text>}
-
-      {optionType === "mcq-image" && (
-        <Image src={option?.image} alt="" height={200} />
-      )}
-    </div>
-  );
-}
 
 type ExamQuestionItemProps = {
-  data: QuestionResDTO;
-  index: number;
+  data: ExamQuestionResDTO;
+  title: string;
+  toggleAnswer: (
+    question: ExamQuestionResDTO,
+    selectedIndex: number,
+    selected: boolean
+  ) => void;
+  toggleMarkAsWrong: (
+    question: ExamQuestionResDTO,
+    markedIndex: number,
+    selected: boolean
+  ) => void;
+  toggleMarkForReview: (question: ExamQuestionResDTO, marked: boolean) => void;
+  onTextAnswerChange: (question: ExamQuestionResDTO, text: string) => void;
 };
 
-function ExamQuestionItem({ data, index = 0 }: ExamQuestionItemProps) {
-  return (
-    <div
-      className={twMerge(
-        "text-base shadow-md font-medium flex flex-col gap-4 w-full p-6 bg-white border border-l-8 border-primary"
-      )}
-    >
-      <h2 className="text-xl font-bold uppercase">Question {index + 1}</h2>
+function ExamQuestionItem({
+  data,
+  title,
+  toggleAnswer,
+  toggleMarkAsWrong,
+  toggleMarkForReview,
+  onTextAnswerChange,
+}: ExamQuestionItemProps) {
+  const onAnswerSelect = (selectedIndex: number, selected: boolean) => {
+    toggleAnswer(data, selectedIndex, selected);
+  };
 
-      <hr className="border-slate-300" />
+  const onMarkAsWrong = (markedIndex: number, selected: boolean) => {
+    toggleMarkAsWrong(data, markedIndex, selected);
+  };
+
+  const onMarkForReview = () => {
+    toggleMarkForReview(data, !data.markedForReview);
+  };
+
+  const onAnswerInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    onTextAnswerChange(data, event.target.value);
+  };
+
+  return (
+    <div className="w-full space-y-5">
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-semibold uppercase opacity-70">{title}</h2>
+
+        <Button
+          variant="light"
+          color={data.markedForReview ? "yellow" : ""}
+          leftIcon={<BookmarkIcon />}
+          onClick={onMarkForReview}
+        >
+          {data.markedForReview ? "Marked for review" : "Mark for review"}
+        </Button>
+      </div>
 
       <RichContentRenderer content={data.question} className="text-lg" />
 
@@ -64,24 +67,31 @@ function ExamQuestionItem({ data, index = 0 }: ExamQuestionItemProps) {
       <hr className="border-slate-300" />
 
       <div className="flex flex-col gap-2">
-        <h1 className="text-base uppercase font-bold">
-          {data.optionType === "grid-in" ? "Answer" : "Options"}
+        <h1 className="text-base uppercase font-bold opacity-70">
+          {data.optionType === "grid-in" ? "Answer" : "Select an option"}
         </h1>
 
         {data.optionType === "grid-in" && (
-          <TextInput size="lg" placeholder="Type your answer here..." />
+          <TextInput
+            size="lg"
+            placeholder="Type your answer here..."
+            value={data.textAnswer}
+            onChange={onAnswerInput}
+          />
         )}
 
         {data.optionType !== "grid-in" &&
           data.options.map((option: QuestionOptionDTO, index: number) => (
-            <div key={index}>
-              <AnswerOption
-                index={index}
-                option={option}
-                selected={data.answers.includes(index)}
-                optionType={data.optionType}
-              />
-            </div>
+            <ExamAnswerOption
+              key={index}
+              index={index}
+              option={option}
+              optionType={data.optionType}
+              selected={data.selectedOption === index}
+              markedWrong={data.markedWrong?.includes(index)}
+              toggleSelect={onAnswerSelect}
+              toggleMarkAsWrong={onMarkAsWrong}
+            />
           ))}
       </div>
     </div>

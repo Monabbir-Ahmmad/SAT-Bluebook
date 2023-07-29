@@ -2,7 +2,7 @@
 
 import Hero from "@/components/home/Hero";
 
-export default function Home() {
+export default function Page() {
   return (
     <main>
       <Hero />

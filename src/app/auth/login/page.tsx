@@ -1,8 +1,7 @@
 import Link from "next/link";
 import LoginForm from "@/components/auth/LoginForm";
-import React from "react";
 
-export default function page() {
+export default function Page() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="max-w-xl w-full mx-auto flex flex-col gap-3 p-4">

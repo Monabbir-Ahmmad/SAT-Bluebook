@@ -13,7 +13,7 @@ const mockdata = questions.map((question) => ({
   ...question,
 }));
 
-export default function page() {
+export default function Page() {
   const [data, setData] = useState<TransferListData>([mockdata, []]);
 
   const onSubmit = () => {

@@ -1,5 +1,3 @@
-"use client";
-
 import { Button, MultiSelect, SegmentedControl, Select } from "@mantine/core";
 import { FormProvider, useForm } from "react-hook-form";
 import RichEditor, { IRichEditor } from "../common/richEditor/RichEditor";
