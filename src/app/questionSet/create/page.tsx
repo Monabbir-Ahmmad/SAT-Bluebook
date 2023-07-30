@@ -1,6 +1,11 @@
 "use client";
 
-import { Button, TransferList, TransferListData } from "@mantine/core";
+import {
+  Button,
+  TextInput,
+  TransferList,
+  TransferListData,
+} from "@mantine/core";
 
 import QuestionItem from "@/components/questionSet/QuestionItem";
 import { questions } from "@/constants/data";
@@ -22,15 +27,20 @@ export default function Page() {
 
   return (
     <div>
-      <div className="px-6 py-2.5 bg-white shadow z-10 flex items-center justify-between sticky top-16">
-        <h1 className="text-2xl font-semibold">Create Question Set</h1>
+      <div className="gap-4 px-6 py-2.5 bg-white shadow z-10 flex flex-col sm:flex-row sm:items-center justify-between sticky top-16">
+        <TextInput
+          size="md"
+          placeholder="Enter question set title"
+          className="w-full sm:max-w-2xl"
+        />
+
         <Button
           variant="gradient"
           uppercase
           disabled={data[1].length === 0}
           onClick={onSubmit}
         >
-          Confirm
+          Create Question Set
         </Button>
       </div>
 
@@ -38,7 +48,7 @@ export default function Page() {
         m={26}
         value={data}
         onChange={setData}
-        listHeight={700}
+        listHeight={650}
         showTransferAll={false}
         searchPlaceholder="Search for questions..."
         nothingFound={

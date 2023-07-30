@@ -11,7 +11,7 @@ export default function Page() {
       <Button
         variant="light"
         size="xl"
-        onClick={() => router.push("/questions/addnew")}
+        onClick={() => router.push("/questions/create")}
       >
         Add new question
       </Button>
@@ -19,7 +19,7 @@ export default function Page() {
       <Button
         variant="outline"
         size="xl"
-        onClick={() => router.push("/questionSet/addnew")}
+        onClick={() => router.push("/questionSet/create")}
       >
         Create question set
       </Button>
