@@ -45,8 +45,6 @@ function ExamQuestionItem({
     onTextAnswerChange(data, event.target.value);
   };
 
-  console.log(data.textAnswer);
-
   return (
     <div className="w-full space-y-5">
       <div className="flex justify-between items-center">
