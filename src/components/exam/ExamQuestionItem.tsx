@@ -45,6 +45,8 @@ function ExamQuestionItem({
     onTextAnswerChange(data, event.target.value);
   };
 
+  console.log(data.textAnswer);
+
   return (
     <div className="w-full space-y-5">
       <div className="flex justify-between items-center">
@@ -75,7 +77,7 @@ function ExamQuestionItem({
           <TextInput
             size="lg"
             placeholder="Type your answer here..."
-            value={data.textAnswer}
+            value={data.textAnswer ?? ""}
             onChange={onAnswerInput}
           />
         )}
