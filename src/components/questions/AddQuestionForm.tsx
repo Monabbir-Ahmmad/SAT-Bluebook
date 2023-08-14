@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react";
 import AddQuestionOptions from "./AddQuestionOptions";
 import FileDrop from "../common/fileDrop/FileDrop";
 import { buttonListMini } from "../common/richEditor/buttonList";
-import { questionFormValidator } from "@/constants/validators/formValidators";
+import { questionFormValidator } from "@/utils/validators/formValidators";
 import { useMediaQuery } from "@mantine/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -19,6 +19,7 @@ export default function AddQuestionForm({ onSubmit }: AddQuestionFormProps) {
   const largeScreen = useMediaQuery("(min-width: 60em)");
 
   const richEditorRef = useRef<IRichEditor>(null);
+
   const formMethods = useForm<QuestionDTO>({
     resolver: zodResolver(questionFormValidator),
     defaultValues: {
@@ -37,6 +38,8 @@ export default function AddQuestionForm({ onSubmit }: AddQuestionFormProps) {
       };
     }
   }, [formMethods, richEditorRef]);
+
+  console.log(formMethods.formState.errors);
 
   return (
     <FormProvider {...formMethods}>

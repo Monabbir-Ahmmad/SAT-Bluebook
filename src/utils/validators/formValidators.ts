@@ -4,9 +4,9 @@ export const questionFormValidator = z.object({
   question: z.string().min(1),
   questionImage: z.string().optional(),
   subject: z.string(),
-  difficulty: z.enum(["easy", "medium", "hard"]),
+  difficulty: z.number().min(0).max(2),
   tags: z.array(z.string()).min(1),
-  optionType: z.enum(["text", "image"]),
+  optionType: z.enum(["mcq-text", "mcq-image", "grid-in"]),
   options: z
     .array(
       z
