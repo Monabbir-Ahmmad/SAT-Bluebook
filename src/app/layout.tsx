@@ -1,11 +1,8 @@
-"use client";
-
 import "./globals.css";
-
-import { MantineProvider, Text } from "@mantine/core";
 
 import Link from "next/link";
 import type { Metadata } from "next";
+import { Providers } from "@/context/Provider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -23,22 +20,18 @@ export default function RootLayout({
         <link rel="shortcut icon" href="/favicon.svg" />
       </head>
 
-      <body>
-        <MantineProvider withNormalizeCSS withGlobalStyles>
-          <nav className="sticky h-16 top-0 px-6 py-4 flex items-center bg-white z-50 shadow">
+        <Providers>
+        <body>
+           <nav className="sticky h-16 top-0 px-6 py-4 flex items-center bg-white z-50 shadow">
             <Link href="/">
               <h1 className="text-2xl font-bold">
-                SAT{" "}
-                <Text component="span" inherit variant="gradient">
-                  Bluebook
-                </Text>
+                SAT Bluebook
               </h1>
             </Link>
           </nav>
-
           {children}
-        </MantineProvider>
-      </body>
+          </body>
+      </Providers>
     </html>
   );
 }
