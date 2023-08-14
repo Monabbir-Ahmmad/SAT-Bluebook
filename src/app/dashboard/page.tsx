@@ -1,21 +1,28 @@
-import Link from "next/link";
-import React from "react";
+"use client";
 
-export default function page() {
+import { Button } from "@mantine/core";
+import { useRouter } from "next/navigation";
+
+export default function Page() {
+  const router = useRouter();
+
   return (
     <div className="flex items-center justify-center flex-col gap-4 p-4">
-      <Link
-        href={"/questions/addnew"}
-        className="btn btn-outline btn-primary btn-wide"
+      <Button
+        variant="light"
+        size="xl"
+        onClick={() => router.push("/questions/create")}
       >
         Add new question
-      </Link>
-      <Link
-        href={"/questions/addnew"}
-        className="btn btn-outline btn-primary btn-wide"
+      </Button>
+
+      <Button
+        variant="outline"
+        size="xl"
+        onClick={() => router.push("/questionSet/create")}
       >
-        Add new exam set
-      </Link>
+        Create question set
+      </Button>
     </div>
   );
 }

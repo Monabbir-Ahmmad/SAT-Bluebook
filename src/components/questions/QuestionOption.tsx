@@ -1,18 +1,15 @@
-import DeleteIcon from "remixicon-react/CloseLineIcon";
-import FileDrop from "../common/input/FileDrop";
-import Input from "../common/input/Input";
+import { Checkbox, CloseButton, TextInput } from "@mantine/core";
+
+import { ChangeEvent } from "react";
+import FileDrop from "../common/fileDrop/FileDrop";
 import { useFormContext } from "react-hook-form";
 
-interface QuestionOptionProps extends React.HTMLAttributes<HTMLInputElement> {
+interface QuestionOptionProps {
   index: number;
   onRemoveClick?: () => void;
 }
 
-function QuestionOption({
-  index = 0,
-  onRemoveClick,
-  ...rest
-}: QuestionOptionProps) {
+function QuestionOption({ index, onRemoveClick }: QuestionOptionProps) {
   const {
     register,
     formState: { errors },
@@ -21,50 +18,63 @@ function QuestionOption({
     watch,
   } = useFormContext<QuestionDTO>();
 
-  const pickAnswer = () => {
-    const options = getValues("options");
-    const newOptions = options.map((option, i) => ({
-      ...option,
-      isAnswer: i === index,
-    }));
+  const pickAnswer = (e: ChangeEvent<HTMLInputElement>) => {
+    const checked = e.target.checked;
 
+    if (!checked) {
+      setValue(
+        "answers",
+        getValues("answers").filter((answer) => answer !== index)
+      );
+    } else {
+      setValue("answers", [...getValues("answers"), index]);
+    }
+  };
+
+  const handleFileChange = (blob?: string) => {
+    const options = getValues("options");
+    const newOptions = options.map((option: any, i: number) =>
+      i === index ? { ...option, image: blob } : option
+    );
     setValue("options", newOptions);
   };
 
   return (
     <div className="flex gap-2 items-center">
-      <input
-        required
-        type="radio"
-        name="answer"
-        className="radio radio-primary"
+      <Checkbox
+        size={"lg"}
+        onChange={pickAnswer}
+        checked={watch("answers")?.includes(index)}
+        error={!!errors?.answers}
       />
 
-      {watch("optionType") === "text" ? (
-        <Input
-          {...register(`options.${index}.data`, {
-            required: "Option is required",
-          })}
-          placeholder={"Option"}
-          inputCss="input-sm"
-          error={!!errors?.options?.[index]?.data}
-          {...rest}
-        />
-      ) : (
+      {watch("optionType") === "mcq-image" && (
         <FileDrop
-          className="w-96"
-          onChange={(file) => setValue(`options.${index}.data`, file as File)}
-          value={watch(`options.${index}.data`)}
+          onChange={handleFileChange}
+          value={watch(`options.${index}.image`)}
+          error={!!errors?.options?.[index]?.image}
+          previewHeight={200}
         />
       )}
 
-      <button
-        className="btn btn-circle btn-ghost btn-sm"
-        type="button"
-        onClick={onRemoveClick}
-      >
-        <DeleteIcon />
-      </button>
+      {watch("optionType") === "mcq-text" && (
+        <TextInput
+          {...register(`options.${index}.text`)}
+          className="w-full"
+          placeholder={"Option Text"}
+          error={!!errors?.options?.[index]?.text}
+        />
+      )}
+
+      {watch("options").length > 1 && (
+        <CloseButton
+          radius={"xl"}
+          title="Close"
+          size="lg"
+          iconSize={20}
+          onClick={onRemoveClick}
+        />
+      )}
     </div>
   );
 }

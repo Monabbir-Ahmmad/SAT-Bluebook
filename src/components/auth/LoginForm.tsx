@@ -1,16 +1,21 @@
 "use client";
 
+import { Button, PasswordInput, TextInput } from "@mantine/core";
 import { Controller, useForm } from "react-hook-form";
 
-import Input from "../common/input/Input";
+import InvisibleIcon from "remixicon-react/EyeCloseLineIcon";
 import LockIcon from "remixicon-react/LockLineIcon";
 import MailIcon from "remixicon-react/MailLineIcon";
+import VisibleIcon from "remixicon-react/EyeLineIcon";
 
 function LoginForm() {
-  const { control } = useForm();
+  const { control, handleSubmit } = useForm();
 
   return (
-    <form className="flex flex-col gap-3 w-full">
+    <form
+      className="flex flex-col gap-3 w-full"
+      onSubmit={handleSubmit((date) => console.log(date))}
+    >
       <Controller
         name="email"
         control={control}
@@ -23,14 +28,14 @@ function LoginForm() {
           },
         }}
         render={({ field, fieldState: { error } }) => (
-          <Input
+          <TextInput
             {...field}
             type="email"
             label="Email"
+            size="lg"
             placeholder="Enter your email"
-            startIcon={MailIcon}
-            error={!!error}
-            helperText={error?.message}
+            icon={<MailIcon />}
+            error={error?.message}
           />
         )}
       />
@@ -57,19 +62,27 @@ function LoginForm() {
           },
         }}
         render={({ field, fieldState: { error } }) => (
-          <Input
+          <PasswordInput
             {...field}
-            type="password"
             label="Password"
+            size="lg"
             placeholder="Enter a strong password"
-            startIcon={LockIcon}
-            error={!!error}
-            helperText={error?.message}
+            icon={<LockIcon />}
+            visibilityToggleIcon={({ reveal, size }) =>
+              reveal ? (
+                <InvisibleIcon size={size} />
+              ) : (
+                <VisibleIcon size={size} />
+              )
+            }
+            error={error?.message}
           />
         )}
       />
 
-      <button className="btn btn-primary mt-5 rounded">Login</button>
+      <Button type="submit" uppercase>
+        Login
+      </Button>
     </form>
   );
 }

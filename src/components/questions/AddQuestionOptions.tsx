@@ -1,60 +1,80 @@
-"use client";
-
-import {
-  Control,
-  FieldValues,
-  FormState,
-  UseFormRegister,
-  useFieldArray,
-  useFormContext,
-} from "react-hook-form";
+import { Button, SegmentedControl, TextInput } from "@mantine/core";
+import { useFieldArray, useFormContext } from "react-hook-form";
 
 import AddIcon from "remixicon-react/AddLineIcon";
 import QuestionOption from "./QuestionOption";
+import { answerType } from "@/constants/data";
+import { useMediaQuery } from "@mantine/hooks";
 
 function AddQuestionOptions() {
-  const { control, setValue } = useFormContext<QuestionDTO>();
+  const largeScreen = useMediaQuery("(min-width: 60em)");
+  const {
+    control,
+    getValues,
+    reset,
+    watch,
+    register,
+    formState: { errors },
+  } = useFormContext<QuestionDTO>();
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: "options",
   });
 
+  const onOptionTypeChange = (value: OptionType) => {
+    if (value === "grid-in") {
+      reset({ ...getValues(), optionType: value, options: [{}], answers: [0] });
+      return;
+    }
+
+    reset({ ...getValues(), optionType: value, options: [{}], answers: [] });
+  };
+
   return (
     <div className="space-y-4">
-      <div className="flex gap-5 items-center">
-        <label className="block font-semibold text-base mb-2">
-          Answer Options
-        </label>
-
-        <div className="form-control">
-          <label className="cursor-pointer label">
-            <input
-              type="checkbox"
-              className="toggle toggle-primary"
-              onChange={(e) =>
-                setValue("optionType", e.target.checked ? "image" : "text")
-              }
-            />
-            <span className="label-text mx-2">Image Options</span>
-          </label>
-        </div>
-      </div>
-      {fields.map((option, index) => (
-        <QuestionOption
-          key={option.id}
-          index={index}
-          onRemoveClick={() => remove(index)}
+      <div className="space-y-2">
+        <label className="font-semibold text-base">Type</label>
+        <SegmentedControl
+          orientation={largeScreen ? "horizontal" : "vertical"}
+          fullWidth
+          color="blue"
+          size="md"
+          data={answerType}
+          onChange={onOptionTypeChange}
         />
-      ))}
+      </div>
 
-      <button
-        type="button"
-        className="btn btn-primary btn-sm"
-        onClick={() => append({ data: "" })}
-      >
-        <AddIcon /> Add Option
-      </button>
+      {watch("optionType") === "grid-in" && (
+        <TextInput
+          {...register("options.0.text")}
+          label="Text Answer"
+          labelProps={{
+            className: "font-semibold text-lg mb-2 text-text-color",
+          }}
+          size="lg"
+          placeholder="Type the answer here"
+          error={!!errors?.options?.[0]?.text}
+        />
+      )}
+
+      {watch("optionType") !== "grid-in" && (
+        <>
+          <div className="space-y-2">
+            <h6 className="font-semibold">Options</h6>
+            {fields.map((option, index) => (
+              <QuestionOption
+                key={option.id}
+                index={index}
+                onRemoveClick={() => remove(index)}
+              />
+            ))}
+          </div>
+          <Button onClick={() => append({})} variant="light">
+            <AddIcon /> Add Option
+          </Button>
+        </>
+      )}
     </div>
   );
 }

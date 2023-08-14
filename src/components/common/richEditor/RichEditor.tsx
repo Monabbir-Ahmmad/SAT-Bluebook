@@ -11,7 +11,9 @@ import { SunEditorOptions } from "suneditor/src/options";
 import { buttonListResponsive } from "./buttonList";
 import plugins from "suneditor/src/plugins";
 
-const RichEditor = forwardRef<SunEditorCore | null, SunEditorOptions>(
+export interface IRichEditor extends SunEditorCore {}
+
+const RichEditor = forwardRef<IRichEditor | null, SunEditorOptions>(
   (
     {
       buttonList = buttonListResponsive,
