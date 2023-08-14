@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import connectDB from "@/lib/connect-db";
+import connectDB from "@/lib/server/db/connect-db";
 
 connectDB();
 

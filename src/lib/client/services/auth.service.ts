@@ -1,5 +1,5 @@
 import apiUrl from "@/constants/api-url";
-import { httpClient } from "@/lib/http-client";
+import { httpClient } from "@/lib/client/http-client";
 
 export default class AuthService {
   async login(loginDTO: LoginReqDTO) {

@@ -1,7 +1,7 @@
 "use client";
 
 import AddQuestionForm from "@/components/questions/AddQuestionForm";
-import { questionService } from "@/services";
+import { questionService } from "@/lib/client/services";
 
 export default function QuestionCreatePage() {
   const onSubmit = async (data: QuestionDTO) => {

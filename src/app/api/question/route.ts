@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { QuestionModel } from "@/models";
-import connectDB from "@/lib/connect-db";
+import { QuestionModel } from "@/lib/server/models";
+import connectDB from "@/lib/server/db/connect-db";
 
+connectDB();
 
 export async function GET() {
   return NextResponse.json({ message: "Hello, World!" });
