@@ -9,8 +9,9 @@ interface LoginResDTO {
 
 interface RegisterReqDTO {
   email: string;
-  password: string;
   name: string;
+  password: string;
+  confirmPassword: string;
 }
 
 interface RegisterResDTO {

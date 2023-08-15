@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react";
 import AddQuestionOptions from "./AddQuestionOptions";
 import FileDrop from "../common/fileDrop/FileDrop";
 import { buttonListMini } from "../common/richEditor/buttonList";
-import { questionFormValidator } from "@/lib/client/utils/validators/formValidators";
+import { questionFormValidator } from "@/lib/client/validators/formValidators";
 import { useMediaQuery } from "@mantine/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 

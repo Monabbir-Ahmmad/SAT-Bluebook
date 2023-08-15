@@ -1,7 +1,4 @@
-import { IQuestion, QuestionSchema } from "@/lib/server/models/Question";
+import Question from "./question.model";
+import User from "./user.model";
 
-import mongoose from "mongoose";
-
-export const QuestionModel =
-  mongoose.models.Question ??
-  mongoose.model<IQuestion>("Question", QuestionSchema);
+export { Question, User };

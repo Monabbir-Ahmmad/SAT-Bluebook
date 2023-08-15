@@ -1,8 +1,8 @@
 const apiUrl = {
   // Auth
   auth: {
-    login: "/auth/login",
-    register: "/auth/register",
+    login: "/auth/signin",
+    register: "/auth/signup",
   },
   // User
   user: {

@@ -8,7 +8,11 @@ import {
 
 import { useState } from "react";
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
+export default function ThemeProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
 
   const toggleColorScheme = (value?: ColorScheme) => {

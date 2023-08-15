@@ -1,7 +1,7 @@
 import "./globals.css";
 
+import Header from "@/components/header/Header";
 import type { Metadata } from "next";
-import Navbar from "@/components/navbar/Navbar";
 import { Providers } from "@/context/Provider";
 
 export const metadata: Metadata = {
@@ -22,7 +22,7 @@ export default function RootLayout({
 
       <Providers>
         <body>
-          <Navbar />
+          <Header />
           {children}
         </body>
       </Providers>

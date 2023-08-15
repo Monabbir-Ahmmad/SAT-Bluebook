@@ -1,17 +1,20 @@
-import { Schema } from "mongoose";
+import { Document, Schema, model, models } from "mongoose";
 
-export interface IQuestion {
+export interface IQuestion extends Document {
   question: string;
   questionImage?: string;
   subject: string;
   difficulty: number;
   tags: string[];
-  optionType: OptionType;
-  options: QuestionOptionDTO[];
+  optionType: string;
+  options: {
+    text: string;
+    image?: string;
+  }[];
   answers: number[];
 }
 
-export const QuestionSchema = new Schema<IQuestion>(
+const QuestionSchema = new Schema<IQuestion>(
   {
     question: {
       type: String,
@@ -54,3 +57,8 @@ export const QuestionSchema = new Schema<IQuestion>(
     timestamps: true,
   }
 );
+
+const QuestionModel =
+  models.Question || model<IQuestion>("Question", QuestionSchema);
+
+export default QuestionModel;
