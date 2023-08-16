@@ -1,10 +1,10 @@
-import { authAction, userAction } from "@/lib/server/actions";
-import { verifyPassword } from "@/lib/server/utils/password.util";
 import NextAuth, { NextAuthOptions } from "next-auth";
+import { authAction, userAction } from "@/lib/server/actions";
 
 import CredentialsProvider from "next-auth/providers/credentials";
 import { GithubProfile } from "next-auth/providers/github";
 import GithubProvider from "next-auth/providers/github";
+import { verifyPassword } from "@/lib/server/utils/password.util";
 
 export const authOptions: NextAuthOptions = {
   pages: {
@@ -62,7 +62,6 @@ export const authOptions: NextAuthOptions = {
             email: profile?.email!,
             name: profile?.name!,
             password: "",
-            confirmPassword: "",
           });
         }
       } catch (error) {

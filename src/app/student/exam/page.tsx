@@ -1,6 +1,7 @@
 "use client";
 
-import { Button } from "@mantine/core";
+import { Button, Paper } from "@mantine/core";
+
 import ExamCheckReview from "@/components/exam/ExamCheckReview";
 import ExamQuestionItem from "@/components/exam/ExamQuestionItem";
 import { questions } from "@/constants/data";
@@ -81,7 +82,7 @@ export default function Page() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center">
+    <div className="w-full h-full flex flex-col items-center">
       <div className="max-w-4xl w-full flex flex-col gap-4 p-4">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-semibold uppercase opacity-70">
@@ -104,13 +105,13 @@ export default function Page() {
         />
       </div>
 
-      <div className="bg-slate-100 py-4 border-t fixed bottom-0 w-full">
+      <Paper className="py-4 fixed bottom-0 w-full" withBorder radius={0}>
         <div className="max-w-4xl w-full flex justify-between items-center mx-auto px-4">
           <Button
             disabled={currentIndex === 0}
             onClick={() => setCurrentIndex((prev) => prev - 1)}
           >
-            Previous Question
+            Back
           </Button>
 
           <ExamCheckReview
@@ -123,11 +124,10 @@ export default function Page() {
             disabled={currentIndex === examQuestions.length - 1}
             onClick={() => setCurrentIndex((prev) => prev + 1)}
           >
-            Next Question
+            Next
           </Button>
         </div>
-      </div>
+      </Paper>
     </div>
   );
 }
-

@@ -14,7 +14,7 @@ function Hero() {
       }}
     >
       <div className="absolute inset-0 bg-black bg-opacity-70 z-0" />
-      <div className="h-[calc(100vh-64px)] relative flex flex-col gap-8 justify-center items-start text-white max-w-6xl mx-auto">
+      <div className="h-screen relative flex flex-col gap-8 justify-center items-start text-white max-w-6xl mx-auto">
         <h1 className="text-7xl font-bold max-w-4xl">
           SAT{" "}
           <Text component="span" inherit variant="gradient">
@@ -31,7 +31,7 @@ function Hero() {
           <Button
             variant="gradient"
             size="xl"
-            onClick={() => router.push("/auth/login")}
+            onClick={() => router.push("/auth/signin")}
           >
             Get started
           </Button>
@@ -39,7 +39,7 @@ function Hero() {
           <Button
             variant="white"
             size="xl"
-            onClick={() => router.push("/dashboard")}
+            onClick={() => router.push("/student/dashboard")}
           >
             Go to dashboard
           </Button>

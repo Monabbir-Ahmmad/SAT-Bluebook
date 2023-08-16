@@ -1,25 +1,30 @@
 "use client";
 
-import { Button, Divider } from "@mantine/core";
-import { getProviders, signIn, useSession } from "next-auth/react";
+import { Button, Divider, Paper } from "@mantine/core";
+import { getProviders, signIn } from "next-auth/react";
 import { useEffect, useState } from "react";
 
-import Link from "next/link";
 import LoginForm from "@/components/auth/LoginForm";
-import { useRouter } from "next/navigation";
+import { notifications } from "@mantine/notifications";
 
 export default function SigninPage() {
   const [providers, setProviders] = useState<any>({});
-  const session = useSession();
-  const router = useRouter();
 
   const handleSignin = async (data: LoginReqDTO) => {
-    await signIn("credentials", {
-      redirect: true,
+    const res = await signIn("credentials", {
+      redirect: false,
       callbackUrl: "/",
       email: data.email,
       password: data.password,
     });
+
+    if (res?.error) {
+      notifications.show({
+        title: "Invalid credentials",
+        message: "Please provide a valid email address and password.",
+        color: "red",
+      });
+    }
   };
 
   useEffect(() => {
@@ -31,44 +36,30 @@ export default function SigninPage() {
     getProvidersData();
   }, []);
 
-  useEffect(() => {
-    if (session?.data) {
-      router.replace("/");
-    }
-  }, [router, session]);
-
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="max-w-xl w-full mx-auto flex flex-col gap-3 p-4">
-        <h1 className="text-3xl font-semibold text-center uppercase mb-5 text-slate-600">
-          Login to continue
-        </h1>
-        <LoginForm onSubmit={handleSignin} />
+    <Paper withBorder radius={"md"} className="p-8 space-y-5">
+      <h1 className="text-2xl font-semibold text-slate-600">
+        Login to continue
+      </h1>
 
-        <Divider my="xs" label="OR" labelPosition="center" />
-
-        <div className="flex flex-col gap-2">
-          {Object.values(providers).map(
-            (provider: any) =>
-              provider.name !== "Credentials" && (
-                <Button
-                  variant="default"
-                  key={provider.name}
-                  onClick={() => signIn(provider.id)}
-                >
-                  Sign in with {provider.name}
-                </Button>
-              )
-          )}
-        </div>
-
-        <p>
-          Don&apos;t have an account?{" "}
-          <Link className="text-primary font-semibold" href="/auth/signup">
-            Register
-          </Link>
-        </p>
+      <div className="flex flex-col gap-2">
+        {Object.values(providers).map(
+          (provider: any) =>
+            provider.name !== "Credentials" && (
+              <Button
+                variant="default"
+                key={provider.name}
+                onClick={() => signIn(provider.id)}
+              >
+                Sign in with {provider.name}
+              </Button>
+            )
+        )}
       </div>
-    </div>
+
+      <Divider label="Or continue with email" labelPosition="center" />
+
+      <LoginForm onSubmit={handleSignin} />
+    </Paper>
   );
 }

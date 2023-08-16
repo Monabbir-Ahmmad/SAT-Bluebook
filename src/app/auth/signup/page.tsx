@@ -1,8 +1,9 @@
 "use client";
 
-import Link from "next/link";
+import { Paper } from "@mantine/core";
 import SignupForm from "@/components/auth/SignupForm";
 import { authService } from "@/lib/client/services";
+import { notifications } from "@mantine/notifications";
 import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
@@ -10,28 +11,31 @@ export default function SignupPage() {
 
   const handleSignup = async (data: RegisterReqDTO) => {
     try {
-      const res = await authService.register(data);
+      await authService.register(data);
+
+      notifications.show({
+        title: "Success",
+        message: "Account created successfully",
+      });
 
       router.push("/auth/signin");
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      console.log(error.response.data.message);
+      notifications.show({
+        title: "Error",
+        message: error.response.data.message,
+        color: "red",
+      });
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="max-w-xl w-full mx-auto flex flex-col gap-3 p-4">
-        <h1 className="text-3xl font-semibold text-center uppercase mb-5 text-slate-600">
-          Create an account
-        </h1>
-        <SignupForm onSubmit={handleSignup} />
-        <p>
-          Already have an account?{" "}
-          <Link className="text-primary font-semibold" href="/auth/signin">
-            Login
-          </Link>
-        </p>
-      </div>
-    </div>
+    <Paper withBorder radius={"md"} className="p-8 space-y-5">
+      <h1 className="text-2xl font-semibold text-slate-600">
+        Create an account
+      </h1>
+
+      <SignupForm onSubmit={handleSignup} />
+    </Paper>
   );
 }

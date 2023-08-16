@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import { HttpError } from "./httpError";
+import { NextResponse } from "next/server";
 import { StatusCode } from "@/constants/status-code";
 
 export const sendResponse = (status: number, data: any, res = NextResponse) => {

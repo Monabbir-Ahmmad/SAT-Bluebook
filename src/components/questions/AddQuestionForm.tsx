@@ -1,4 +1,10 @@
-import { Button, MultiSelect, SegmentedControl, Select } from "@mantine/core";
+import {
+  Button,
+  MultiSelect,
+  Paper,
+  SegmentedControl,
+  Select,
+} from "@mantine/core";
 import { FormProvider, useForm } from "react-hook-form";
 import RichEditor, { IRichEditor } from "../common/richEditor/RichEditor";
 import { difficulties, subjects } from "@/constants/data";
@@ -7,7 +13,7 @@ import { useEffect, useRef } from "react";
 import AddQuestionOptions from "./AddQuestionOptions";
 import FileDrop from "../common/fileDrop/FileDrop";
 import { buttonListMini } from "../common/richEditor/buttonList";
-import { questionFormValidator } from "@/lib/client/validators/formValidators";
+import { questionFormValidator } from "@/lib/client/validators/form.validator";
 import { useMediaQuery } from "@mantine/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -48,7 +54,10 @@ export default function AddQuestionForm({ onSubmit }: AddQuestionFormProps) {
           className="flex-1 flex flex-col gap-4 max-w-4xl"
           onSubmit={formMethods.handleSubmit(onSubmit)}
         >
-          <div className="p-6 shadow border-primary border-t-4 flex flex-col gap-4">
+          <Paper
+            shadow="xs"
+            className="p-6 border-primary border-t-4 flex flex-col gap-4"
+          >
             <h2 className="text-2xl font-semibold">Question</h2>
 
             <div>
@@ -114,12 +123,15 @@ export default function AddQuestionForm({ onSubmit }: AddQuestionFormProps) {
               }}
               error={!!formMethods.formState.errors?.tags}
             />
-          </div>
+          </Paper>
 
-          <div className="p-6 shadow border-primary border-l-4 flex flex-col gap-4">
+          <Paper
+            shadow="xs"
+            className="p-6 border-primary border-l-4 flex flex-col gap-4"
+          >
             <h2 className="text-2xl font-semibold">Answer</h2>
             <AddQuestionOptions />
-          </div>
+          </Paper>
 
           <Button type="submit" size="lg">
             Submit Question

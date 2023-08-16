@@ -27,7 +27,7 @@ export default function Page() {
 
   return (
     <div>
-      <div className="gap-4 px-6 py-2.5 bg-white shadow z-10 flex flex-col sm:flex-row sm:items-center justify-between sticky top-16">
+      <div className="gap-4 px-6 py-2.5 bg-white shadow z-10 flex flex-col sm:flex-row sm:items-center justify-between sticky top-14">
         <TextInput
           size="md"
           placeholder="Enter question set title"

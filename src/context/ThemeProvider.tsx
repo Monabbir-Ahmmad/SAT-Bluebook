@@ -6,13 +6,14 @@ import {
   MantineProvider,
 } from "@mantine/core";
 
+import { Notifications } from "@mantine/notifications";
 import { useState } from "react";
 
-export default function ThemeProvider({
-  children,
-}: {
+interface ThemeProviderProps {
   children: React.ReactNode;
-}) {
+}
+
+export default function ThemeProvider({ children }: ThemeProviderProps) {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
 
   const toggleColorScheme = (value?: ColorScheme) => {
@@ -27,6 +28,7 @@ export default function ThemeProvider({
       toggleColorScheme={toggleColorScheme}
     >
       <MantineProvider withGlobalStyles withNormalizeCSS>
+        <Notifications position="bottom-center" />
         {children}
       </MantineProvider>
     </ColorSchemeProvider>

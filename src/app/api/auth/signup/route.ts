@@ -1,27 +1,17 @@
+import { sendResponse } from "@/lib/server/utils/response.util";
+
 import { NextRequest } from "next/server";
-
 import { StatusCode } from "@/constants/status-code";
-import connectDB from "@/lib/server/config/connect-db";
 import { authAction } from "@/lib/server/actions";
-import { sendError, sendResponse } from "@/lib/server/utils/response.util";
+import { signupRouteValidator } from "@/lib/server/validators/auth.validator";
+import { asyncHandler } from "@/lib/server/utils/async.handler";
 
-connectDB();
+const signup = asyncHandler(async (req: NextRequest) => {
+  const body: RegisterReqDTO = await req.json();
 
-const signup = async (req: NextRequest) => {
-  const { name, email, password, confirmPassword } = await req.json();
+  const data = await authAction.register(body);
 
-  try {
-    const result = await authAction.register({
-      name,
-      email,
-      password,
-      confirmPassword,
-    });
-
-    return sendResponse(StatusCode.OK, result);
-  } catch (error: any) {
-    return sendError(error);
-  }
-};
+  return sendResponse(StatusCode.OK, data);
+}, signupRouteValidator);
 
 export { signup as POST };

@@ -1,6 +1,5 @@
 import "./globals.css";
 
-import Header from "@/components/header/Header";
 import type { Metadata } from "next";
 import { Providers } from "@/context/Provider";
 
@@ -20,12 +19,9 @@ export default function RootLayout({
         <link rel="shortcut icon" href="/favicon.svg" />
       </head>
 
-      <Providers>
-        <body>
-          <Header />
-          {children}
-        </body>
-      </Providers>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
