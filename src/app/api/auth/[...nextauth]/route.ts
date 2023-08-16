@@ -4,7 +4,7 @@ import { authAction, userAction } from "@/lib/server/actions";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { GithubProfile } from "next-auth/providers/github";
 import GithubProvider from "next-auth/providers/github";
-import { verifyPassword } from "@/lib/server/utils/password.util";
+import { varifyPassword } from "@/lib/server/utils/password.util";
 
 export const authOptions: NextAuthOptions = {
   pages: {
@@ -40,14 +40,17 @@ export const authOptions: NextAuthOptions = {
       },
 
       async authorize(credentials) {
-        const user = await userAction.findByEmail(credentials?.email!);
+        try {
+          const user = await authAction.login({
+            email: credentials?.email!,
+            password: credentials?.password!,
+          });
 
-        if (
-          user &&
-          (await verifyPassword(credentials?.password!, user.password))
-        ) {
           return user;
-        } else return null;
+        } catch (error) {
+          console.error(error);
+          return null;
+        }
       },
     }),
   ],
@@ -55,17 +58,12 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ profile }) {
       try {
-        const user = await userAction.findByEmail(profile?.email!);
-
-        if (!user) {
-          await authAction.register({
-            email: profile?.email!,
-            name: profile?.name!,
-            password: "",
-          });
-        }
+        await authAction.OAuthLogin({
+          email: profile?.email!,
+          name: profile?.name!,
+        });
       } catch (error) {
-        console.log(error);
+        console.error(error);
         return false;
       }
 

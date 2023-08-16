@@ -2,7 +2,7 @@ import { HttpError } from "./httpError";
 import { StatusCode } from "@/constants/status-code";
 import { z } from "zod";
 
-export function validateRequest<T>(
+export function validateData<T>(
   data: T,
   schema: z.ZodObject<z.ZodRawShape>
 ): T | never {

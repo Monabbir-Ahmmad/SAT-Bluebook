@@ -6,7 +6,7 @@ export const hashPassword = async (password: string) => {
   return await bcrypt.hash(password, salt);
 };
 
-export const verifyPassword = async (
+export const varifyPassword = async (
   inputPassword: string,
   hashedPassword: string
 ) => {

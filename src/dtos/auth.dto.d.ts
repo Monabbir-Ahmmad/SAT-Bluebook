@@ -17,3 +17,8 @@ interface RegisterReqDTO {
 interface RegisterResDTO {
   token: string;
 }
+
+interface OAuthLoginReqDTO {
+  name: string;
+  email: string;
+}

@@ -15,7 +15,7 @@ export default function SignupPage() {
 
       notifications.show({
         title: "Success",
-        message: "Account created successfully",
+        message: "Account created successfully. Please login to continue.",
       });
 
       router.push("/auth/signin");
