@@ -6,7 +6,7 @@ import QuestionOption from "./QuestionOption";
 import { answerType } from "@/constants/data";
 import { useMediaQuery } from "@mantine/hooks";
 
-function AddQuestionOptions() {
+export default function QuestionOptionAdder() {
   const largeScreen = useMediaQuery("(min-width: 60em)");
   const {
     control,
@@ -78,5 +78,3 @@ function AddQuestionOptions() {
     </div>
   );
 }
-
-export default AddQuestionOptions;

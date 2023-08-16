@@ -20,7 +20,6 @@ export default function SignupPage() {
 
       router.push("/auth/signin");
     } catch (error: any) {
-      console.log(error.response.data.message);
       notifications.show({
         title: "Error",
         message: error.response.data.message,

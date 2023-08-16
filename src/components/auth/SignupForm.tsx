@@ -72,7 +72,7 @@ function SignupForm({ onSubmit }: SignupFormProps) {
       />
 
       <div className="flex gap-2 items-center justify-between">
-        <Link className="hover:underline" href="/auth/signin">
+        <Link className="hover:underline text-primary" href="/auth/signin">
           Already have an account? Login
         </Link>
 

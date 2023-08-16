@@ -9,7 +9,10 @@ interface QuestionOptionProps {
   onRemoveClick?: () => void;
 }
 
-function QuestionOption({ index, onRemoveClick }: QuestionOptionProps) {
+export default function QuestionOption({
+  index,
+  onRemoveClick,
+}: QuestionOptionProps) {
   const {
     register,
     formState: { errors },
@@ -78,5 +81,3 @@ function QuestionOption({ index, onRemoveClick }: QuestionOptionProps) {
     </div>
   );
 }
-
-export default QuestionOption;

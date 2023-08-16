@@ -10,8 +10,8 @@ import RichEditor, { IRichEditor } from "../common/richEditor/RichEditor";
 import { difficulties, subjects } from "@/constants/data";
 import { useEffect, useRef } from "react";
 
-import AddQuestionOptions from "./AddQuestionOptions";
 import FileDrop from "../common/fileDrop/FileDrop";
+import QuestionOptionAdder from "./QuestionOptionAdder";
 import { buttonListMini } from "../common/richEditor/buttonList";
 import { questionFormValidator } from "@/lib/client/validators/form.validator";
 import { useMediaQuery } from "@mantine/hooks";
@@ -21,7 +21,7 @@ type AddQuestionFormProps = {
   onSubmit: (data: QuestionDTO) => void;
 };
 
-export default function AddQuestionForm({ onSubmit }: AddQuestionFormProps) {
+export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
   const largeScreen = useMediaQuery("(min-width: 60em)");
 
   const richEditorRef = useRef<IRichEditor>(null);
@@ -45,8 +45,6 @@ export default function AddQuestionForm({ onSubmit }: AddQuestionFormProps) {
     }
   }, [formMethods, richEditorRef]);
 
-  console.log(formMethods.formState.errors);
-
   return (
     <FormProvider {...formMethods}>
       <div className="flex items-center justify-center">
@@ -61,7 +59,7 @@ export default function AddQuestionForm({ onSubmit }: AddQuestionFormProps) {
             <h2 className="text-2xl font-semibold">Question</h2>
 
             <div>
-              <h6 className="font-semibold mb-2.5">Text</h6>
+              <h6 className="font-semibold mb-2.5">Details</h6>
               <RichEditor
                 ref={richEditorRef}
                 minHeight="100px"
@@ -130,7 +128,7 @@ export default function AddQuestionForm({ onSubmit }: AddQuestionFormProps) {
             className="p-6 border-primary border-l-4 flex flex-col gap-4"
           >
             <h2 className="text-2xl font-semibold">Answer</h2>
-            <AddQuestionOptions />
+            <QuestionOptionAdder />
           </Paper>
 
           <Button type="submit" size="lg">

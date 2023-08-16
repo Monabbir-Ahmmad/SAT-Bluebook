@@ -10,6 +10,13 @@ function authMiddleware(req: NextRequestWithAuth) {
   ) {
     return NextResponse.rewrite(new URL("/unauthorized", req.nextUrl));
   }
+
+  if (
+    req.nextUrl.pathname.includes("/teacher") &&
+    req.nextauth.token?.role !== "admin"
+  ) {
+    return NextResponse.rewrite(new URL("/unauthorized", req.nextUrl));
+  }
 }
 
 export default withAuth(authMiddleware, {
@@ -22,5 +29,5 @@ export default withAuth(authMiddleware, {
 
 // config to exclude auth pages from being protected
 export const config = {
-  matcher: ["/((?!api|auth|_next|favicon.ico).*)"],
+  matcher: ["/student/:path*", "/teacher/:path*"],
 };

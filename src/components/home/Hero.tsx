@@ -1,9 +1,27 @@
 import { Button, Text } from "@mantine/core";
 
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 function Hero() {
   const router = useRouter();
+  const session = useSession();
+
+  const onGetStartedClick = () => {
+    if (session?.data?.user?.role === "admin") {
+      router.push("/teacher/dashboard");
+    } else {
+      router.push("/student/dashboard");
+    }
+  };
+
+  const onGoToDashboardClick = () => {
+    if (session?.data?.user?.role === "admin") {
+      router.push("/teacher/dashboard");
+    } else {
+      router.push("/student/dashboard");
+    }
+  };
 
   return (
     <div
@@ -28,19 +46,11 @@ function Hero() {
         </p>
 
         <div className="flex gap-5">
-          <Button
-            variant="gradient"
-            size="xl"
-            onClick={() => router.push("/auth/signin")}
-          >
+          <Button variant="gradient" size="xl" onClick={onGetStartedClick}>
             Get started
           </Button>
 
-          <Button
-            variant="white"
-            size="xl"
-            onClick={() => router.push("/student/dashboard")}
-          >
+          <Button variant="white" size="xl" onClick={onGoToDashboardClick}>
             Go to dashboard
           </Button>
         </div>
