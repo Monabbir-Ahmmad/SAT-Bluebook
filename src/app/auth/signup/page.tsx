@@ -30,7 +30,7 @@ export default function SignupPage() {
 
   return (
     <Paper withBorder radius={"md"} className="p-8 space-y-5">
-      <h1 className="text-2xl font-semibold text-slate-600">
+      <h1 className="text-2xl font-semibold text-text-color">
         Create an account
       </h1>
 

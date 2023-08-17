@@ -18,17 +18,19 @@ import { useMediaQuery } from "@mantine/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 type AddQuestionFormProps = {
-  onSubmit: (data: QuestionDTO) => void;
+  onSubmit: (data: QuestionCreateReqDTO) => void;
 };
 
 export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
   const largeScreen = useMediaQuery("(min-width: 60em)");
 
-  const richEditorRef = useRef<IRichEditor>(null);
+  const questionInputRef = useRef<IRichEditor>(null);
+  const passageInputRef = useRef<IRichEditor>(null);
 
-  const formMethods = useForm<QuestionDTO>({
+  const formMethods = useForm<QuestionCreateReqDTO>({
     resolver: zodResolver(questionFormValidator),
     defaultValues: {
+      subject: "math",
       difficulty: 0,
       optionType: "mcq-text",
       answers: [],
@@ -37,20 +39,46 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
     },
   });
 
+  const {
+    watch,
+    setValue,
+    formState: { errors },
+    handleSubmit,
+    getValues,
+  } = formMethods;
+
   useEffect(() => {
-    if (richEditorRef.current) {
-      richEditorRef.current.onChange = (content) => {
-        formMethods.setValue("question", content);
+    if (questionInputRef.current) {
+      questionInputRef.current.onChange = (content) => {
+        setValue("question", content);
       };
     }
-  }, [formMethods, richEditorRef]);
+  }, [setValue, questionInputRef]);
+
+  useEffect(() => {
+    if (watch("subject") === "math") {
+      setValue("passage", undefined);
+    } else if (passageInputRef.current) {
+      passageInputRef.current.onChange = (content) => {
+        setValue("passage", content);
+      };
+    }
+  }, [passageInputRef, setValue, watch("subject")]);
+
+  useEffect(() => {
+    if (errors?.question)
+      questionInputRef?.current?.noticeOpen?.(errors?.question?.message!);
+
+    if (errors?.passage)
+      passageInputRef.current?.noticeOpen?.(errors?.passage?.message!);
+  }, [errors?.question, errors?.passage]);
 
   return (
     <FormProvider {...formMethods}>
       <div className="flex items-center justify-center">
         <form
           className="flex-1 flex flex-col gap-4 max-w-4xl"
-          onSubmit={formMethods.handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onSubmit)}
         >
           <Paper
             shadow="xs"
@@ -59,9 +87,43 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
             <h2 className="text-2xl font-semibold">Question</h2>
 
             <div>
-              <h6 className="font-semibold mb-2.5">Details</h6>
+              <h6 className="font-semibold mb-2.5">Section</h6>
+              <SegmentedControl
+                orientation={largeScreen ? "horizontal" : "vertical"}
+                fullWidth
+                size="md"
+                color="blue"
+                data={subjects}
+                onChange={(value: SubjectType) => setValue("subject", value)}
+              />
+            </div>
+
+            {watch("subject") !== "math" && (
+              <div>
+                <h6 className="font-semibold mb-2.5">Passage</h6>
+                <RichEditor
+                  ref={passageInputRef}
+                  minHeight="100px"
+                  width="100%"
+                  resizingBar={false}
+                  placeholder="Write your passage here..."
+                  buttonList={buttonListMini}
+                />
+              </div>
+            )}
+
+            <div>
+              <h6 className="font-semibold mb-2.5">Image (optional)</h6>
+              <FileDrop
+                onChange={(blob) => setValue("questionImage", blob)}
+                value={watch("questionImage")}
+              />
+            </div>
+
+            <div>
+              <h6 className="font-semibold mb-2.5">Question</h6>
               <RichEditor
-                ref={richEditorRef}
+                ref={questionInputRef}
                 minHeight="100px"
                 width="100%"
                 resizingBar={false}
@@ -69,24 +131,6 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
                 buttonList={buttonListMini}
               />
             </div>
-
-            <div>
-              <h6 className="font-semibold mb-2.5">Image (optional)</h6>
-              <FileDrop
-                onChange={(blob) => formMethods.setValue("questionImage", blob)}
-                value={formMethods.watch("questionImage")}
-              />
-            </div>
-
-            <Select
-              size="md"
-              label="Subject"
-              labelProps={{ className: "text-lg mb-2.5 text-text-color" }}
-              placeholder="Pick a subject"
-              data={subjects}
-              onChange={(value) => formMethods.setValue("subject", value!)}
-              error={!!formMethods.formState.errors?.subject}
-            />
 
             <div>
               <h6 className="font-semibold mb-2.5">Difficulty</h6>
@@ -97,7 +141,7 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
                 color="blue"
                 data={difficulties}
                 onChange={(value: string) =>
-                  formMethods.setValue("difficulty", parseInt(value))
+                  setValue("difficulty", parseInt(value))
                 }
               />
             </div>
@@ -111,15 +155,12 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
               searchable
               creatable
               getCreateLabel={(query) => `+ Create ${query}`}
-              onChange={(value) => formMethods.setValue("tags", value)}
+              onChange={(value) => setValue("tags", value)}
               onCreate={(value) => {
-                formMethods.setValue("tags", [
-                  ...formMethods.getValues().tags,
-                  value,
-                ]);
+                setValue("tags", [...getValues().tags, value]);
                 return value;
               }}
-              error={!!formMethods.formState.errors?.tags}
+              error={!!errors?.tags}
             />
           </Paper>
 

@@ -1,7 +1,9 @@
 import { ActionIcon, Divider, Image, Text, Tooltip } from "@mantine/core";
+import {
+  RiCloseLine as CloseIcon,
+  RiArrowGoBackLine as UndoIcon,
+} from "react-icons/ri";
 
-import CloseIcon from "remixicon-react/CloseLineIcon";
-import UndoIcon from "remixicon-react/ArrowGoBackLineIcon";
 import { twMerge } from "tailwind-merge";
 
 type ExamAnswerOptionProps = {

@@ -1,7 +1,7 @@
 import { Button, SegmentedControl, TextInput } from "@mantine/core";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
-import AddIcon from "remixicon-react/AddLineIcon";
+import { RiAddLine as AddIcon } from "react-icons/ri";
 import QuestionOption from "./QuestionOption";
 import { answerType } from "@/constants/data";
 import { useMediaQuery } from "@mantine/hooks";
@@ -15,7 +15,7 @@ export default function QuestionOptionAdder() {
     watch,
     register,
     formState: { errors },
-  } = useFormContext<QuestionDTO>();
+  } = useFormContext<QuestionCreateReqDTO>();
 
   const { fields, append, remove } = useFieldArray({
     control,

@@ -5,7 +5,8 @@
 @tailwind utilities;
 
 :root {
-  --text-color: hsl(210, 13%, 38%);
+  --text-color: hsl(210, 13%, 30%);
+  --primary-color: hsl(208, 80%, 52%);
 }
 
 :root {

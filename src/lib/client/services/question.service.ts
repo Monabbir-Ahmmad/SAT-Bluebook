@@ -2,7 +2,7 @@ import apiUrl from "@/constants/api-url";
 import { httpClient } from "@/lib/client/http-client";
 
 export default class QuestionService {
-  async create(question: QuestionDTO) {
+  async create(question: QuestionCreateReqDTO) {
     const res = await httpClient.post<QuestionResDTO>(
       apiUrl.question.create,
       question

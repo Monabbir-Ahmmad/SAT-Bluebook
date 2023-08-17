@@ -1,8 +1,11 @@
 "use client";
 
-import { Button, Divider, Paper } from "@mantine/core";
+import { Divider, Paper, SimpleGrid } from "@mantine/core";
 
-import EducationIcon from "remixicon-react/Book2FillIcon";
+import DashboardButton from "@/components/dashboard/DashboardButton";
+import { GiTeacher as EducationIcon } from "react-icons/gi";
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
@@ -11,7 +14,7 @@ export default function TeacherDashboardPage() {
   const session = useSession();
 
   return (
-    <div className="mx-auto max-w-7xl w-full flex flex-col gap-6 p-4">
+    <div className="mx-auto max-w-7xl w-full flex flex-col gap-5 p-4">
       <EducationIcon size={64} className="text-primary" />
 
       <h1 className="font-bold text-primary">Teacher Dashboard</h1>
@@ -19,37 +22,37 @@ export default function TeacherDashboardPage() {
       <Paper className="w-full p-6 gap-5 flex relative border border-l-8 border-l-primary">
         <object
           type="image/svg+xml"
-          data="/study.svg"
-          className="w-72 absolute -bottom-5 right-0"
+          data="/teach.svg"
+          className="w-72 absolute -bottom-3 right-0"
         />
 
-        <h1 className="w-4/5">
+        <h1 className="w-4/5 text-text-color">
           Welcome{" "}
-          <strong className="text-primary">{session?.data?.user?.name}!</strong>{" "}
+          <span className="text-primary font-bold">
+            {session?.data?.user?.name}!
+          </span>{" "}
           You are logged in as a teacher.
         </h1>
       </Paper>
 
       <Divider
-        label={<h1 className="text-2xl text-slate-700">Available Tests</h1>}
+        label={<h1 className="text-2xl text-text-color">Prepare Tests</h1>}
         labelPosition="left"
       />
 
-      <Button
-        variant="light"
-        size="xl"
-        onClick={() => router.push("/teacher/question/create")}
-      >
-        Create Question
-      </Button>
+      <SimpleGrid cols={3}>
+        <DashboardButton
+          href="/teacher/question/create"
+          text="Create Question"
+          image="/question.svg"
+        />
 
-      <Button
-        variant="light"
-        size="xl"
-        onClick={() => router.push("/teacher/question-set/create")}
-      >
-        Create Question Set
-      </Button>
+        <DashboardButton
+          href="/teacher/question-set/create"
+          text="Create Question Set"
+          image="/quiz.svg"
+        />
+      </SimpleGrid>
     </div>
   );
 }

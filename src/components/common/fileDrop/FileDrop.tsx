@@ -1,6 +1,6 @@
 import { ChangeEvent, DragEvent, forwardRef } from "react";
 
-import RemoveIcon from "remixicon-react/CloseLineIcon";
+import { RiCloseLine as RemoveIcon } from "react-icons/ri";
 import { twMerge } from "tailwind-merge";
 
 interface ImagePreviewProps {

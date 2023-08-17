@@ -8,14 +8,14 @@ function authMiddleware(req: NextRequestWithAuth) {
     req.nextUrl.pathname.includes("/student") &&
     req.nextauth.token?.role !== "user"
   ) {
-    return NextResponse.rewrite(new URL("/unauthorized", req.nextUrl));
+    //return NextResponse.rewrite(new URL("/unauthorized", req.nextUrl));
   }
 
   if (
     req.nextUrl.pathname.includes("/teacher") &&
     req.nextauth.token?.role !== "admin"
   ) {
-    return NextResponse.rewrite(new URL("/unauthorized", req.nextUrl));
+    // return NextResponse.rewrite(new URL("/unauthorized", req.nextUrl));
   }
 }
 

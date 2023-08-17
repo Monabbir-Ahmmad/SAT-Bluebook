@@ -1,9 +1,12 @@
 type OptionType = "mcq-text" | "mcq-image" | "grid-in";
 
-interface QuestionDTO {
-  question: string;
+type SubjectType = "math" | "reading" | "writing";
+
+interface QuestionCreateReqDTO {
+  passage?: string;
   questionImage?: string;
-  subject: string;
+  question: string;
+  subject: SubjectType;
   difficulty: number; // Higher is harder
   tags: string[];
   optionType: OptionType;
@@ -15,7 +18,7 @@ interface QuestionResDTO {
   id: string;
   question: string;
   questionImage?: string;
-  subject: string;
+  subject: SubjectType;
   difficulty: number; // Higher is harder
   tags: string[];
   optionType: OptionType;

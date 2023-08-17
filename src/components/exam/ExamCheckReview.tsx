@@ -1,8 +1,9 @@
 import { Button, Divider, Popover, SimpleGrid } from "@mantine/core";
-
-import CheckIcon from "remixicon-react/CheckboxCircleLineIcon";
-import CircleIcon from "remixicon-react/FocusFillIcon";
-import QuestionIcon from "remixicon-react/QuestionLineIcon";
+import {
+  RiCheckboxCircleLine as CheckIcon,
+  RiCheckboxBlankCircleFill as CircleIcon,
+  RiQuestionLine as QuestionIcon,
+} from "react-icons/ri";
 
 type ExamCheckReviewProps = {
   examQuestions: ExamQuestionResDTO[];

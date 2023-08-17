@@ -3,6 +3,7 @@ import { Document, Schema, model, models } from "mongoose";
 export interface IQuestion extends Document {
   question: string;
   questionImage?: string;
+  passage?: string;
   subject: string;
   difficulty: number;
   tags: string[];
@@ -21,6 +22,9 @@ const QuestionSchema = new Schema<IQuestion>(
       required: true,
     },
     questionImage: {
+      type: String,
+    },
+    passage: {
       type: String,
     },
     subject: {
@@ -55,6 +59,7 @@ const QuestionSchema = new Schema<IQuestion>(
   },
   {
     timestamps: true,
+    versionKey: false,
   }
 );
 

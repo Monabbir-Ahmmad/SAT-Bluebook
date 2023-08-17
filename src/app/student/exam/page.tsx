@@ -7,7 +7,7 @@ import ExamQuestionItem from "@/components/exam/ExamQuestionItem";
 import { questions } from "@/constants/data";
 import { useState } from "react";
 
-export default function Page() {
+export default function ExamPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [examQuestions, setExamQuestions] =
     useState<ExamQuestionResDTO[]>(questions);

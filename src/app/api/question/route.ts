@@ -8,6 +8,8 @@ connectDB();
 const createQuestion = async (req: NextRequest) => {
   const questionData = await req.json();
 
+  console.log(questionData);
+
   const question = await Question.create(questionData);
 
   return NextResponse.json(question);

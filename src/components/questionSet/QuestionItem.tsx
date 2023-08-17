@@ -4,9 +4,11 @@ import {
   Text,
   TransferListItemComponentProps,
 } from "@mantine/core";
+import {
+  RiCheckboxCircleFill as CheckIcon,
+  RiCloseCircleFill as CrossIcon,
+} from "react-icons/ri";
 
-import CheckIcon from "remixicon-react/CheckboxCircleFillIcon";
-import CrossIcon from "remixicon-react/CloseCircleFillIcon";
 import RichContentRenderer from "../common/richEditor/RichContentRenderer";
 import { difficulties } from "@/constants/data";
 import { twMerge } from "tailwind-merge";
@@ -55,7 +57,9 @@ function QuestionItem({ data, selected }: TransferListItemComponentProps) {
       <div className="flex justify-between items-center gap-2">
         <h2 className="text-xl font-bold uppercase">{data.subject}</h2>
 
-        <Badge size="xl">{difficulties[data.difficulty].label}</Badge>
+        <Badge size="xl" variant="outline">
+          {difficulties[data.difficulty].label}
+        </Badge>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">

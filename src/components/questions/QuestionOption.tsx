@@ -19,7 +19,7 @@ export default function QuestionOption({
     setValue,
     getValues,
     watch,
-  } = useFormContext<QuestionDTO>();
+  } = useFormContext<QuestionCreateReqDTO>();
 
   const pickAnswer = (e: ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Logo from "remixicon-react/BookOpenFillIcon";
+import { SiBookstack as Logo } from "react-icons/si";
 import { Text } from "@mantine/core";
 
 type AppLogoProps = {

@@ -10,18 +10,17 @@ export const difficulties: { value: string; label: string }[] = [
   { value: "2", label: "Hard" },
 ];
 
-export const subjects: { value: string; label: string }[] = [
+export const subjects: { value: SubjectType; label: string }[] = [
   { value: "math", label: "Mathematics" },
-  { value: "english", label: "English" },
-  { value: "science", label: "Science" },
-  { value: "history", label: "History" },
+  { value: "reading", label: "Reading" },
+  { value: "writing", label: "Writing" },
 ];
 
 export const questions: QuestionResDTO[] = [
   {
     id: "1",
     question: "What is the capital city of Australia?",
-    subject: "social-studies",
+    subject: "reading",
     difficulty: 0,
     tags: ["geography"],
     optionType: "mcq-text",
@@ -46,7 +45,7 @@ export const questions: QuestionResDTO[] = [
   {
     id: "3",
     question: "What is the chemical symbol for gold?",
-    subject: "science",
+    subject: "reading",
     difficulty: 0,
     tags: ["chemistry"],
     optionType: "mcq-text",
@@ -56,7 +55,7 @@ export const questions: QuestionResDTO[] = [
   {
     id: "4",
     question: "Which author wrote the novel 'To Kill a Mockingbird'?",
-    subject: "language-arts",
+    subject: "reading",
     difficulty: 1,
     tags: ["literature"],
     optionType: "mcq-text",
@@ -81,7 +80,7 @@ export const questions: QuestionResDTO[] = [
   {
     id: "6",
     question: "Which of the following is a greenhouse gas?",
-    subject: "science",
+    subject: "reading",
     difficulty: 0,
     tags: ["environmental-science"],
     optionType: "mcq-text",
@@ -96,7 +95,7 @@ export const questions: QuestionResDTO[] = [
   {
     id: "7",
     question: "In which year did the French Revolution begin?",
-    subject: "social-studies",
+    subject: "reading",
     difficulty: 1,
     tags: ["history"],
     optionType: "mcq-text",
@@ -121,7 +120,7 @@ export const questions: QuestionResDTO[] = [
   {
     id: "9",
     question: "Which of the following is a transitive verb?",
-    subject: "language-arts",
+    subject: "reading",
     difficulty: 0,
     tags: ["grammar"],
     optionType: "mcq-text",
@@ -136,7 +135,7 @@ export const questions: QuestionResDTO[] = [
   {
     id: "10",
     question: "What is the chemical formula for water?",
-    subject: "science",
+    subject: "reading",
     difficulty: 1,
     tags: ["chemistry"],
     optionType: "mcq-text",
@@ -161,7 +160,7 @@ export const questions: QuestionResDTO[] = [
   {
     id: "12",
     question: "Who is credited with the discovery of electricity?",
-    subject: "science",
+    subject: "reading",
     difficulty: 2,
     tags: ["physics"],
     optionType: "mcq-text",
@@ -176,7 +175,7 @@ export const questions: QuestionResDTO[] = [
   {
     id: "13",
     question: "What is the meaning of the word 'ubiquitous'?",
-    subject: "language-arts",
+    subject: "reading",
     difficulty: 1,
     tags: ["vocabulary"],
     optionType: "mcq-text",
@@ -206,7 +205,7 @@ export const questions: QuestionResDTO[] = [
   {
     id: "15",
     question: "What is the capital city of Brazil?",
-    subject: "social-studies",
+    subject: "reading",
     difficulty: 2,
     tags: ["geography"],
     optionType: "mcq-text",
@@ -221,7 +220,7 @@ export const questions: QuestionResDTO[] = [
   {
     id: "16",
     question: "Choose the correct antonym for the word 'benevolent'.",
-    subject: "language-arts",
+    subject: "reading",
     difficulty: 1,
     tags: ["vocabulary"],
     optionType: "mcq-text",
@@ -246,7 +245,7 @@ export const questions: QuestionResDTO[] = [
   {
     id: "18",
     question: "Which of the following is a renewable energy source?",
-    subject: "science",
+    subject: "reading",
     difficulty: 1,
     tags: ["environmental-science"],
     optionType: "mcq-text",
@@ -261,7 +260,7 @@ export const questions: QuestionResDTO[] = [
   {
     id: "19",
     question: "In which Shakespearean play does the character Hamlet appear?",
-    subject: "language-arts",
+    subject: "reading",
     difficulty: 0,
     tags: ["literature"],
     optionType: "mcq-text",
@@ -276,7 +275,7 @@ export const questions: QuestionResDTO[] = [
   {
     id: "20",
     question: "Which gas is essential for photosynthesis?",
-    subject: "science",
+    subject: "reading",
     difficulty: 2,
     tags: ["biology", "chemistry"],
     optionType: "mcq-text",

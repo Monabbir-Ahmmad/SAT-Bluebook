@@ -1,13 +1,15 @@
 "use client";
 
 import { Button, PasswordInput, TextInput } from "@mantine/core";
+import {
+  RiEyeCloseLine as InvisibleIcon,
+  RiLockLine as LockIcon,
+  RiMailLine as MailIcon,
+  RiEyeLine as VisibleIcon,
+} from "react-icons/ri";
 import { SubmitHandler, useForm } from "react-hook-form";
 
-import InvisibleIcon from "remixicon-react/EyeCloseLineIcon";
 import Link from "next/link";
-import LockIcon from "remixicon-react/LockLineIcon";
-import MailIcon from "remixicon-react/MailLineIcon";
-import VisibleIcon from "remixicon-react/EyeLineIcon";
 import { loginFormValidator } from "@/lib/client/validators/form.validator";
 import { zodResolver } from "@hookform/resolvers/zod";
 

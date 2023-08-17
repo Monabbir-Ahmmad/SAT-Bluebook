@@ -1,6 +1,6 @@
 import { Button, Image, TextInput } from "@mantine/core";
 
-import BookmarkIcon from "remixicon-react/Bookmark3LineIcon";
+import { RiBookmark3Line as BookmarkIcon } from "react-icons/ri";
 import ExamAnswerOption from "./ExamAnswerOption";
 import RichContentRenderer from "../common/richEditor/RichContentRenderer";
 
