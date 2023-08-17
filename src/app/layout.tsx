@@ -1,7 +1,10 @@
 import "@/styles/global.css";
 
+import { Lexend } from "next/font/google";
 import type { Metadata } from "next";
 import { Providers } from "@/context/Provider";
+
+export const AppFont = Lexend({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "SAT Bluebook",
@@ -19,7 +22,7 @@ export default function RootLayout({
         <link rel="shortcut icon" href="/favicon.svg" />
       </head>
 
-      <body>
+      <body className={AppFont.className}>
         <Providers>{children}</Providers>
       </body>
     </html>

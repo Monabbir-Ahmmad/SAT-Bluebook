@@ -15,6 +15,28 @@ export interface IQuestion extends Document {
   answers: number[];
 }
 
+export interface IQuestionOption extends Document {
+  text: string;
+  image?: string;
+}
+
+const QuestionOptionSchema = new Schema<IQuestionOption>(
+  {
+    text: {
+      type: String,
+      required: true,
+    },
+    image: {
+      type: String,
+    },
+  },
+  {
+    timestamps: false,
+    versionKey: false,
+    _id: false,
+  }
+);
+
 const QuestionSchema = new Schema<IQuestion>(
   {
     question: {
@@ -44,16 +66,11 @@ const QuestionSchema = new Schema<IQuestion>(
       required: true,
     },
     options: {
-      type: [
-        {
-          text: String,
-          image: String,
-        },
-      ],
+      type: [QuestionOptionSchema],
       required: true,
     },
     answers: {
-      type: [Number],
+      type: [String],
       required: true,
     },
   },

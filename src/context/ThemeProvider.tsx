@@ -6,6 +6,7 @@ import {
   MantineProvider,
 } from "@mantine/core";
 
+import { AppFont } from "@/app/layout";
 import { Notifications } from "@mantine/notifications";
 import { useState } from "react";
 
@@ -27,7 +28,11 @@ export default function ThemeProvider({ children }: ThemeProviderProps) {
       colorScheme={colorScheme}
       toggleColorScheme={toggleColorScheme}
     >
-      <MantineProvider withGlobalStyles withNormalizeCSS>
+      <MantineProvider
+        withGlobalStyles
+        withNormalizeCSS
+        theme={{ fontFamily: AppFont.style.fontFamily }}
+      >
         <Notifications position="bottom-center" />
         {children}
       </MantineProvider>

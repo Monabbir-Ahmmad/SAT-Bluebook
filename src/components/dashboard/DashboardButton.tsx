@@ -1,24 +1,34 @@
-import Image from "next/image";
+import { Avatar, Group, Text } from "@mantine/core";
+
 import Link from "next/link";
 
 type DashboardButtonProps = {
   href: string;
   image: string;
-  text: string;
+  label: string;
+  description: string;
 };
 
 export default function DashboardButton({
   href,
   image,
-  text,
+  label,
+  description,
 }: DashboardButtonProps) {
   return (
     <Link
       href={href}
-      className="border border-primary bg-white flex flex-col items-center justify-center p-6 rounded  shadow hover:shadow-lg text-primary transition-shadow"
+      className="border bg-white p-4 rounded hover:shadow-lg transition-shadow"
     >
-      <Image src={image} alt="" width={150} height={150} />
-      <span className="text-2xl text-text-color">{text}</span>
+      <Group noWrap>
+        <Avatar src={image} radius="xl" size="xl" />
+        <div>
+          <Text>{label}</Text>
+          <Text size="sm" color="dimmed" weight={400}>
+            {description}
+          </Text>
+        </div>
+      </Group>
     </Link>
   );
 }

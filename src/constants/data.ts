@@ -16,6 +16,90 @@ export const subjects: { value: SubjectType; label: string }[] = [
   { value: "writing", label: "Writing" },
 ];
 
+export const studentDashboardItems = [
+  {
+    id: "1",
+    image: "https://img.icons8.com/clouds/256/000000/survey.png",
+    label: "Full-Length SAT",
+    description: "Take a full-length test to simulate the real SAT exam.",
+    content: [
+      {
+        id: "1.1",
+        href: "/student/exam",
+        label: "SAT Ramdom Difficulty",
+        description: "Take a full-length SAT exam with random difficulty.",
+        image: "https://img.icons8.com/clouds/256/000000/learning.png",
+      },
+      {
+        id: "1.2",
+        href: "/student/exam",
+        label: "SAT In Order Difficulty",
+        description:
+          "Take a full-length SAT exam with increasing difficulty based on your performance.",
+        image: "https://img.icons8.com/clouds/256/000000/glossary.png",
+      },
+    ],
+  },
+  {
+    id: "2",
+    image: "https://img.icons8.com/clouds/256/000000/menu.png",
+    label: "Section Tests",
+    description: "Take a section test to focus on a specific section.",
+    content: [
+      {
+        id: "2.1",
+        href: "/student/section/math",
+        label: "Mathmatics",
+        description: "Take a full-length mathmatics test.",
+        image: "https://img.icons8.com/clouds/256/000000/calculator.png",
+      },
+      {
+        id: "2.2",
+        href: "/student/section/reading",
+        label: "Reading",
+        description: "Take a full-length reading test.",
+        image: "https://img.icons8.com/clouds/256/000000/book-reading.png",
+      },
+      {
+        id: "2.3",
+        href: "/student/section/writing",
+        label: "Writing",
+        description: "Take a full-length writing test.",
+        image: "https://img.icons8.com/clouds/256/000000/hand-with-pen.png",
+      },
+    ],
+  },
+  {
+    id: "3",
+    image: "https://img.icons8.com/clouds/256/000000/books.png",
+    label: "Question Sets",
+    description: "Take a question set to focus on a specific topic.",
+    content: [
+      {
+        id: "3.1",
+        href: "/student/section/math",
+        label: "Mathmatics",
+        description: "Focus on a specific mathmatics topic.",
+        image: "https://img.icons8.com/clouds/256/000000/math-book.png",
+      },
+      {
+        id: "3.2",
+        href: "/student/section/reading",
+        label: "Reading",
+        description: "Focus on a specific reading topic.",
+        image: "https://img.icons8.com/clouds/256/000000/literature.png",
+      },
+      {
+        id: "3.3",
+        href: "/student/section/writing",
+        label: "Writing",
+        description: "Focus on a specific writing topic.",
+        image: "https://img.icons8.com/clouds/256/000000/goodnotes.png",
+      },
+    ],
+  },
+];
+
 export const questions: QuestionResDTO[] = [
   {
     id: "1",

@@ -1,13 +1,11 @@
 import {
   Badge,
+  Checkbox,
+  Divider,
   Image,
   Text,
   TransferListItemComponentProps,
 } from "@mantine/core";
-import {
-  RiCheckboxCircleFill as CheckIcon,
-  RiCloseCircleFill as CrossIcon,
-} from "react-icons/ri";
 
 import RichContentRenderer from "../common/richEditor/RichContentRenderer";
 import { difficulties } from "@/constants/data";
@@ -20,15 +18,20 @@ type AnswerOptionProps = {
 };
 
 function AnswerOption({ optionType, option, selected }: AnswerOptionProps) {
-  const Icon = selected ? CheckIcon : CrossIcon;
-
   return (
-    <div className="border-2 rounded-lg">
+    <div>
       {optionType !== "grid-in" && (
-        <div className="flex items-center gap-4 p-2.5">
-          <Icon
-            size={35}
-            className={twMerge(selected ? "text-green-600" : "text-red-600")}
+        <div
+          className={twMerge(
+            "flex items-center gap-4 p-4",
+            selected && "bg-green-100"
+          )}
+        >
+          <Checkbox
+            checked={selected}
+            radius={"xl"}
+            size={"lg"}
+            color="green"
           />
 
           {optionType === "mcq-text" && <Text>{option?.text}</Text>}
@@ -71,28 +74,29 @@ function QuestionItem({ data, selected }: TransferListItemComponentProps) {
         ))}
       </div>
 
-      <hr className="border-slate-300" />
+      <Divider />
 
       <RichContentRenderer content={data.question} className="text-lg" />
 
       {data.questionImage && <Image src={data.questionImage} alt="" />}
 
-      <hr className="border-slate-300" />
+      <Divider />
 
       <div className="flex flex-col gap-2">
         <h1 className="text-base uppercase font-bold">
           {data.optionType !== "grid-in" ? "Options" : "Answer"}
         </h1>
 
-        {data.options.map((option: QuestionOptionDTO, index: number) => (
-          <div key={index}>
+        <div className="border rounded-lg divide-y">
+          {data.options.map((option: QuestionOptionDTO, index: number) => (
             <AnswerOption
+              key={index}
               option={option}
               selected={data.answers.includes(index)}
               optionType={data.optionType}
             />
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

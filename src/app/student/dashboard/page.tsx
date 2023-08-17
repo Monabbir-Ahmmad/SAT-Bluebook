@@ -1,14 +1,22 @@
 "use client";
 
-import { Button, Divider, Paper, SimpleGrid } from "@mantine/core";
+import {
+  Accordion,
+  Avatar,
+  Divider,
+  Group,
+  Paper,
+  SimpleGrid,
+  Text,
+} from "@mantine/core";
 
 import DashboardButton from "@/components/dashboard/DashboardButton";
 import { GiGraduateCap as EducationIcon } from "react-icons/gi";
-import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { studentDashboardItems } from "@/constants/data";
 import { useSession } from "next-auth/react";
 
 export default function StudentDashboardPage() {
-  const router = useRouter();
   const session = useSession();
 
   return (
@@ -18,45 +26,54 @@ export default function StudentDashboardPage() {
       <h1 className="font-bold text-primary">Student Dashboard</h1>
 
       <Paper className="w-full p-6 gap-5 flex relative border border-l-8 border-l-primary">
-        <object
-          type="image/svg+xml"
-          data="/study.svg"
-          className="w-72 absolute -bottom-11 right-0"
-        />
-
-        <h1 className="w-4/5 text-text-color">
+        <h1 className="w-9/12 text-text-color">
           Welcome{" "}
           <span className="text-primary font-bold">
             {session?.data?.user?.name}!
           </span>{" "}
           You are logged in as a student.
         </h1>
+
+        <Image
+          src={"/study.svg"}
+          alt="study"
+          width={300}
+          height={300}
+          className="absolute -bottom-11 right-0"
+        />
       </Paper>
 
       <Divider
-        label={<h1 className="text-2xl text-text-color">Sections</h1>}
+        label={<h1 className="text-2xl text-text-color">Take Exams</h1>}
         labelPosition="left"
       />
 
-      <SimpleGrid cols={3}>
-        <DashboardButton
-          href="/student/section/math"
-          text="Mathmatics"
-          image="/math.svg"
-        />
-
-        <DashboardButton
-          href="/student/section/reading"
-          text="Reading"
-          image="/reading.svg"
-        />
-
-        <DashboardButton
-          href="/student/section/writing"
-          text="Writing"
-          image="/writing.svg"
-        />
-      </SimpleGrid>
+      <Paper>
+        <Accordion variant="contained">
+          {studentDashboardItems.map((item) => (
+            <Accordion.Item value={item.id} key={item.label}>
+              <Accordion.Control>
+                <Group noWrap>
+                  <Avatar src={item.image} radius="xl" size="xl" />
+                  <div>
+                    <Text>{item.label}</Text>
+                    <Text size="sm" color="dimmed" weight={400}>
+                      {item.description}
+                    </Text>
+                  </div>
+                </Group>
+              </Accordion.Control>
+              <Accordion.Panel>
+                <SimpleGrid cols={3}>
+                  {item.content.map((content) => (
+                    <DashboardButton key={content.id} {...content} />
+                  ))}
+                </SimpleGrid>
+              </Accordion.Panel>
+            </Accordion.Item>
+          ))}
+        </Accordion>
+      </Paper>
     </div>
   );
 }
