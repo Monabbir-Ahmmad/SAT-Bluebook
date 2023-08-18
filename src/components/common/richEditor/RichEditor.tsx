@@ -32,7 +32,7 @@ const RichEditor = forwardRef<IRichEditor | null, SunEditorOptions>(
         plugins,
         buttonList,
         placeholder: "Start writing here...",
-        defaultStyle: "font-size:16px; font-family:'Poppins';",
+        defaultStyle: "font-size:16px; font-family:'Lexend';",
         showPathLabel: false,
         display: "block",
         popupDisplay: "full",

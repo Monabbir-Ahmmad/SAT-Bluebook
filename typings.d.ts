@@ -2,6 +2,11 @@ type OptionType = "mcq-text" | "mcq-image" | "grid-in";
 
 type SubjectType = "math" | "reading" | "writing";
 
+interface QuestionOptionDTO {
+  text?: string;
+  image?: string;
+}
+
 interface QuestionCreateReqDTO {
   question: string;
   passage?: string;
@@ -25,11 +30,6 @@ interface QuestionResDTO {
   optionType: OptionType;
   options: QuestionOptionDTO[];
   answers: number[]; //Index of the correct answer
-}
-
-interface QuestionOptionDTO {
-  text?: string;
-  image?: string;
 }
 
 interface ExamQuestionResDTO extends QuestionResDTO {

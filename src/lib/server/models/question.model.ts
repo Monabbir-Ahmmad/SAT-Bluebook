@@ -8,15 +8,12 @@ export interface IQuestion extends Document {
   difficulty: number;
   tags: string[];
   optionType: string;
-  options: {
-    text: string;
-    image?: string;
-  }[];
+  options: IQuestionOption[];
   answers: number[];
 }
 
 export interface IQuestionOption extends Document {
-  text: string;
+  text?: string;
   image?: string;
 }
 
@@ -24,7 +21,6 @@ const QuestionOptionSchema = new Schema<IQuestionOption>(
   {
     text: {
       type: String,
-      required: true,
     },
     image: {
       type: String,

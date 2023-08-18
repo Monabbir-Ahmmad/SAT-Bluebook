@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
 :root {
   --editor-bg-color: hsl(0, 0%, 100%);
   --editor-btn-enabled-color: hsl(214, 32%, 91%);
@@ -21,7 +23,7 @@
   width: auto;
   height: auto;
   box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
+  font-family: "Lexend", sans-serif;
   border: 1px solid var(--editor-border-color);
   user-select: none;
   -o-user-select: none;
