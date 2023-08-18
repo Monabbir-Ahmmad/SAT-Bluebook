@@ -1,9 +1,10 @@
-import { Button, Divider, Popover, SimpleGrid } from "@mantine/core";
 import {
+  RiArrowUpSLine as ArrowUpIcon,
   RiCheckboxCircleLine as CheckIcon,
   RiCheckboxBlankCircleFill as CircleIcon,
   RiQuestionLine as QuestionIcon,
 } from "react-icons/ri";
+import { Button, Divider, Group, Popover, SimpleGrid } from "@mantine/core";
 
 type ExamCheckReviewProps = {
   examQuestions: ExamQuestionResDTO[];
@@ -17,41 +18,58 @@ function ExamCheckReview({
   onIndexSelect,
 }: ExamCheckReviewProps) {
   return (
-    <Popover position="bottom" withArrow shadow="lg" arrowSize={16}>
+    <Popover position="bottom" withArrow shadow="lg" arrowSize={26}>
       <Popover.Target>
-        <Button>Review Answers</Button>
+        <Button rightIcon={<ArrowUpIcon size={25} />}>
+          Question {currentIndex + 1} of {examQuestions.length}
+        </Button>
       </Popover.Target>
 
       <Popover.Dropdown>
         <div className="space-y-4 p-2">
-          <div className="flex gap-2 w-full justify-between">
-            <span className="flex gap-1 items-center">
-              <CheckIcon className="text-primary" />
+          <SimpleGrid
+            cols={3}
+            spacing="xs"
+            breakpoints={[
+              { maxWidth: "md", cols: 3 },
+              { maxWidth: "sm", cols: 2 },
+            ]}
+          >
+            <Group noWrap spacing="xs">
+              <CheckIcon size={25} className="text-primary" />
               Answered
-            </span>
-            <span className="flex gap-1 items-center">
-              <QuestionIcon />
+            </Group>
+            <Group noWrap spacing="xs">
+              <QuestionIcon size={25} className="text-text-color" />
               Unanswered
-            </span>
+            </Group>
 
-            <span className="flex gap-1 items-center">
-              <CircleIcon className="text-yellow-400" />
-              For Review
-            </span>
-          </div>
+            <Group noWrap spacing="xs">
+              <CircleIcon size={25} className="text-yellow-400" />
+              Need Review
+            </Group>
+          </SimpleGrid>
 
           <Divider />
 
-          <SimpleGrid cols={5} spacing="xs">
+          <SimpleGrid
+            cols={5}
+            breakpoints={[
+              { maxWidth: "lg", cols: 5 },
+              { maxWidth: "md", cols: 4 },
+              { maxWidth: "xs", cols: 3 },
+            ]}
+            spacing="xs"
+          >
             {examQuestions.map((question, index) => (
               <Button
                 key={question.id}
                 leftIcon={
                   question.selectedOption !== undefined ||
                   question.textAnswer ? (
-                    <CheckIcon />
+                    <CheckIcon size={25} />
                   ) : (
-                    <QuestionIcon />
+                    <QuestionIcon size={25} />
                   )
                 }
                 color={

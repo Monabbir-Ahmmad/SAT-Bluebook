@@ -4,11 +4,9 @@ import { Divider, Paper } from "@mantine/core";
 
 import { GiTeacher as EducationIcon } from "react-icons/gi";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 export default function TeacherDashboardPage() {
-  const router = useRouter();
   const session = useSession();
 
   return (
@@ -39,20 +37,6 @@ export default function TeacherDashboardPage() {
         label={<h1 className="text-2xl text-text-color">Prepare Tests</h1>}
         labelPosition="left"
       />
-
-      {/* <SimpleGrid cols={3}>
-        <DashboardButton
-          href="/teacher/question/create"
-          text="Create Question"
-          image="/question.svg"
-        />
-
-        <DashboardButton
-          href="/teacher/question-set/create"
-          text="Create Question Set"
-          image="/quiz.svg"
-        />
-      </SimpleGrid> */}
     </div>
   );
 }

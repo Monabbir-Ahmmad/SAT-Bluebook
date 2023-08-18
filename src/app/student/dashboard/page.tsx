@@ -1,19 +1,10 @@
 "use client";
 
-import {
-  Accordion,
-  Avatar,
-  Divider,
-  Group,
-  Paper,
-  SimpleGrid,
-  Text,
-} from "@mantine/core";
+import { Divider, Paper } from "@mantine/core";
 
-import DashboardButton from "@/components/dashboard/DashboardButton";
 import { GiGraduateCap as EducationIcon } from "react-icons/gi";
 import Image from "next/image";
-import { studentDashboardItems } from "@/constants/data";
+import StudentDashboardTests from "@/components/dashboard/StudentDashboardTests";
 import { useSession } from "next-auth/react";
 
 export default function StudentDashboardPage() {
@@ -48,32 +39,12 @@ export default function StudentDashboardPage() {
         labelPosition="left"
       />
 
-      <Paper>
-        <Accordion variant="contained">
-          {studentDashboardItems.map((item) => (
-            <Accordion.Item value={item.id} key={item.label}>
-              <Accordion.Control>
-                <Group noWrap>
-                  <Avatar src={item.image} radius="xl" size="xl" />
-                  <div>
-                    <Text>{item.label}</Text>
-                    <Text size="sm" color="dimmed" weight={400}>
-                      {item.description}
-                    </Text>
-                  </div>
-                </Group>
-              </Accordion.Control>
-              <Accordion.Panel>
-                <SimpleGrid cols={3}>
-                  {item.content.map((content) => (
-                    <DashboardButton key={content.id} {...content} />
-                  ))}
-                </SimpleGrid>
-              </Accordion.Panel>
-            </Accordion.Item>
-          ))}
-        </Accordion>
-      </Paper>
+      <StudentDashboardTests />
+
+      <Divider
+        label={<h1 className="text-2xl text-text-color">Previous Exams</h1>}
+        labelPosition="left"
+      />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { ActionIcon, Divider, Image, Text, Tooltip } from "@mantine/core";
 import {
-  RiCloseLine as CloseIcon,
-  RiArrowGoBackLine as UndoIcon,
+  RiCloseFill as CloseIcon,
+  RiArrowGoBackFill as UndoIcon,
 } from "react-icons/ri";
 
 import { twMerge } from "tailwind-merge";
@@ -46,7 +46,7 @@ function ExamAnswerOption({
       <div
         className={twMerge(
           "w-full relative cursor-pointer bg-white hover:shadow-md border-2 rounded-lg flex items-center py-2.5 px-4 gap-4 transition-all",
-          selected && "border-primary shadow-md",
+          selected && "border-primary",
           markedWrong && "bg-slate-50"
         )}
         onClick={onSelect}
@@ -72,7 +72,7 @@ function ExamAnswerOption({
 
       <Tooltip label={markedWrong ? "Undo mark" : "Mark as wrong"} withArrow>
         <ActionIcon size="xl" radius="xl" onClick={onMarkAsWrong}>
-          {markedWrong ? <UndoIcon /> : <CloseIcon />}
+          {markedWrong ? <UndoIcon size={25} /> : <CloseIcon size={25} />}
         </ActionIcon>
       </Tooltip>
     </div>

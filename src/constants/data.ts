@@ -104,7 +104,10 @@ export const questions: QuestionResDTO[] = [
   {
     id: "1",
     question: "What is the capital city of Australia?",
+    passage:
+      "Australia is a country and continent surrounded by the Indian and Pacific oceans. Its major cities – Sydney, Brisbane, Melbourne, Perth, Adelaide – are coastal. Its capital, Canberra, is inland. The country is known for its Sydney Opera House, the Great Barrier Reef, a vast interior desert wilderness called the Outback, and unique animal species like kangaroos and duck-billed platypuses.",
     subject: "reading",
+    questionImage: "https://img.icons8.com/clouds/256/000000/reading.png",
     difficulty: 0,
     tags: ["geography"],
     optionType: "mcq-text",

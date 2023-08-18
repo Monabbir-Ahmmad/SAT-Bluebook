@@ -1,16 +1,15 @@
 "use client";
 
-import { Button, Paper } from "@mantine/core";
+import { Badge, Button, Group, Paper } from "@mantine/core";
 
 import ExamCheckReview from "@/components/exam/ExamCheckReview";
 import ExamQuestionItem from "@/components/exam/ExamQuestionItem";
-import { questions } from "@/constants/data";
+import { questions as quiz } from "@/constants/data";
 import { useState } from "react";
 
 export default function ExamPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [examQuestions, setExamQuestions] =
-    useState<ExamQuestionResDTO[]>(questions);
+  const [questions, setQuestions] = useState<ExamQuestionResDTO[]>(quiz);
 
   const toggleAnswer = (
     question: ExamQuestionResDTO,
@@ -18,13 +17,13 @@ export default function ExamPage() {
     selected: boolean
   ) => {
     if (selected)
-      setExamQuestions((prev) =>
+      setQuestions((prev) =>
         prev.map((q) =>
           q.id === question.id ? { ...q, selectedOption: selectedIndex } : q
         )
       );
     else
-      setExamQuestions((prev) =>
+      setQuestions((prev) =>
         prev.map((q) =>
           q.id === question.id ? { ...q, selectedOption: undefined } : q
         )
@@ -37,7 +36,7 @@ export default function ExamPage() {
     selected: boolean
   ) => {
     if (selected)
-      setExamQuestions((prev) =>
+      setQuestions((prev) =>
         prev.map((q) =>
           q.id === question.id
             ? {
@@ -50,7 +49,7 @@ export default function ExamPage() {
         )
       );
     else
-      setExamQuestions((prev) =>
+      setQuestions((prev) =>
         prev.map((q) =>
           q.id === question.id
             ? {
@@ -65,7 +64,7 @@ export default function ExamPage() {
   };
 
   const onTextAnswerChange = (question: ExamQuestionResDTO, text: string) => {
-    setExamQuestions((prev) =>
+    setQuestions((prev) =>
       prev.map((q) => (q.id === question.id ? { ...q, textAnswer: text } : q))
     );
   };
@@ -74,7 +73,7 @@ export default function ExamPage() {
     question: ExamQuestionResDTO,
     marked: boolean
   ) => {
-    setExamQuestions((prev) =>
+    setQuestions((prev) =>
       prev.map((q) =>
         q.id === question.id ? { ...q, markedForReview: marked } : q
       )
@@ -82,31 +81,37 @@ export default function ExamPage() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col items-center">
-      <div className="max-w-4xl w-full flex flex-col gap-4 p-4">
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-semibold uppercase opacity-70">
-            Section
+    <div className="w-full h-full">
+      <Paper className="sticky top-14 w-full border-b z-10">
+        <div className="text-text-color font-semibold flex flex-col md:flex-row items-center justify-between gap-4 p-4 relative">
+          <h1 className="text-xl">Section</h1>
+          <h1 className="text-xl md:absolute inset-x-0 text-center">
+            Time: 00:00
           </h1>
-          <h3 className="text-xl font-semibold uppercase opacity-70">
-            Time Remaining: 00:00
-          </h3>
+          <Group noWrap>
+            <Badge variant="dot" size="xl">
+              {questions.filter((q) => q.selectedOption !== undefined).length}{" "}
+              answered
+            </Badge>
+
+            <Badge variant="dot" size="xl" color="yellow">
+              {questions.filter((q) => q.markedForReview).length} reviews
+            </Badge>
+          </Group>
         </div>
+      </Paper>
 
-        <hr className="border-gray-300" />
+      <ExamQuestionItem
+        data={questions[currentIndex]}
+        title={`Question ${currentIndex + 1}`}
+        toggleAnswer={toggleAnswer}
+        toggleMarkAsWrong={toggleMarkAsWrong}
+        toggleMarkForReview={toggleMarkForReview}
+        onTextAnswerChange={onTextAnswerChange}
+      />
 
-        <ExamQuestionItem
-          data={examQuestions[currentIndex]}
-          title={`Question ${currentIndex + 1} of ${examQuestions.length}`}
-          toggleAnswer={toggleAnswer}
-          toggleMarkAsWrong={toggleMarkAsWrong}
-          toggleMarkForReview={toggleMarkForReview}
-          onTextAnswerChange={onTextAnswerChange}
-        />
-      </div>
-
-      <Paper className="py-4 fixed bottom-0 w-full" withBorder radius={0}>
-        <div className="max-w-4xl w-full flex justify-between items-center mx-auto px-4">
+      <Paper className="sticky z-10 bottom-0 w-full" withBorder radius={0}>
+        <Group className="max-w-4xl mx-auto p-4" noWrap position="apart">
           <Button
             disabled={currentIndex === 0}
             onClick={() => setCurrentIndex((prev) => prev - 1)}
@@ -115,18 +120,18 @@ export default function ExamPage() {
           </Button>
 
           <ExamCheckReview
-            examQuestions={examQuestions}
+            examQuestions={questions}
             currentIndex={currentIndex}
             onIndexSelect={setCurrentIndex}
           />
 
           <Button
-            disabled={currentIndex === examQuestions.length - 1}
+            disabled={currentIndex === questions.length - 1}
             onClick={() => setCurrentIndex((prev) => prev + 1)}
           >
             Next
           </Button>
-        </div>
+        </Group>
       </Paper>
     </div>
   );
