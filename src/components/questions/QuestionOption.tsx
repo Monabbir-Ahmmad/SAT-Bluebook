@@ -2,6 +2,8 @@ import { Checkbox, CloseButton, TextInput } from "@mantine/core";
 
 import { ChangeEvent } from "react";
 import FileDrop from "../common/fileDrop/FileDrop";
+import { OptionTypes } from "@/constants/enums";
+import { QuestionCreateReqDTO } from "@/dtos/question.dto";
 import { useFormContext } from "react-hook-form";
 
 interface QuestionOptionProps {
@@ -51,7 +53,7 @@ export default function QuestionOption({
         error={!!errors?.answers}
       />
 
-      {watch("optionType") === "mcq-image" && (
+      {watch("optionType") === OptionTypes.MCQ_IMAGE && (
         <FileDrop
           onChange={handleFileChange}
           value={watch(`options.${index}.image`)}
@@ -60,7 +62,7 @@ export default function QuestionOption({
         />
       )}
 
-      {watch("optionType") === "mcq-text" && (
+      {watch("optionType") === OptionTypes.MCQ_TEXT && (
         <TextInput
           {...register(`options.${index}.text`)}
           className="w-full"

@@ -5,12 +5,14 @@ import {
   SegmentedControl,
   Select,
 } from "@mantine/core";
+import { Difficulties, OptionTypes, SubjectTypes } from "@/constants/enums";
 import { FormProvider, useForm } from "react-hook-form";
 import RichEditor, { IRichEditor } from "../common/richEditor/RichEditor";
 import { difficulties, subjects } from "@/constants/data";
 import { useEffect, useRef } from "react";
 
 import FileDrop from "../common/fileDrop/FileDrop";
+import { QuestionCreateReqDTO } from "@/dtos/question.dto";
 import QuestionOptionAdder from "./QuestionOptionAdder";
 import { buttonListMini } from "../common/richEditor/buttonList";
 import { questionFormValidator } from "@/lib/client/validators/form.validator";
@@ -30,9 +32,9 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
   const formMethods = useForm<QuestionCreateReqDTO>({
     resolver: zodResolver(questionFormValidator),
     defaultValues: {
-      subject: "math",
-      difficulty: 0,
-      optionType: "mcq-text",
+      subject: SubjectTypes.MATH,
+      difficulty: Difficulties.EASY,
+      optionType: OptionTypes.MCQ_TEXT,
       answers: [],
       options: [{}],
       tags: [],
@@ -94,7 +96,7 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
                 size="md"
                 color="blue"
                 data={subjects}
-                onChange={(value: SubjectType) => setValue("subject", value)}
+                onChange={(value: SubjectTypes) => setValue("subject", value)}
               />
             </div>
 
@@ -140,8 +142,8 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
                 size="md"
                 color="blue"
                 data={difficulties}
-                onChange={(value: string) =>
-                  setValue("difficulty", parseInt(value))
+                onChange={(value: Difficulties) =>
+                  setValue("difficulty", value)
                 }
               />
             </div>

@@ -1,19 +1,23 @@
-export const answerType: { value: OptionType; label: string }[] = [
-  { value: "mcq-text", label: "Multiple Choice Text" },
-  { value: "mcq-image", label: "Multiple Choice Image" },
-  { value: "grid-in", label: "Grid In" },
+import { Difficulties, OptionTypes, SubjectTypes } from "./enums";
+
+import { QuestionResDTO } from "@/dtos/question.dto";
+
+export const answerType: { value: OptionTypes; label: string }[] = [
+  { value: OptionTypes.MCQ_TEXT, label: "Multiple Choice Text" },
+  { value: OptionTypes.MCQ_IMAGE, label: "Multiple Choice Image" },
+  { value: OptionTypes.GRID_IN, label: "Grid In" },
 ];
 
-export const difficulties: { value: string; label: string }[] = [
-  { value: "0", label: "Easy" },
-  { value: "1", label: "Medium" },
-  { value: "2", label: "Hard" },
+export const difficulties: { value: Difficulties; label: string }[] = [
+  { value: Difficulties.EASY, label: "Easy" },
+  { value: Difficulties.MEDIUM, label: "Medium" },
+  { value: Difficulties.HARD, label: "Hard" },
 ];
 
-export const subjects: { value: SubjectType; label: string }[] = [
-  { value: "math", label: "Mathematics" },
-  { value: "reading", label: "Reading" },
-  { value: "writing", label: "Writing" },
+export const subjects: { value: SubjectTypes; label: string }[] = [
+  { value: SubjectTypes.MATH, label: "Mathematics" },
+  { value: SubjectTypes.READING, label: "Reading" },
+  { value: SubjectTypes.WRITING, label: "Writing" },
 ];
 
 export const studentDashboardItems = [
@@ -106,11 +110,11 @@ export const questions: QuestionResDTO[] = [
     question: "What is the capital city of Australia?",
     passage:
       "Australia is a country and continent surrounded by the Indian and Pacific oceans. Its major cities – Sydney, Brisbane, Melbourne, Perth, Adelaide – are coastal. Its capital, Canberra, is inland. The country is known for its Sydney Opera House, the Great Barrier Reef, a vast interior desert wilderness called the Outback, and unique animal species like kangaroos and duck-billed platypuses.",
-    subject: "reading",
+    subject: SubjectTypes.READING,
     questionImage: "https://img.icons8.com/clouds/256/000000/reading.png",
-    difficulty: 0,
+    difficulty: Difficulties.EASY,
     tags: ["geography"],
-    optionType: "mcq-text",
+    optionType: OptionTypes.MCQ_TEXT,
     options: [
       { text: "Sydney" },
       { text: "Melbourne" },
@@ -122,30 +126,30 @@ export const questions: QuestionResDTO[] = [
   {
     id: "2",
     question: "Which of the following is a prime number?",
-    subject: "math",
-    difficulty: 1,
+    subject: SubjectTypes.MATH,
+    difficulty: Difficulties.HARD,
     tags: ["number-theory"],
-    optionType: "mcq-text",
+    optionType: OptionTypes.MCQ_TEXT,
     options: [{ text: "15" }, { text: "9" }, { text: "11" }, { text: "12" }],
     answers: [2],
   },
   {
     id: "3",
     question: "What is the chemical symbol for gold?",
-    subject: "reading",
-    difficulty: 0,
+    subject: SubjectTypes.READING,
+    difficulty: Difficulties.EASY,
     tags: ["chemistry"],
-    optionType: "mcq-text",
+    optionType: OptionTypes.MCQ_TEXT,
     options: [{ text: "Au" }, { text: "Ag" }, { text: "Fe" }, { text: "Cu" }],
     answers: [0],
   },
   {
     id: "4",
     question: "Which author wrote the novel 'To Kill a Mockingbird'?",
-    subject: "reading",
-    difficulty: 1,
+    subject: SubjectTypes.READING,
+    difficulty: Difficulties.HARD,
     tags: ["literature"],
-    optionType: "mcq-text",
+    optionType: OptionTypes.MCQ_TEXT,
     options: [
       { text: "Ernest Hemingway" },
       { text: "Harper Lee" },
@@ -157,20 +161,20 @@ export const questions: QuestionResDTO[] = [
   {
     id: "5",
     question: "Solve for x: 2x + 5 = 15",
-    subject: "math",
-    difficulty: 2,
+    subject: SubjectTypes.MATH,
+    difficulty: Difficulties.HARD,
     tags: ["algebra"],
-    optionType: "grid-in",
+    optionType: OptionTypes.GRID_IN,
     options: [{ text: "5" }],
     answers: [0],
   },
   {
     id: "6",
     question: "Which of the following is a greenhouse gas?",
-    subject: "reading",
-    difficulty: 0,
+    subject: SubjectTypes.READING,
+    difficulty: Difficulties.EASY,
     tags: ["environmental-science"],
-    optionType: "mcq-text",
+    optionType: OptionTypes.MCQ_TEXT,
     options: [
       { text: "Oxygen (O2)" },
       { text: "Nitrogen (N2)" },
@@ -182,10 +186,10 @@ export const questions: QuestionResDTO[] = [
   {
     id: "7",
     question: "In which year did the French Revolution begin?",
-    subject: "reading",
-    difficulty: 1,
+    subject: SubjectTypes.READING,
+    difficulty: Difficulties.HARD,
     tags: ["history"],
-    optionType: "mcq-text",
+    optionType: OptionTypes.MCQ_TEXT,
     options: [
       { text: "1789" },
       { text: "1776" },
@@ -197,20 +201,20 @@ export const questions: QuestionResDTO[] = [
   {
     id: "8",
     question: "What is the derivative of x^2 with respect to x?",
-    subject: "math",
-    difficulty: 2,
+    subject: SubjectTypes.MATH,
+    difficulty: Difficulties.HARD,
     tags: ["calculus"],
-    optionType: "grid-in",
+    optionType: OptionTypes.GRID_IN,
     options: [{ text: "2x" }],
     answers: [0],
   },
   {
     id: "9",
     question: "Which of the following is a transitive verb?",
-    subject: "reading",
-    difficulty: 0,
+    subject: SubjectTypes.READING,
+    difficulty: Difficulties.EASY,
     tags: ["grammar"],
-    optionType: "mcq-text",
+    optionType: OptionTypes.MCQ_TEXT,
     options: [
       { text: "Run" },
       { text: "Eat" },
@@ -222,10 +226,10 @@ export const questions: QuestionResDTO[] = [
   {
     id: "10",
     question: "What is the chemical formula for water?",
-    subject: "reading",
-    difficulty: 1,
+    subject: SubjectTypes.READING,
+    difficulty: Difficulties.HARD,
     tags: ["chemistry"],
-    optionType: "mcq-text",
+    optionType: OptionTypes.MCQ_TEXT,
     options: [
       { text: "H2O" },
       { text: "CO2" },
@@ -237,20 +241,20 @@ export const questions: QuestionResDTO[] = [
   {
     id: "11",
     question: "Solve the equation: 4(x - 3) = 20",
-    subject: "math",
-    difficulty: 0,
+    subject: SubjectTypes.MATH,
+    difficulty: Difficulties.EASY,
     tags: ["algebra"],
-    optionType: "grid-in",
+    optionType: OptionTypes.GRID_IN,
     options: [{ text: "8" }],
     answers: [0],
   },
   {
     id: "12",
     question: "Who is credited with the discovery of electricity?",
-    subject: "reading",
-    difficulty: 2,
+    subject: SubjectTypes.READING,
+    difficulty: Difficulties.HARD,
     tags: ["physics"],
-    optionType: "mcq-text",
+    optionType: OptionTypes.MCQ_TEXT,
     options: [
       { text: "Isaac Newton" },
       { text: "Thomas Edison" },
@@ -262,10 +266,10 @@ export const questions: QuestionResDTO[] = [
   {
     id: "13",
     question: "What is the meaning of the word 'ubiquitous'?",
-    subject: "reading",
-    difficulty: 1,
+    subject: SubjectTypes.READING,
+    difficulty: Difficulties.HARD,
     tags: ["vocabulary"],
-    optionType: "mcq-text",
+    optionType: OptionTypes.MCQ_TEXT,
     options: [
       { text: "Rare" },
       { text: "Common" },
@@ -277,10 +281,10 @@ export const questions: QuestionResDTO[] = [
   {
     id: "14",
     question: "Which of the following is an acute angle?",
-    subject: "math",
-    difficulty: 0,
+    subject: SubjectTypes.MATH,
+    difficulty: Difficulties.EASY,
     tags: ["geometry"],
-    optionType: "mcq-text",
+    optionType: OptionTypes.MCQ_TEXT,
     options: [
       { text: "90 degrees" },
       { text: "180 degrees" },
@@ -292,10 +296,10 @@ export const questions: QuestionResDTO[] = [
   {
     id: "15",
     question: "What is the capital city of Brazil?",
-    subject: "reading",
-    difficulty: 2,
+    subject: SubjectTypes.READING,
+    difficulty: Difficulties.HARD,
     tags: ["geography"],
-    optionType: "mcq-text",
+    optionType: OptionTypes.MCQ_TEXT,
     options: [
       { text: "Buenos Aires" },
       { text: "Brasilia" },
@@ -307,10 +311,10 @@ export const questions: QuestionResDTO[] = [
   {
     id: "16",
     question: "Choose the correct antonym for the word 'benevolent'.",
-    subject: "reading",
-    difficulty: 1,
+    subject: SubjectTypes.READING,
+    difficulty: Difficulties.HARD,
     tags: ["vocabulary"],
-    optionType: "mcq-text",
+    optionType: OptionTypes.MCQ_TEXT,
     options: [
       { text: "Malevolent" },
       { text: "Generous" },
@@ -322,20 +326,20 @@ export const questions: QuestionResDTO[] = [
   {
     id: "17",
     question: "What is the value of π (pi) to two decimal places?",
-    subject: "math",
-    difficulty: 0,
+    subject: SubjectTypes.MATH,
+    difficulty: Difficulties.EASY,
     tags: ["geometry"],
-    optionType: "grid-in",
+    optionType: OptionTypes.GRID_IN,
     options: [{ text: "3.14" }],
     answers: [0],
   },
   {
     id: "18",
     question: "Which of the following is a renewable energy source?",
-    subject: "reading",
-    difficulty: 1,
+    subject: SubjectTypes.READING,
+    difficulty: Difficulties.HARD,
     tags: ["environmental-science"],
-    optionType: "mcq-text",
+    optionType: OptionTypes.MCQ_TEXT,
     options: [
       { text: "Coal" },
       { text: "Natural Gas" },
@@ -347,10 +351,10 @@ export const questions: QuestionResDTO[] = [
   {
     id: "19",
     question: "In which Shakespearean play does the character Hamlet appear?",
-    subject: "reading",
-    difficulty: 0,
+    subject: SubjectTypes.READING,
+    difficulty: Difficulties.EASY,
     tags: ["literature"],
-    optionType: "mcq-text",
+    optionType: OptionTypes.MCQ_TEXT,
     options: [
       { text: "Macbeth" },
       { text: "Romeo and Juliet" },
@@ -362,10 +366,10 @@ export const questions: QuestionResDTO[] = [
   {
     id: "20",
     question: "Which gas is essential for photosynthesis?",
-    subject: "reading",
-    difficulty: 2,
+    subject: SubjectTypes.READING,
+    difficulty: Difficulties.HARD,
     tags: ["biology", "chemistry"],
-    optionType: "mcq-text",
+    optionType: OptionTypes.MCQ_TEXT,
     options: [
       { text: "Oxygen (O2)" },
       { text: "Nitrogen (N2)" },

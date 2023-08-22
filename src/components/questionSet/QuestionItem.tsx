@@ -7,12 +7,14 @@ import {
   TransferListItemComponentProps,
 } from "@mantine/core";
 
+import { OptionTypes } from "@/constants/enums";
+import { QuestionOptionDTO } from "@/dtos/question.dto";
 import RichContentRenderer from "../common/richEditor/RichContentRenderer";
 import { difficulties } from "@/constants/data";
 import { twMerge } from "tailwind-merge";
 
 type AnswerOptionProps = {
-  optionType: OptionType;
+  optionType: OptionTypes;
   option: QuestionOptionDTO;
   selected: boolean;
 };
@@ -20,7 +22,7 @@ type AnswerOptionProps = {
 function AnswerOption({ optionType, option, selected }: AnswerOptionProps) {
   return (
     <div>
-      {optionType !== "grid-in" && (
+      {optionType !== OptionTypes.GRID_IN && (
         <div
           className={twMerge(
             "flex items-center gap-4 p-4",
@@ -34,15 +36,15 @@ function AnswerOption({ optionType, option, selected }: AnswerOptionProps) {
             color="green"
           />
 
-          {optionType === "mcq-text" && <Text>{option?.text}</Text>}
+          {optionType === OptionTypes.MCQ_TEXT && <Text>{option?.text}</Text>}
 
-          {optionType === "mcq-image" && (
+          {optionType === OptionTypes.MCQ_IMAGE && (
             <Image src={option?.image} alt="" height={200} />
           )}
         </div>
       )}
 
-      {optionType === "grid-in" && (
+      {optionType === OptionTypes.GRID_IN && (
         <p className="text-base px-4 py-2.5">{option?.text}</p>
       )}
     </div>
@@ -84,7 +86,7 @@ function QuestionItem({ data, selected }: TransferListItemComponentProps) {
 
       <div className="flex flex-col gap-2">
         <h1 className="text-base uppercase font-bold">
-          {data.optionType !== "grid-in" ? "Options" : "Answer"}
+          {data.optionType !== OptionTypes.GRID_IN ? "Options" : "Answer"}
         </h1>
 
         <div className="border rounded-lg divide-y">

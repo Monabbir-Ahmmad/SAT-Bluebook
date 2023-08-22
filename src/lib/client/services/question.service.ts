@@ -1,3 +1,5 @@
+import { QuestionCreateReqDTO, QuestionResDTO } from "@/dtos/question.dto";
+
 import apiUrl from "@/constants/api-url";
 import { httpClient } from "@/lib/client/http-client";
 

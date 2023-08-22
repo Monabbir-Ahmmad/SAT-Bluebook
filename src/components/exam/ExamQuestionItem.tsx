@@ -2,6 +2,9 @@ import { Button, Divider, Group, Image, TextInput } from "@mantine/core";
 
 import { RiBookmark3Line as BookmarkIcon } from "react-icons/ri";
 import ExamAnswerOption from "./ExamAnswerOption";
+import { ExamQuestionResDTO } from "@/dtos/exam.dto";
+import { OptionTypes } from "@/constants/enums";
+import { QuestionOptionDTO } from "@/dtos/question.dto";
 import RichContentRenderer from "../common/richEditor/RichContentRenderer";
 
 type ExamQuestionItemProps = {
@@ -94,10 +97,12 @@ function ExamQuestionItem({
 
           <div className="flex flex-col gap-2">
             <h2 className="text-base uppercase font-semibold text-text-color">
-              {data.optionType === "grid-in" ? "Answer" : "Select an option"}
+              {data.optionType === OptionTypes.GRID_IN
+                ? "Answer"
+                : "Select an option"}
             </h2>
 
-            {data.optionType === "grid-in" && (
+            {data.optionType === OptionTypes.GRID_IN && (
               <TextInput
                 size="lg"
                 placeholder="Type your answer here..."
@@ -106,7 +111,7 @@ function ExamQuestionItem({
               />
             )}
 
-            {data.optionType !== "grid-in" &&
+            {data.optionType !== OptionTypes.GRID_IN &&
               data.options.map((option: QuestionOptionDTO, index: number) => (
                 <ExamAnswerOption
                   key={index}

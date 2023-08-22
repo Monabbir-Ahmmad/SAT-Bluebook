@@ -1,3 +1,4 @@
+import { LoginReqDTO, OAuthLoginReqDTO, RegisterReqDTO } from "@/dtos/auth.dto";
 import { hashPassword, varifyPassword } from "../utils/password.util";
 
 import { HttpError } from "../utils/httpError";
@@ -33,12 +34,19 @@ export default class AuthAction {
   }
 
   async OAuthLogin(data: OAuthLoginReqDTO) {
-    let user = await userAction.findByEmail(data.email);
+    let user = await User.findOne({
+      "oauth.oauthId": data.oauth.oauthId,
+      "oauth.provider": data.oauth.provider,
+    });
 
     if (!user)
       user = await User.create({
         name: data.name,
         email: data.email,
+        oauth: {
+          oauthId: data.oauth.oauthId,
+          provider: data.oauth.provider,
+        },
       });
 
     if (!user)

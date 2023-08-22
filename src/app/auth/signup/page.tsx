@@ -1,6 +1,7 @@
 "use client";
 
 import { Paper } from "@mantine/core";
+import { RegisterReqDTO } from "@/dtos/auth.dto";
 import SignupForm from "@/components/auth/SignupForm";
 import { authService } from "@/lib/client/services";
 import { notifications } from "@mantine/notifications";

@@ -4,6 +4,7 @@ import { Badge, Button, Group, Paper } from "@mantine/core";
 
 import ExamCheckReview from "@/components/exam/ExamCheckReview";
 import ExamQuestionItem from "@/components/exam/ExamQuestionItem";
+import { ExamQuestionResDTO } from "@/dtos/exam.dto";
 import { questions as quiz } from "@/constants/data";
 import { useState } from "react";
 

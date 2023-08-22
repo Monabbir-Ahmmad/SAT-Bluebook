@@ -1,3 +1,10 @@
+import {
+  LoginReqDTO,
+  LoginResDTO,
+  RegisterReqDTO,
+  RegisterResDTO,
+} from "@/dtos/auth.dto";
+
 import apiUrl from "@/constants/api-url";
 import { httpClient } from "@/lib/client/http-client";
 

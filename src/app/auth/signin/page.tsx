@@ -5,6 +5,7 @@ import { getProviders, signIn } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 import LoginForm from "@/components/auth/LoginForm";
+import { LoginReqDTO } from "@/dtos/auth.dto";
 import { notifications } from "@mantine/notifications";
 
 export default function SigninPage() {

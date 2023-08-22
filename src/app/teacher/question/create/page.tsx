@@ -1,5 +1,6 @@
 "use client";
 
+import { QuestionCreateReqDTO } from "@/dtos/question.dto";
 import QuestionMakerForm from "@/components/questions/QuestionMakerForm";
 import { notifications } from "@mantine/notifications";
 import { questionService } from "@/lib/client/services";

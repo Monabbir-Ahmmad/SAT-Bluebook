@@ -2,6 +2,8 @@ import { Button, SegmentedControl, TextInput } from "@mantine/core";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
 import { RiAddLine as AddIcon } from "react-icons/ri";
+import { OptionTypes } from "@/constants/enums";
+import { QuestionCreateReqDTO } from "@/dtos/question.dto";
 import QuestionOption from "./QuestionOption";
 import { answerType } from "@/constants/data";
 import { useMediaQuery } from "@mantine/hooks";
@@ -22,8 +24,8 @@ export default function QuestionOptionAdder() {
     name: "options",
   });
 
-  const onOptionTypeChange = (value: OptionType) => {
-    if (value === "grid-in") {
+  const onOptionTypeChange = (value: OptionTypes) => {
+    if (value === OptionTypes.GRID_IN) {
       reset({ ...getValues(), optionType: value, options: [{}], answers: [0] });
       return;
     }
@@ -45,7 +47,7 @@ export default function QuestionOptionAdder() {
         />
       </div>
 
-      {watch("optionType") === "grid-in" && (
+      {watch("optionType") === OptionTypes.GRID_IN && (
         <TextInput
           {...register("options.0.text")}
           label="Text Answer"
@@ -58,7 +60,7 @@ export default function QuestionOptionAdder() {
         />
       )}
 
-      {watch("optionType") !== "grid-in" && (
+      {watch("optionType") !== OptionTypes.GRID_IN && (
         <>
           <div className="space-y-2">
             <h6 className="font-semibold">Options</h6>

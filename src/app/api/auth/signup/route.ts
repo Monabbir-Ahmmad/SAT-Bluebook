@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { RegisterReqDTO } from "@/dtos/auth.dto";
 import { StatusCode } from "@/constants/status-code";
 import { asyncHandler } from "@/lib/server/utils/async.handler";
 import { authAction } from "@/lib/server/actions";

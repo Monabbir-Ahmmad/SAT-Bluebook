@@ -1,5 +1,6 @@
 import { Button, Text } from "@mantine/core";
 
+import { UserRoles } from "@/constants/enums";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
@@ -8,7 +9,7 @@ function Hero() {
   const session = useSession();
 
   const onGetStartedClick = () => {
-    if (session?.data?.user?.role === "admin") {
+    if (session?.data?.user?.role === UserRoles.ADMIN) {
       router.push("/teacher/dashboard");
     } else {
       router.push("/student/dashboard");
@@ -16,7 +17,7 @@ function Hero() {
   };
 
   const onGoToDashboardClick = () => {
-    if (session?.data?.user?.role === "admin") {
+    if (session?.data?.user?.role === UserRoles.ADMIN) {
       router.push("/teacher/dashboard");
     } else {
       router.push("/student/dashboard");

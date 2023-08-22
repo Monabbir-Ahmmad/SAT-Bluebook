@@ -11,6 +11,7 @@ import {
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import Link from "next/link";
+import { RegisterReqDTO } from "@/dtos/auth.dto";
 import { signupFormValidator } from "@/lib/client/validators/form.validator";
 import { zodResolver } from "@hookform/resolvers/zod";
 

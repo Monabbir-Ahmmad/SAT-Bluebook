@@ -3,6 +3,7 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { GithubProfile } from "next-auth/providers/github";
 import GithubProvider from "next-auth/providers/github";
+import { OAuthProviders } from "@/constants/enums";
 import { authAction } from "@/lib/server/actions";
 
 export const authOptions: NextAuthOptions = {
@@ -16,6 +17,10 @@ export const authOptions: NextAuthOptions = {
         const user = await authAction.OAuthLogin({
           email: profile.email!,
           name: profile.name!,
+          oauth: {
+            oauthId: profile.id.toString(),
+            provider: OAuthProviders.GITHUB,
+          },
         });
 
         return user;

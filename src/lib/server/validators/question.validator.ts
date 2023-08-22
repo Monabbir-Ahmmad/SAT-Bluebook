@@ -1,3 +1,5 @@
+import { Difficulties, OptionTypes, SubjectTypes } from "@/constants/enums";
+
 import { z } from "zod";
 
 export const questionCreateValidationSchema = z
@@ -5,10 +7,10 @@ export const questionCreateValidationSchema = z
     question: z.string().min(1),
     passage: z.string().optional(),
     questionImage: z.string().optional(),
-    subject: z.enum(["math", "reading", "writing"]),
-    difficulty: z.number().min(0).max(2),
+    subject: z.nativeEnum(SubjectTypes),
+    difficulty: z.nativeEnum(Difficulties),
     tags: z.array(z.string()).min(1),
-    optionType: z.enum(["mcq-text", "mcq-image", "grid-in"]),
+    optionType: z.nativeEnum(OptionTypes),
     options: z
       .array(
         z

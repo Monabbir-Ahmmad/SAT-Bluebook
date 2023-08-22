@@ -1,30 +1,24 @@
-import { NextRequest, NextResponse } from "next/server";
-
-import { Question } from "@/lib/server/models";
+import { NextRequest } from "next/server";
+import { QuestionCreateReqDTO } from "@/dtos/question.dto";
+import { StatusCode } from "@/constants/status-code";
+import { asyncHandler } from "@/lib/server/utils/async.handler";
 import connectDB from "@/lib/server/config/connect-db";
+import { questionAction } from "@/lib/server/actions";
 import { questionCreateValidationSchema } from "@/lib/server/validators/question.validator";
-import { storeBase64AsFile } from "@/lib/server/utils/file.util";
+import { sendResponse } from "@/lib/server/utils/response.util";
 import { validateData } from "@/lib/server/utils/validation.util";
 
 connectDB();
 
-const createQuestion = async (req: NextRequest) => {
+const createQuestion = asyncHandler(async (req: NextRequest) => {
   const body = validateData<QuestionCreateReqDTO>(
     await req.json(),
     questionCreateValidationSchema
   );
 
-  if (body.questionImage)
-    body.questionImage = await storeBase64AsFile(body.questionImage);
+  const data = await questionAction.create(body);
 
-  for (let i = 0; i < body.options.length; i++) {
-    if (body.options[i].image)
-      body.options[i].image = await storeBase64AsFile(body.options[i].image!);
-  }
-
-  const question = await Question.create(body);
-
-  return NextResponse.json(question);
-};
+  return sendResponse(StatusCode.OK, data);
+});
 
 export { createQuestion as POST };

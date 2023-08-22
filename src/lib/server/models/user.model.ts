@@ -1,11 +1,36 @@
 import { Document, Schema, model, models } from "mongoose";
+import { OAuthProviders, UserRoles } from "@/constants/enums";
+
+export interface IOAuth extends Document {
+  oauthId: string;
+  provider: OAuthProviders;
+}
 
 export interface IUser extends Document {
   name: string;
   email: string;
   password: string;
-  role: string;
+  role: UserRoles;
+  oauth: IOAuth;
 }
+
+const OAuthSchema = new Schema<IOAuth>(
+  {
+    oauthId: {
+      type: String,
+      required: true,
+    },
+    provider: {
+      type: String,
+      required: true,
+    },
+  },
+  {
+    timestamps: false,
+    versionKey: false,
+    _id: false,
+  }
+);
 
 const UserSchema = new Schema<IUser>(
   {
@@ -24,7 +49,10 @@ const UserSchema = new Schema<IUser>(
     role: {
       type: String,
       required: true,
-      default: "user",
+      default: UserRoles.USER,
+    },
+    oauth: {
+      type: OAuthSchema,
     },
   },
   {

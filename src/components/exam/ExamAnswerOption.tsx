@@ -4,10 +4,12 @@ import {
   RiArrowGoBackFill as UndoIcon,
 } from "react-icons/ri";
 
+import { OptionTypes } from "@/constants/enums";
+import { QuestionOptionDTO } from "@/dtos/question.dto";
 import { twMerge } from "tailwind-merge";
 
 type ExamAnswerOptionProps = {
-  optionType: OptionType;
+  optionType: OptionTypes;
   option: QuestionOptionDTO;
   selected?: boolean;
   markedWrong?: boolean;
@@ -63,9 +65,9 @@ function ExamAnswerOption({
           {index + 1}
         </span>
 
-        {optionType === "mcq-text" && <Text>{option?.text}</Text>}
+        {optionType === OptionTypes.MCQ_TEXT && <Text>{option?.text}</Text>}
 
-        {optionType === "mcq-image" && (
+        {optionType === OptionTypes.MCQ_IMAGE && (
           <Image src={option?.image} alt="" height={200} />
         )}
       </div>
