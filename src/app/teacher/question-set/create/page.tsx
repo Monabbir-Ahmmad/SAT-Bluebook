@@ -60,7 +60,7 @@ export default function QuestionSetCreatePage() {
         breakpoint="sm"
         itemComponent={QuestionItem}
         filter={(query, item) =>
-          item.label.toLowerCase().includes(query.toLowerCase().trim())
+          item?.label.toLowerCase().includes(query.toLowerCase().trim())
         }
         styles={{
           transferListTitle: {

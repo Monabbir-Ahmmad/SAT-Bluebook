@@ -6,7 +6,7 @@ import GithubProvider from "next-auth/providers/github";
 import { OAuthProviders } from "@/constants/enums";
 import { authAction } from "@/lib/server/actions";
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/auth/signin",
   },

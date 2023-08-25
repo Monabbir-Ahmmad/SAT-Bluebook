@@ -63,7 +63,7 @@ function QuestionItem({ data, selected }: TransferListItemComponentProps) {
         <h2 className="text-xl font-bold uppercase">{data.subject}</h2>
 
         <Badge size="xl" variant="outline">
-          {difficulties[data.difficulty].label}
+          {difficulties.find((d) => d.value === data.difficulty)?.label}
         </Badge>
       </div>
 

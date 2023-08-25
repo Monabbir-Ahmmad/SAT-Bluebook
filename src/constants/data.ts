@@ -30,7 +30,7 @@ export const studentDashboardItems = [
       {
         id: "1.1",
         href: "/student/exam",
-        label: "SAT Ramdom Difficulty",
+        label: "SAT Random Difficulty",
         description: "Take a full-length SAT exam with random difficulty.",
         image: "https://img.icons8.com/clouds/256/000000/learning.png",
       },
