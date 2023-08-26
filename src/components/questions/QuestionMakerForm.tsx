@@ -5,10 +5,10 @@ import {
   SegmentedControl,
   Select,
 } from "@mantine/core";
-import { Difficulties, OptionTypes, SubjectTypes } from "@/constants/enums";
+import { Difficulties, OptionTypes, SectionTypes } from "@/constants/enums";
 import { FormProvider, useForm } from "react-hook-form";
 import RichEditor, { IRichEditor } from "../common/richEditor/RichEditor";
-import { difficulties, subjects } from "@/constants/data";
+import { difficulties, sections } from "@/constants/data";
 import { useEffect, useRef } from "react";
 
 import FileDrop from "../common/fileDrop/FileDrop";
@@ -32,7 +32,7 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
   const formMethods = useForm<QuestionCreateReqDTO>({
     resolver: zodResolver(questionFormValidator),
     defaultValues: {
-      subject: SubjectTypes.MATH,
+      section: SectionTypes.MATH,
       difficulty: Difficulties.EASY,
       optionType: OptionTypes.MCQ_TEXT,
       answers: [],
@@ -58,14 +58,14 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
   }, [setValue, questionInputRef]);
 
   useEffect(() => {
-    if (watch("subject") === "math") {
+    if (watch("section") === "math") {
       setValue("passage", undefined);
     } else if (passageInputRef.current) {
       passageInputRef.current.onChange = (content) => {
         setValue("passage", content);
       };
     }
-  }, [passageInputRef, setValue, watch("subject")]);
+  }, [passageInputRef, setValue, watch("section")]);
 
   useEffect(() => {
     if (errors?.question)
@@ -95,12 +95,12 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
                 fullWidth
                 size="md"
                 color="blue"
-                data={subjects}
-                onChange={(value: SubjectTypes) => setValue("subject", value)}
+                data={sections}
+                onChange={(value: SectionTypes) => setValue("section", value)}
               />
             </div>
 
-            {watch("subject") !== "math" && (
+            {watch("section") !== "math" && (
               <div>
                 <h6 className="font-semibold mb-2.5">Passage</h6>
                 <RichEditor

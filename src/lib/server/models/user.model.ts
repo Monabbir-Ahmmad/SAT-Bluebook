@@ -1,4 +1,4 @@
-import { Document, Schema, model, models } from "mongoose";
+import { Document, Model, Schema, model, models } from "mongoose";
 import { OAuthProviders, UserRoles } from "@/constants/enums";
 
 export interface IOAuth extends Document {
@@ -61,6 +61,6 @@ const UserSchema = new Schema<IUser>(
   }
 );
 
-const UserModel = models.User || model<IUser>("User", UserSchema);
+const UserModel: Model<IUser> = models.User || model<IUser>("User", UserSchema);
 
 export default UserModel;

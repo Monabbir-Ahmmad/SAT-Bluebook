@@ -4,7 +4,7 @@ export enum OptionTypes {
   GRID_IN = "grid-in",
 }
 
-export enum SubjectTypes {
+export enum SectionTypes {
   MATH = "math",
   READING = "reading",
   WRITING = "writing",

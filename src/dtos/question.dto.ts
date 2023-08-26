@@ -1,4 +1,4 @@
-import { Difficulties, OptionTypes, SubjectTypes } from "@/constants/enums";
+import { Difficulties, OptionTypes, SectionTypes } from "@/constants/enums";
 
 export interface QuestionOptionDTO {
   text?: string;
@@ -9,7 +9,7 @@ export interface QuestionCreateReqDTO {
   question: string;
   passage?: string;
   questionImage?: string;
-  subject: SubjectTypes;
+  section: SectionTypes;
   difficulty: Difficulties;
   tags: string[];
   optionType: OptionTypes;
@@ -22,7 +22,7 @@ export interface QuestionResDTO {
   question: string;
   passage?: string;
   questionImage?: string;
-  subject: SubjectTypes;
+  section: SectionTypes;
   difficulty: Difficulties;
   tags: string[];
   optionType: OptionTypes;

@@ -11,10 +11,21 @@ const apiUrl = {
   },
   // Question
   question: {
-    create: "/question",
-    get: "/question",
-    update: "/question",
-    delete: "/question",
+    create: "/admin/question",
+    get: "/admin/question",
+    update: "/admin/question",
+    delete: "/admin/question",
+  },
+  // Question Set
+  questionSet: {
+    create: "/admin/question-set",
+    get: "/admin/question-set",
+    update: "/admin/question-set",
+    delete: "/admin/question-set",
+  },
+  // Exam
+  exam: {
+    get: "/student/exam",
   },
 };
 

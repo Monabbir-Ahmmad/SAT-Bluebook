@@ -4,13 +4,22 @@ import { Badge, Button, Group, Paper } from "@mantine/core";
 
 import ExamCheckReview from "@/components/exam/ExamCheckReview";
 import ExamQuestionItem from "@/components/exam/ExamQuestionItem";
-import { ExamQuestionResDTO } from "@/dtos/exam.dto";
-import { questions as quiz } from "@/constants/data";
+import { ExamQuestionResDTO, ExamResDTO } from "@/dtos/exam.dto";
+import { examService } from "@/lib/client/services";
+import useQuery from "@/hooks/useQuery";
 import { useState } from "react";
 
 export default function ExamPage() {
+  const [questions, setQuestions] = useState<ExamQuestionResDTO[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [questions, setQuestions] = useState<ExamQuestionResDTO[]>(quiz);
+
+  useQuery<ExamResDTO>({
+    requestFn: examService.get,
+    auto: true,
+    onSuccess: (data) => {
+      setQuestions(data.questions);
+    },
+  });
 
   const toggleAnswer = (
     question: ExamQuestionResDTO,
@@ -102,14 +111,16 @@ export default function ExamPage() {
         </div>
       </Paper>
 
-      <ExamQuestionItem
-        data={questions[currentIndex]}
-        title={`Question ${currentIndex + 1}`}
-        toggleAnswer={toggleAnswer}
-        toggleMarkAsWrong={toggleMarkAsWrong}
-        toggleMarkForReview={toggleMarkForReview}
-        onTextAnswerChange={onTextAnswerChange}
-      />
+      {questions.length > 0 && (
+        <ExamQuestionItem
+          data={questions[currentIndex]}
+          title={`Question ${currentIndex + 1}`}
+          toggleAnswer={toggleAnswer}
+          toggleMarkAsWrong={toggleMarkAsWrong}
+          toggleMarkForReview={toggleMarkForReview}
+          onTextAnswerChange={onTextAnswerChange}
+        />
+      )}
 
       <Paper className="sticky z-10 bottom-0 w-full" withBorder radius={0}>
         <Group className="max-w-4xl mx-auto p-4" noWrap position="apart">

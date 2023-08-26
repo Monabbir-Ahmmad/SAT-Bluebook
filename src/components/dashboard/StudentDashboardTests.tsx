@@ -7,6 +7,7 @@ import {
   Text,
 } from "@mantine/core";
 
+import DashboardCard from "./DashboardCard";
 import Link from "next/link";
 import { studentDashboardItems } from "@/constants/data";
 
@@ -28,23 +29,16 @@ export default function StudentDashboardTests() {
               </Group>
             </Accordion.Control>
             <Accordion.Panel>
-              <SimpleGrid cols={3}>
+              <SimpleGrid
+                cols={3}
+                breakpoints={[
+                  { maxWidth: "md", cols: 3 },
+                  { maxWidth: "sm", cols: 1 },
+                ]}
+              >
                 {item.content.map((content) => (
                   <Link key={content.id} href={content.href}>
-                    <Paper
-                      withBorder
-                      className="h-full p-4 hover:shadow-lg transition-shadow"
-                    >
-                      <Group noWrap>
-                        <Avatar src={content.image} radius="xl" size="xl" />
-                        <div>
-                          <Text>{content.label}</Text>
-                          <Text size="sm" color="dimmed" weight={400}>
-                            {content.description}
-                          </Text>
-                        </div>
-                      </Group>
-                    </Paper>
+                    <DashboardCard {...content} />
                   </Link>
                 ))}
               </SimpleGrid>

@@ -1,5 +1,6 @@
-import { Difficulties, OptionTypes, SubjectTypes } from "@/constants/enums";
+import { Difficulties, OptionTypes, SectionTypes } from "@/constants/enums";
 
+import { questionSetSize } from "@/constants/data";
 import { z } from "zod";
 
 export const signupFormValidator = z
@@ -28,7 +29,7 @@ export const questionFormValidator = z
     question: z.string().min(1),
     passage: z.string().optional(),
     questionImage: z.string().optional(),
-    subject: z.nativeEnum(SubjectTypes),
+    section: z.nativeEnum(SectionTypes),
     difficulty: z.nativeEnum(Difficulties),
     tags: z.array(z.string()).min(1),
     optionType: z.nativeEnum(OptionTypes),
@@ -41,9 +42,25 @@ export const questionFormValidator = z
           .or(z.object({ image: z.string().min(1) }))
       )
       .min(1),
-    answers: z.array(z.any()).min(1),
+    answers: z.array(z.number()).min(1),
   })
-  .refine((data) => (data.subject !== "math" ? data.passage : true), {
-    message: "Passage is required",
-    path: ["passage"],
+  .refine(
+    (data) => (data.section !== SectionTypes.MATH ? data.passage : true),
+    {
+      message: "Passage is required",
+      path: ["passage"],
+    }
+  );
+
+export const questionSetFormValidator = z
+  .object({
+    title: z.string().min(1),
+    section: z.nativeEnum(SectionTypes),
+    difficulty: z.nativeEnum(Difficulties),
+    questions: z.array(z.string()).min(1),
+  })
+  .refine((data) => data.questions.length === questionSetSize[data.section], {
+    message:
+      "Number of questions must be 44 for math and 27 for reading and writing",
+    path: ["questions"],
   });

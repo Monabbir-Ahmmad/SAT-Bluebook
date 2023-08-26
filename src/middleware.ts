@@ -12,7 +12,7 @@ function authMiddleware(req: NextRequestWithAuth) {
   }
 
   if (
-    req.nextUrl.pathname.includes("/teacher") &&
+    req.nextUrl.pathname.includes("/admin") &&
     req.nextauth.token?.role !== UserRoles.ADMIN
   ) {
     // return NextResponse.rewrite(new URL("/unauthorized", req.nextUrl));
@@ -29,5 +29,5 @@ export default withAuth(authMiddleware, {
 
 // config to exclude auth pages from being protected
 export const config = {
-  matcher: ["/student/:path*", "/teacher/:path*"],
+  matcher: ["/student/:path*", "/admin/:path*"],
 };

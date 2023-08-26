@@ -6,3 +6,10 @@ export interface ExamQuestionResDTO extends QuestionResDTO {
   markedWrong?: number[];
   markedForReview?: boolean;
 }
+
+export interface ExamResDTO {
+  id: string;
+  title: string;
+  section: string;
+  questions: ExamQuestionResDTO[];
+}

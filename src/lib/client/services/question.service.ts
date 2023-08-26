@@ -13,8 +13,10 @@ export default class QuestionService {
     return res.data;
   }
 
-  async get() {
-    const res = await httpClient.get<QuestionResDTO[]>(apiUrl.question.get);
+  async getListBySection(section: string) {
+    const res = await httpClient.get<QuestionResDTO[]>(
+      apiUrl.question.get + "?section=" + section
+    );
 
     return res.data;
   }

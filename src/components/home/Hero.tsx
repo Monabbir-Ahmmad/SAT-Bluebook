@@ -10,7 +10,7 @@ function Hero() {
 
   const onGetStartedClick = () => {
     if (session?.data?.user?.role === UserRoles.ADMIN) {
-      router.push("/teacher/dashboard");
+      router.push("/admin/dashboard");
     } else {
       router.push("/student/dashboard");
     }
@@ -18,7 +18,7 @@ function Hero() {
 
   const onGoToDashboardClick = () => {
     if (session?.data?.user?.role === UserRoles.ADMIN) {
-      router.push("/teacher/dashboard");
+      router.push("/admin/dashboard");
     } else {
       router.push("/student/dashboard");
     }

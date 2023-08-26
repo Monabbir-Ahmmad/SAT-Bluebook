@@ -7,7 +7,7 @@ type AppLogoProps = {
   className?: string;
 };
 
-function AppLogo({ size = 30, className }: AppLogoProps) {
+function AppLogo({ size = 25, className }: AppLogoProps) {
   return (
     <Link href="/" className={className}>
       <h1
@@ -16,7 +16,7 @@ function AppLogo({ size = 30, className }: AppLogoProps) {
           fontSize: size,
         }}
       >
-        <Logo size={size} className="text-primary" />
+        <Logo size={size + 5} className="text-primary" />
         <Text component="span" inherit variant="gradient">
           SAT Bluebook
         </Text>
