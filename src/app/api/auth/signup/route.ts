@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { RegisterReqDTO } from "@/dtos/auth.dto";
+import { RegisterReqDto } from "@/dtos/auth.dto";
 import { StatusCode } from "@/constants/status-code";
 import { asyncHandler } from "@/lib/server/utils/async.handler";
 import { authAction } from "@/lib/server/actions";
@@ -8,7 +8,7 @@ import { signupValidationSchema } from "@/lib/server/validators/auth.validator";
 import { validateData } from "@/lib/server/utils/validation.util";
 
 const signup = asyncHandler(async (req: NextRequest) => {
-  const body = validateData<RegisterReqDTO>(
+  const body = validateData<RegisterReqDto>(
     await req.json(),
     signupValidationSchema
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { RiCheckLine as CheckIcon } from "react-icons/ri";
-import { QuestionCreateReqDTO } from "@/dtos/question.dto";
+import { QuestionCreateReqDto } from "@/dtos/question.dto";
 import QuestionMakerForm from "@/components/questions/QuestionMakerForm";
 import { notifications } from "@mantine/notifications";
 import { questionService } from "@/lib/client/services";
@@ -27,7 +27,7 @@ export default function QuestionCreatePage() {
       notifications.update({
         id: "create-question",
         title: "Error",
-        message: err.response.data.message,
+        message: err.response?.data?.message,
         color: "red",
       });
     },
@@ -44,7 +44,7 @@ export default function QuestionCreatePage() {
     },
   });
 
-  const onSubmit = async (data: QuestionCreateReqDTO) => {
+  const onSubmit = async (data: QuestionCreateReqDto) => {
     createQuestion(data);
   };
 

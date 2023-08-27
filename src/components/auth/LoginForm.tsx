@@ -10,12 +10,12 @@ import {
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import Link from "next/link";
-import { LoginReqDTO } from "@/dtos/auth.dto";
+import { LoginReqDto } from "@/dtos/auth.dto";
 import { loginFormValidator } from "@/lib/client/validators/form.validator";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 type LoginFormProps = {
-  onSubmit: SubmitHandler<LoginReqDTO>;
+  onSubmit: SubmitHandler<LoginReqDto>;
 };
 
 function LoginForm({ onSubmit }: LoginFormProps) {
@@ -23,7 +23,7 @@ function LoginForm({ onSubmit }: LoginFormProps) {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginReqDTO>({
+  } = useForm<LoginReqDto>({
     resolver: zodResolver(loginFormValidator),
   });
 

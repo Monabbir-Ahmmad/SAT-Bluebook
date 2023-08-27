@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { QuestionSet } from "@/lib/server/models";
-import { QuestionSetCreateReqDTO } from "@/dtos/question-set.dto";
+import { QuestionSetCreateReqDto } from "@/dtos/question-set.dto";
 import { StatusCode } from "@/constants/status-code";
 import { asyncHandler } from "@/lib/server/utils/async.handler";
 import { questionSetAction } from "@/lib/server/actions";
@@ -9,7 +9,7 @@ import { sendResponse } from "@/lib/server/utils/response.util";
 import { validateData } from "@/lib/server/utils/validation.util";
 
 const createQuestionSet = asyncHandler(async (req: NextRequest) => {
-  const body = validateData<QuestionSetCreateReqDTO>(
+  const body = validateData<QuestionSetCreateReqDto>(
     await req.json(),
     questionSetCreateValidationSchema
   );

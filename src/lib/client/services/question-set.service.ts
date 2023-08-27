@@ -1,10 +1,10 @@
-import { QuestionSetCreateReqDTO } from "@/dtos/question-set.dto";
+import { QuestionSetCreateReqDto } from "@/dtos/question-set.dto";
 import apiUrl from "@/constants/api-url";
 import { httpClient } from "../http-client";
 
 export default class QuestionSetService {
-  async create(questionSet: QuestionSetCreateReqDTO) {
-    const res = await httpClient.post(apiUrl.questionSet.create, questionSet);
+  async create(data: QuestionSetCreateReqDto) {
+    const res = await httpClient.post(apiUrl.questionSet.create, data);
     return res.data;
   }
 

@@ -1,11 +1,11 @@
-import { Question } from "../models";
-import { QuestionCreateReqDTO } from "@/dtos/question.dto";
-import { mapper } from "../config/mapper";
-import { storeBase64AsFile } from "../utils/file.util";
+import { QuestionCreateReqDto, QuestionDto } from "@/dtos/question.dto";
+
 import { IQuestion } from "../models/question.model";
+import { Question } from "../models";
+import { storeBase64AsFile } from "../utils/file.util";
 
 export default class QuestionAction {
-  async create(data: QuestionCreateReqDTO) {
+  async create(data: QuestionCreateReqDto) {
     if (data.questionImage)
       data.questionImage = await storeBase64AsFile(data.questionImage);
 
@@ -16,16 +16,14 @@ export default class QuestionAction {
 
     const question: IQuestion = await Question.create(data);
 
-    return mapper.questionModel.to.questionDTO.map(question);
+    return new QuestionDto(question);
   }
 
-  async getQuestionsBySection(section: string) {
+  async getQuestions(section?: string | null) {
     const questions: IQuestion[] = await Question.find({
-      section,
+      section: section || { $exists: true },
     });
 
-    return questions.map((question) =>
-      mapper.questionModel.to.questionDTO.map(question)
-    );
+    return questions.map((question) => new QuestionDto(question));
   }
 }

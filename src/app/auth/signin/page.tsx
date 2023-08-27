@@ -5,13 +5,13 @@ import { getProviders, signIn } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 import LoginForm from "@/components/auth/LoginForm";
-import { LoginReqDTO } from "@/dtos/auth.dto";
+import { LoginReqDto } from "@/dtos/auth.dto";
 import { notifications } from "@mantine/notifications";
 
 export default function SigninPage() {
   const [providers, setProviders] = useState<any>({});
 
-  const handleSignin = async (data: LoginReqDTO) => {
+  const handleSignin = async (data: LoginReqDto) => {
     const res = await signIn("credentials", {
       redirect: false,
       callbackUrl: "/",

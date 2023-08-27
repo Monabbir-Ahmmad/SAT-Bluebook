@@ -8,7 +8,9 @@ export interface IQuestionSet extends Document {
   title: string;
   section: SectionTypes;
   difficulty: Difficulties;
-  questions: Types.Array<PopulatedDoc<IQuestion> | Types.ObjectId>;
+  questions: Types.Array<IQuestion | Types.ObjectId>;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const QuestionSetSchema = new Schema<IQuestionSet>(

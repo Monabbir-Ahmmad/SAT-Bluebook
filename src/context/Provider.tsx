@@ -1,5 +1,6 @@
 "use client";
 
+import { ModalsProvider } from "@mantine/modals";
 import { SessionProvider } from "next-auth/react";
 import ThemeProvider from "./ThemeProvider";
 
@@ -10,7 +11,9 @@ interface ProvidersProps {
 export function Providers({ children }: ProvidersProps) {
   return (
     <SessionProvider>
-      <ThemeProvider>{children}</ThemeProvider>
+      <ThemeProvider>
+        <ModalsProvider>{children}</ModalsProvider>
+      </ThemeProvider>
     </SessionProvider>
   );
 }

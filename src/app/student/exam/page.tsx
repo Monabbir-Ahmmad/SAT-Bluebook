@@ -1,19 +1,19 @@
 "use client";
 
 import { Badge, Button, Group, Paper } from "@mantine/core";
+import { ExamDto, ExamQuestionDto } from "@/dtos/exam.dto";
 
 import ExamCheckReview from "@/components/exam/ExamCheckReview";
 import ExamQuestionItem from "@/components/exam/ExamQuestionItem";
-import { ExamQuestionResDTO, ExamResDTO } from "@/dtos/exam.dto";
 import { examService } from "@/lib/client/services";
 import useQuery from "@/hooks/useQuery";
 import { useState } from "react";
 
 export default function ExamPage() {
-  const [questions, setQuestions] = useState<ExamQuestionResDTO[]>([]);
+  const [questions, setQuestions] = useState<ExamQuestionDto[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  useQuery<ExamResDTO>({
+  useQuery<ExamDto>({
     requestFn: examService.get,
     auto: true,
     onSuccess: (data) => {
@@ -22,7 +22,7 @@ export default function ExamPage() {
   });
 
   const toggleAnswer = (
-    question: ExamQuestionResDTO,
+    question: ExamQuestionDto,
     selectedIndex: number,
     selected: boolean
   ) => {
@@ -41,7 +41,7 @@ export default function ExamPage() {
   };
 
   const toggleMarkAsWrong = (
-    question: ExamQuestionResDTO,
+    question: ExamQuestionDto,
     markedIndex: number,
     selected: boolean
   ) => {
@@ -73,16 +73,13 @@ export default function ExamPage() {
       );
   };
 
-  const onTextAnswerChange = (question: ExamQuestionResDTO, text: string) => {
+  const onTextAnswerChange = (question: ExamQuestionDto, text: string) => {
     setQuestions((prev) =>
       prev.map((q) => (q.id === question.id ? { ...q, textAnswer: text } : q))
     );
   };
 
-  const toggleMarkForReview = (
-    question: ExamQuestionResDTO,
-    marked: boolean
-  ) => {
+  const toggleMarkForReview = (question: ExamQuestionDto, marked: boolean) => {
     setQuestions((prev) =>
       prev.map((q) =>
         q.id === question.id ? { ...q, markedForReview: marked } : q

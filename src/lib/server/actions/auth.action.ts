@@ -1,13 +1,14 @@
-import { LoginReqDTO, OAuthLoginReqDTO, RegisterReqDTO } from "@/dtos/auth.dto";
+import { LoginReqDto, OAuthLoginReqDto, RegisterReqDto } from "@/dtos/auth.dto";
 import { hashPassword, varifyPassword } from "../utils/password.util";
 
 import { HttpError } from "../utils/httpError";
 import { StatusCode } from "@/constants/status-code";
 import { User } from "../models";
+import { UserDto } from "@/dtos/user.dto";
 import { userAction } from "./";
 
 export default class AuthAction {
-  async register(data: RegisterReqDTO) {
+  async register(data: RegisterReqDto) {
     if (await userAction.findByEmail(data.email))
       throw new HttpError(StatusCode.CONFLICT, "Email already exists.");
 
@@ -17,10 +18,10 @@ export default class AuthAction {
       password: await hashPassword(data.password),
     });
 
-    return user;
+    return new UserDto(user);
   }
 
-  async login(data: LoginReqDTO) {
+  async login(data: LoginReqDto) {
     const user = await userAction.findByEmail(data.email);
 
     if (!user) throw new HttpError(StatusCode.NOT_FOUND, "Invalid email.");
@@ -33,7 +34,7 @@ export default class AuthAction {
     return user;
   }
 
-  async OAuthLogin(data: OAuthLoginReqDTO) {
+  async OAuthLogin(data: OAuthLoginReqDto) {
     let user = await User.findOne({
       "oauth.oauthId": data.oauth.oauthId,
       "oauth.provider": data.oauth.provider,
@@ -52,6 +53,6 @@ export default class AuthAction {
     if (!user)
       throw new HttpError(StatusCode.UNAUTHORIZED, "Invalid credentials.");
 
-    return user;
+    return new UserDto(user);
   }
 }

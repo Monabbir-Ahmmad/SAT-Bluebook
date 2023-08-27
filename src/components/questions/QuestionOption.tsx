@@ -3,7 +3,7 @@ import { Checkbox, CloseButton, TextInput } from "@mantine/core";
 import { ChangeEvent } from "react";
 import FileDrop from "../common/fileDrop/FileDrop";
 import { OptionTypes } from "@/constants/enums";
-import { QuestionCreateReqDTO } from "@/dtos/question.dto";
+import { QuestionCreateReqDto } from "@/dtos/question.dto";
 import { useFormContext } from "react-hook-form";
 
 interface QuestionOptionProps {
@@ -21,7 +21,7 @@ export default function QuestionOption({
     setValue,
     getValues,
     watch,
-  } = useFormContext<QuestionCreateReqDTO>();
+  } = useFormContext<QuestionCreateReqDto>();
 
   const pickAnswer = (e: ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;

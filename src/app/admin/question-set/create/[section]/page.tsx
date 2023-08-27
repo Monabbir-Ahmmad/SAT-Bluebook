@@ -22,9 +22,9 @@ import { questionService, questionSetService } from "@/lib/client/services";
 import { useEffect, useState } from "react";
 
 import AvailableQuestions from "@/components/question-set/AvailableQuestions";
+import { QuestionDto } from "@/dtos/question.dto";
 import QuestionItem from "@/components/question-set/QuestionItem";
-import { QuestionResDTO } from "@/dtos/question.dto";
-import { QuestionSetCreateReqDTO } from "@/dtos/question-set.dto";
+import { QuestionSetCreateReqDto } from "@/dtos/question-set.dto";
 import { notifications } from "@mantine/notifications";
 import { questionSetFormValidator } from "@/lib/client/validators/form.validator";
 import { useDisclosure } from "@mantine/hooks";
@@ -47,10 +47,10 @@ export default function QuestionSetCreatePage({
   const router = useRouter();
   const [openedModal, modal] = useDisclosure(false);
   const [openedDrawer, drawer] = useDisclosure(false);
-  const [questionMap, setQuestionMap] = useState<Map<string, QuestionResDTO>>();
+  const [questionMap, setQuestionMap] = useState<Map<string, QuestionDto>>();
   const [availableQuestions, setAvailableQuestions] = useState<string[]>([]);
 
-  const formMethods = useForm<QuestionSetCreateReqDTO>({
+  const formMethods = useForm<QuestionSetCreateReqDto>({
     defaultValues: {
       title: "",
       difficulty: Difficulties.EASY,
@@ -60,9 +60,10 @@ export default function QuestionSetCreatePage({
     resolver: zodResolver(questionSetFormValidator),
   });
 
-  const { request: getQuestions } = useQuery<QuestionResDTO[]>({
-    requestFn: questionService.getListBySection,
-    onSuccess: (data: QuestionResDTO[]) => {
+  useQuery<QuestionDto[]>({
+    auto: !!section,
+    requestFn: () => questionService.getList(section),
+    onSuccess: (data: QuestionDto[]) => {
       setQuestionMap(new Map(data.map((q) => [q.id, q])));
       setAvailableQuestions(data.map((q) => q.id));
     },
@@ -95,20 +96,16 @@ export default function QuestionSetCreatePage({
       notifications.update({
         id: "create-question-set",
         title: "Error",
-        message: err.response.data.message,
+        message: err.response?.data?.message,
         color: "red",
       });
     },
   });
 
-  const onSubmit = (data: QuestionSetCreateReqDTO) => {
+  const onSubmit = (data: QuestionSetCreateReqDto) => {
     modal.close();
     createQuestionSet(data);
   };
-
-  useEffect(() => {
-    getQuestions(section);
-  }, [section]);
 
   const onAddToList = (questionId: string) => {
     formMethods.setValue("questions", [
@@ -132,7 +129,11 @@ export default function QuestionSetCreatePage({
       <Drawer
         opened={openedDrawer}
         onClose={drawer.close}
-        title="Available Questions"
+        title={
+          <p className="text-text-color text-lg font-semibold">
+            Available <span className="text-primary">{section}</span> questions
+          </p>
+        }
         position="right"
         size={"xl"}
       >
@@ -185,17 +186,15 @@ export default function QuestionSetCreatePage({
       </Modal>
 
       <Paper className="sticky top-14 w-full border-b z-10">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-4 p-4 relative">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-4 p-4">
           <h1 className="text-text-color text-xl font-semibold">
-            Create question set for{" "}
-            <span className="text-primary">{section}</span> section
+            Create <span className="text-primary">{section}</span> question set
           </h1>
-          <div className="lg:absolute inset-x-0 text-center">
-            <Badge variant="dot" size="xl">
-              {formMethods.watch("questions").length} of {sectionLimit}{" "}
-              questions selected
-            </Badge>
-          </div>
+
+          <Badge variant="dot" size="xl">
+            {formMethods.watch("questions").length} of {sectionLimit} questions
+            selected
+          </Badge>
 
           <SimpleGrid cols={2}>
             <Button variant="gradient" uppercase onClick={drawer.open}>

@@ -2,26 +2,26 @@ import { Button, Divider, Group, Image, TextInput } from "@mantine/core";
 
 import { RiBookmark3Line as BookmarkIcon } from "react-icons/ri";
 import ExamAnswerOption from "./ExamAnswerOption";
-import { ExamQuestionResDTO } from "@/dtos/exam.dto";
+import { ExamQuestionDto } from "@/dtos/exam.dto";
 import { OptionTypes } from "@/constants/enums";
-import { QuestionOptionDTO } from "@/dtos/question.dto";
+import { QuestionOptionDto } from "@/dtos/question.dto";
 import RichContentRenderer from "../common/richEditor/RichContentRenderer";
 
 type ExamQuestionItemProps = {
-  data: ExamQuestionResDTO;
+  data: ExamQuestionDto;
   title: string;
   toggleAnswer: (
-    question: ExamQuestionResDTO,
+    question: ExamQuestionDto,
     selectedIndex: number,
     selected: boolean
   ) => void;
   toggleMarkAsWrong: (
-    question: ExamQuestionResDTO,
+    question: ExamQuestionDto,
     markedIndex: number,
     selected: boolean
   ) => void;
-  toggleMarkForReview: (question: ExamQuestionResDTO, marked: boolean) => void;
-  onTextAnswerChange: (question: ExamQuestionResDTO, text: string) => void;
+  toggleMarkForReview: (question: ExamQuestionDto, marked: boolean) => void;
+  onTextAnswerChange: (question: ExamQuestionDto, text: string) => void;
 };
 
 function ExamQuestionItem({
@@ -112,7 +112,7 @@ function ExamQuestionItem({
             )}
 
             {data.optionType !== OptionTypes.GRID_IN &&
-              data.options.map((option: QuestionOptionDTO, index: number) => (
+              data.options.map((option: QuestionOptionDto, index: number) => (
                 <ExamAnswerOption
                   key={index}
                   index={index}

@@ -1,11 +1,11 @@
 import { Alert } from "@mantine/core";
-import QuestionItem from "./QuestionItem";
 import { RiErrorWarningLine as AlertIcon } from "react-icons/ri";
-import { QuestionResDTO } from "@/dtos/question.dto";
+import { QuestionDto } from "@/dtos/question.dto";
+import QuestionItem from "./QuestionItem";
 
 interface PropType {
   questionIds: string[];
-  questionMap: Map<string, QuestionResDTO>;
+  questionMap: Map<string, QuestionDto>;
   disabled?: boolean;
   onAddToList: (id: string) => void;
 }

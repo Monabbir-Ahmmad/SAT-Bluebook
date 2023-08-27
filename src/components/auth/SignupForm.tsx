@@ -11,12 +11,12 @@ import {
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import Link from "next/link";
-import { RegisterReqDTO } from "@/dtos/auth.dto";
+import { RegisterReqDto } from "@/dtos/auth.dto";
 import { signupFormValidator } from "@/lib/client/validators/form.validator";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 type SignupFormProps = {
-  onSubmit: SubmitHandler<RegisterReqDTO>;
+  onSubmit: SubmitHandler<RegisterReqDto>;
 };
 
 function SignupForm({ onSubmit }: SignupFormProps) {
@@ -24,7 +24,7 @@ function SignupForm({ onSubmit }: SignupFormProps) {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm<RegisterReqDTO>({
+  } = useForm<RegisterReqDto>({
     resolver: zodResolver(signupFormValidator),
   });
 

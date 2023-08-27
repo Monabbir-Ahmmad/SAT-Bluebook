@@ -1,26 +1,18 @@
 import { OAuthProviders } from "@/constants/enums";
 
-export interface LoginReqDTO {
+export interface LoginReqDto {
   email: string;
   password: string;
 }
 
-export interface LoginResDTO {
-  token: string;
-}
-
-export interface RegisterReqDTO {
+export interface RegisterReqDto {
   email: string;
   name: string;
   password: string;
   confirmPassword?: string;
 }
 
-export interface RegisterResDTO {
-  token: string;
-}
-
-export interface OAuthLoginReqDTO {
+export interface OAuthLoginReqDto {
   name: string;
   email: string;
   oauth: {

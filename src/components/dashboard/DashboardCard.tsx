@@ -5,7 +5,7 @@ import React from "react";
 interface PropType {
   image: string;
   label: string;
-  description: string;
+  description?: string;
 }
 
 export default function DashboardCard({ image, label, description }: PropType) {
@@ -15,9 +15,11 @@ export default function DashboardCard({ image, label, description }: PropType) {
         <Avatar src={image} radius="xl" size="xl" />
         <div>
           <Text>{label}</Text>
-          <Text size="sm" color="dimmed" weight={400}>
-            {description}
-          </Text>
+          {description && (
+            <Text size="sm" color="dimmed" weight={400}>
+              {description}
+            </Text>
+          )}
         </div>
       </Group>
     </Paper>

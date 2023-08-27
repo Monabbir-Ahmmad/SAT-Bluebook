@@ -1,15 +1,15 @@
-import { QuestionResDTO } from "./question.dto";
+import { QuestionDto } from "./question.dto";
 
-export interface ExamQuestionResDTO extends QuestionResDTO {
+export interface ExamQuestionDto extends QuestionDto {
   selectedOption?: number;
   textAnswer?: string;
   markedWrong?: number[];
   markedForReview?: boolean;
 }
 
-export interface ExamResDTO {
+export class ExamDto {
   id: string;
   title: string;
   section: string;
-  questions: ExamQuestionResDTO[];
+  questions: ExamQuestionDto[];
 }

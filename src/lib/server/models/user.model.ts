@@ -12,6 +12,8 @@ export interface IUser extends Document {
   password: string;
   role: UserRoles;
   oauth: IOAuth;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const OAuthSchema = new Schema<IOAuth>(

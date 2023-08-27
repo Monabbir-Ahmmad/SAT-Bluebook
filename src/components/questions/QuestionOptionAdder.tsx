@@ -3,7 +3,7 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 
 import { RiAddLine as AddIcon } from "react-icons/ri";
 import { OptionTypes } from "@/constants/enums";
-import { QuestionCreateReqDTO } from "@/dtos/question.dto";
+import { QuestionCreateReqDto } from "@/dtos/question.dto";
 import QuestionOption from "./QuestionOption";
 import { answerType } from "@/constants/data";
 import { useMediaQuery } from "@mantine/hooks";
@@ -17,7 +17,7 @@ export default function QuestionOptionAdder() {
     watch,
     register,
     formState: { errors },
-  } = useFormContext<QuestionCreateReqDTO>();
+  } = useFormContext<QuestionCreateReqDto>();
 
   const { fields, append, remove } = useFieldArray({
     control,

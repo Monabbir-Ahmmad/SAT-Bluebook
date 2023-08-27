@@ -1,6 +1,11 @@
 import { Difficulties, OptionTypes, SectionTypes } from "@/constants/enums";
 import { Document, Model, Schema, model, models } from "mongoose";
 
+export interface IQuestionOption {
+  text?: string;
+  image?: string;
+}
+
 export interface IQuestion extends Document {
   question: string;
   questionImage?: string;
@@ -11,11 +16,8 @@ export interface IQuestion extends Document {
   optionType: OptionTypes;
   options: IQuestionOption[];
   answers: number[];
-}
-
-export interface IQuestionOption extends Document {
-  text?: string;
-  image?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const QuestionOptionSchema = new Schema<IQuestionOption>(

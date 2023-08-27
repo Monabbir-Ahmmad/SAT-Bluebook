@@ -2,7 +2,7 @@
 
 import { RiCheckLine as CheckIcon } from "react-icons/ri";
 import { Paper } from "@mantine/core";
-import { RegisterReqDTO } from "@/dtos/auth.dto";
+import { RegisterReqDto } from "@/dtos/auth.dto";
 import SignupForm from "@/components/auth/SignupForm";
 import { authService } from "@/lib/client/services";
 import { notifications } from "@mantine/notifications";
@@ -26,8 +26,8 @@ export default function SignupPage() {
     onSuccess: () => {
       notifications.update({
         id: "signup",
-        title: "Signed up",
-        message: "You have been signed up successfully.",
+        title: "Sign up successful",
+        message: "Please sign in to continue.",
         color: "green",
         icon: <CheckIcon />,
       });
@@ -38,13 +38,13 @@ export default function SignupPage() {
       notifications.update({
         id: "signup",
         title: "Error",
-        message: err.response.data.message,
+        message: err.response?.data?.message,
         color: "red",
       });
     },
   });
 
-  const handleSignup = async (data: RegisterReqDTO) => {
+  const handleSignup = async (data: RegisterReqDto) => {
     signupRequest(data);
   };
 

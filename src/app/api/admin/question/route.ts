@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { QuestionCreateReqDTO } from "@/dtos/question.dto";
+import { QuestionCreateReqDto } from "@/dtos/question.dto";
 import { StatusCode } from "@/constants/status-code";
 import { asyncHandler } from "@/lib/server/utils/async.handler";
 import { questionAction } from "@/lib/server/actions";
@@ -8,7 +8,7 @@ import { sendResponse } from "@/lib/server/utils/response.util";
 import { validateData } from "@/lib/server/utils/validation.util";
 
 const createQuestion = asyncHandler(async (req: NextRequest) => {
-  const body = validateData<QuestionCreateReqDTO>(
+  const body = validateData<QuestionCreateReqDto>(
     await req.json(),
     questionCreateValidationSchema
   );
@@ -18,12 +18,12 @@ const createQuestion = asyncHandler(async (req: NextRequest) => {
   return sendResponse(StatusCode.OK, data);
 });
 
-const getQuestionsBySection = asyncHandler(async (req: NextRequest) => {
-  const section = req.nextUrl.searchParams.get("section") || "";
+const getQuestions = asyncHandler(async (req: NextRequest) => {
+  const section = req.nextUrl.searchParams.get("section");
 
-  const data = await questionAction.getQuestionsBySection(section);
+  const data = await questionAction.getQuestions(section);
 
   return sendResponse(StatusCode.OK, data);
 });
 
-export { createQuestion as POST, getQuestionsBySection as GET };
+export { createQuestion as POST, getQuestions as GET };

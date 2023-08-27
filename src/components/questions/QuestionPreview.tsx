@@ -1,21 +1,18 @@
 import {
   Accordion,
   Badge,
-  Button,
   Divider,
-  Group,
   Image,
-  Paper,
   Spoiler,
   Text,
   ThemeIcon,
 } from "@mantine/core";
 import { QuestionDto, QuestionOptionDto } from "@/dtos/question.dto";
+import { difficulties, sections } from "@/constants/data";
 
 import { RiCheckLine as CheckIcon } from "react-icons/ri";
 import { OptionTypes } from "@/constants/enums";
 import RichContentRenderer from "../common/richEditor/RichContentRenderer";
-import { difficulties } from "@/constants/data";
 import { twMerge } from "tailwind-merge";
 
 type AnswerOptionProps = {
@@ -56,31 +53,28 @@ function AnswerOption({ optionType, option, selected }: AnswerOptionProps) {
   );
 }
 
-interface QuestionItemProps {
+interface QuestionPreviewProps {
   data: QuestionDto;
-  selected?: boolean;
-  disabled?: boolean;
-  onAdd?: (id: string) => void;
-  onRemove?: (id: string) => void;
 }
 
-export default function QuestionItem({
-  data,
-  selected,
-  onAdd,
-  onRemove,
-  disabled,
-}: QuestionItemProps) {
+export default function QuestionPreview({ data }: QuestionPreviewProps) {
   return (
-    <Paper withBorder className="flex flex-col gap-4 w-full p-6">
+    <div className="flex flex-col gap-4 w-full p-6">
       <Divider
         label={
           <Badge size="xl" variant="outline">
-            {difficulties.find((d) => d.value === data.difficulty)?.label}
+            {sections.find((s) => s.value === data.section)?.label}
           </Badge>
         }
         labelPosition="center"
       />
+
+      <div className="flex flex-wrap items-center gap-2">
+        Difficulty:{" "}
+        <Badge size="lg">
+          {difficulties.find((d) => d.value === data.difficulty)?.label}
+        </Badge>
+      </div>
 
       <div className="flex flex-wrap items-center gap-2">
         Tags:{" "}
@@ -91,19 +85,33 @@ export default function QuestionItem({
         ))}
       </div>
 
-      <Divider />
-
       {data.passage && (
-        <Spoiler
-          maxHeight={100}
-          showLabel="Show full passage"
-          hideLabel="Hide passage"
-        >
-          <RichContentRenderer content={data.passage} className="text-base" />
+        <>
+          <Divider
+            labelPosition="center"
+            label={
+              <h1 className="text-text-color font-semibold text-lg">Passage</h1>
+            }
+          />
 
-          {data.questionImage && <Image src={data.questionImage} alt="" />}
-        </Spoiler>
+          <Spoiler
+            maxHeight={100}
+            showLabel="Show full passage"
+            hideLabel="Hide passage"
+          >
+            <RichContentRenderer content={data.passage} className="text-base" />
+
+            {data.questionImage && <Image src={data.questionImage} alt="" />}
+          </Spoiler>
+        </>
       )}
+
+      <Divider
+        labelPosition="center"
+        label={
+          <h1 className="text-text-color font-semibold text-lg">Question</h1>
+        }
+      />
 
       <RichContentRenderer content={data.question} className="text-base" />
 
@@ -111,10 +119,13 @@ export default function QuestionItem({
         <Image src={data.questionImage} alt="" />
       )}
 
-      <Divider />
-
-      <Accordion variant="separated">
-        <Accordion.Item value="ans">
+      <Accordion
+        chevronPosition="left"
+        variant="separated"
+        defaultValue={"answer"}
+        className="border rounded-md"
+      >
+        <Accordion.Item value="answer">
           <Accordion.Control>
             {data.optionType !== OptionTypes.GRID_IN ? "Options" : "Answer"}
           </Accordion.Control>
@@ -132,27 +143,6 @@ export default function QuestionItem({
           </Accordion.Panel>
         </Accordion.Item>
       </Accordion>
-
-      {selected ? (
-        <Button
-          variant="filled"
-          color="red"
-          className="w-full"
-          disabled={disabled}
-          onClick={() => onRemove?.(data.id)}
-        >
-          Remove from list
-        </Button>
-      ) : (
-        <Button
-          variant="filled"
-          className="w-full"
-          disabled={disabled}
-          onClick={() => onAdd?.(data.id)}
-        >
-          Add to list
-        </Button>
-      )}
-    </Paper>
+    </div>
   );
 }

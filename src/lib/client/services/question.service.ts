@@ -1,22 +1,24 @@
-import { QuestionCreateReqDTO, QuestionResDTO } from "@/dtos/question.dto";
+import { QuestionCreateReqDto, QuestionDto } from "@/dtos/question.dto";
 
 import apiUrl from "@/constants/api-url";
 import { httpClient } from "@/lib/client/http-client";
 
 export default class QuestionService {
-  async create(question: QuestionCreateReqDTO) {
-    const res = await httpClient.post<QuestionResDTO>(
+  async create(data: QuestionCreateReqDto) {
+    const res = await httpClient.post<QuestionDto>(
       apiUrl.question.create,
-      question
+      data
     );
 
     return res.data;
   }
 
-  async getListBySection(section: string) {
-    const res = await httpClient.get<QuestionResDTO[]>(
-      apiUrl.question.get + "?section=" + section
-    );
+  async getList(section?: string) {
+    const res = await httpClient.get<QuestionDto[]>(apiUrl.question.get, {
+      params: {
+        section,
+      },
+    });
 
     return res.data;
   }

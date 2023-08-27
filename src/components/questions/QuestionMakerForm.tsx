@@ -12,7 +12,7 @@ import { difficulties, sections } from "@/constants/data";
 import { useEffect, useRef } from "react";
 
 import FileDrop from "../common/fileDrop/FileDrop";
-import { QuestionCreateReqDTO } from "@/dtos/question.dto";
+import { QuestionCreateReqDto } from "@/dtos/question.dto";
 import QuestionOptionAdder from "./QuestionOptionAdder";
 import { buttonListMini } from "../common/richEditor/buttonList";
 import { questionFormValidator } from "@/lib/client/validators/form.validator";
@@ -20,7 +20,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 type AddQuestionFormProps = {
-  onSubmit: (data: QuestionCreateReqDTO) => void;
+  onSubmit: (data: QuestionCreateReqDto) => void;
 };
 
 export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
@@ -29,7 +29,7 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
   const questionInputRef = useRef<IRichEditor>(null);
   const passageInputRef = useRef<IRichEditor>(null);
 
-  const formMethods = useForm<QuestionCreateReqDTO>({
+  const formMethods = useForm<QuestionCreateReqDto>({
     resolver: zodResolver(questionFormValidator),
     defaultValues: {
       section: SectionTypes.MATH,

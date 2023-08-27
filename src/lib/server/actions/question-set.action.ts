@@ -1,22 +1,19 @@
 import { Question, QuestionSet } from "../models";
-
-import { QuestionSetCreateReqDTO } from "@/dtos/question-set.dto";
-import { mapper } from "../config/mapper";
+import {
+  QuestionSetCreateReqDto,
+  QuestionSetDto,
+} from "@/dtos/question-set.dto";
 
 export default class QuestionSetAction {
-  async create(data: QuestionSetCreateReqDTO) {
+  async create(data: QuestionSetCreateReqDto) {
     const questionSet = await QuestionSet.create(data);
 
-    return mapper.questionSetModel.to.questionSetDTO.map(questionSet);
+    return new QuestionSetDto(questionSet);
   }
 
   async getQuestionSetBySection(section: string) {
-    const questions = await Question.find({
-      section,
-    });
+    const questionSets = await QuestionSet.find({ section });
 
-    return questions.map((question) =>
-      mapper.questionModel.to.questionDTO.map(question)
-    );
+    return questionSets.map((questionSet) => new QuestionSetDto(questionSet));
   }
 }

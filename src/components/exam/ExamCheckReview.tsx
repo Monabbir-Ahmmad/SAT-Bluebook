@@ -6,10 +6,10 @@ import {
 } from "react-icons/ri";
 import { Button, Divider, Group, Popover, SimpleGrid } from "@mantine/core";
 
-import { ExamQuestionResDTO } from "@/dtos/exam.dto";
+import { ExamQuestionDto } from "@/dtos/exam.dto";
 
 type ExamCheckReviewProps = {
-  examQuestions: ExamQuestionResDTO[];
+  examQuestions: ExamQuestionDto[];
   currentIndex: number;
   onIndexSelect: (index: number) => void;
 };

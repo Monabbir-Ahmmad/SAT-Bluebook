@@ -27,6 +27,11 @@ const apiUrl = {
   exam: {
     get: "/student/exam",
   },
+
+  // User Management
+  userManagement: {
+    getList: "/admin/user-management",
+  },
 };
 
 export default apiUrl;

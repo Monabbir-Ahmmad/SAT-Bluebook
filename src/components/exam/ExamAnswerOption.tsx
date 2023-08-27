@@ -5,12 +5,12 @@ import {
 } from "react-icons/ri";
 
 import { OptionTypes } from "@/constants/enums";
-import { QuestionOptionDTO } from "@/dtos/question.dto";
+import { QuestionOptionDto } from "@/dtos/question.dto";
 import { twMerge } from "tailwind-merge";
 
 type ExamAnswerOptionProps = {
   optionType: OptionTypes;
-  option: QuestionOptionDTO;
+  option: QuestionOptionDto;
   selected?: boolean;
   markedWrong?: boolean;
   toggleSelect: (index: number, selected: boolean) => void;
