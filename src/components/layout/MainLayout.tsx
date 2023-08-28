@@ -46,7 +46,7 @@ export default function MainLayout({ navLinks, children }: MainLayoutProps) {
               : theme.colors.gray[0],
         },
       }}
-      navbarOffsetBreakpoint={navLinks?.length ? "sm" : "xl"}
+      navbarOffsetBreakpoint={navLinks?.length ? "sm" : Number.MAX_SAFE_INTEGER}
       navbar={
         navLinks?.length ? (
           <Navbar
