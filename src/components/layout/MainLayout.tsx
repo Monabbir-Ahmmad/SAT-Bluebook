@@ -46,9 +46,9 @@ export default function MainLayout({ navLinks, children }: MainLayoutProps) {
               : theme.colors.gray[0],
         },
       }}
-      navbarOffsetBreakpoint="sm"
+      navbarOffsetBreakpoint={navLinks?.length ? "sm" : "xl"}
       navbar={
-        navLinks && (
+        navLinks?.length ? (
           <Navbar
             p="md"
             hiddenBreakpoint="sm"
@@ -61,12 +61,12 @@ export default function MainLayout({ navLinks, children }: MainLayoutProps) {
               ))}
             </Navbar.Section>
           </Navbar>
-        )
+        ) : undefined
       }
       header={
         <Header height={60}>
           <div className="px-4 flex items-center h-full">
-            {navLinks && (
+            {!!navLinks?.length && (
               <MediaQuery largerThan="sm" styles={{ display: "none" }}>
                 <Burger
                   opened={navOpened}
