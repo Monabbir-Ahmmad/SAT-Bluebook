@@ -19,14 +19,16 @@ interface ThemeProviderProps {
 
 export default function ThemeProvider({ children }: ThemeProviderProps) {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
-  const cache = useEmotionCache();
-  cache.compat = true;
+  const styleCache = useEmotionCache();
+  styleCache.compat = true;
 
   useServerInsertedHTML(() => (
     <style
-      data-emotion={`${cache.key} ${Object.keys(cache.inserted).join(" ")}`}
+      data-emotion={`${styleCache.key} ${Object.keys(styleCache.inserted).join(
+        " "
+      )}`}
       dangerouslySetInnerHTML={{
-        __html: Object.values(cache.inserted).join(" "),
+        __html: Object.values(styleCache.inserted).join(" "),
       }}
     />
   ));
@@ -38,7 +40,7 @@ export default function ThemeProvider({ children }: ThemeProviderProps) {
   };
 
   return (
-    <CacheProvider value={cache}>
+    <CacheProvider value={styleCache}>
       <ColorSchemeProvider
         colorScheme={colorScheme}
         toggleColorScheme={toggleColorScheme}
