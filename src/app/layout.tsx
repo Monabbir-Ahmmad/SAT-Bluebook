@@ -1,15 +1,9 @@
 import "@/styles/global.css";
 
 import { Lexend } from "next/font/google";
-import type { Metadata } from "next";
-import { Providers } from "@/context/Provider";
+import Providers from "@/context/Provider";
 
 export const AppFont = Lexend({ subsets: ["latin"] });
-
-// export const metadata: Metadata = {
-//   title: "SAT Bluebook",
-//   description: "A free, open-source SAT practice test generator.",
-// };
 
 export default function RootLayout({
   children,

@@ -5,15 +5,15 @@ import { QuestionCreateReqDto } from "@/dtos/question.dto";
 import QuestionMakerForm from "@/components/questions/QuestionMakerForm";
 import { notifications } from "@mantine/notifications";
 import { questionService } from "@/lib/client/services";
-import useQuery from "@/hooks/useQuery";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 export default function QuestionCreatePage() {
   const router = useRouter();
 
-  const { request: createQuestion } = useQuery({
-    requestFn: questionService.create,
-    onRequest: () => {
+  const { mutate: createQuestion } = useMutation({
+    mutationFn: questionService.create,
+    onMutate: () => {
       notifications.show({
         id: "create-question",
         title: "Creating Question",
@@ -49,10 +49,7 @@ export default function QuestionCreatePage() {
   };
 
   return (
-    <div className="space-y-4 p-4">
-      <h1 className="text-3xl text-center uppercase font-bold text-text-color">
-        Create New Question
-      </h1>
+    <div>
       <QuestionMakerForm onSubmit={onSubmit} />
     </div>
   );

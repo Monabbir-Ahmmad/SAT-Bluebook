@@ -1,21 +1,22 @@
 "use client";
 
 import { Badge, Button, Group, Paper } from "@mantine/core";
-import { ExamDto, ExamQuestionDto } from "@/dtos/exam.dto";
+import { ExamQuestionDto } from "@/dtos/exam.dto";
 
 import ExamCheckReview from "@/components/exam/ExamCheckReview";
 import ExamQuestionItem from "@/components/exam/ExamQuestionItem";
 import { examService } from "@/lib/client/services";
-import useQuery from "@/hooks/useQuery";
+
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 export default function ExamPage() {
   const [questions, setQuestions] = useState<ExamQuestionDto[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  useQuery<ExamDto>({
-    requestFn: examService.get,
-    auto: true,
+  useQuery({
+    queryKey: ["exam"],
+    queryFn: examService.get,
     onSuccess: (data) => {
       setQuestions(data.questions);
     },

@@ -8,8 +8,9 @@ import { RiAddFill as AddIcon } from "react-icons/ri";
 import { QuestionDto } from "@/dtos/question.dto";
 import { convertHtmlToPlain } from "@/lib/client/utils/common.util";
 import { questionService } from "@/lib/client/services";
-import useQuery from "@/hooks/useQuery";
+
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 
 const questionTableColumns: DataTableColumn<QuestionDto>[] = [
   {
@@ -48,9 +49,9 @@ const questionTableColumns: DataTableColumn<QuestionDto>[] = [
 export default function QuestionPage() {
   const router = useRouter();
 
-  const { data, loading } = useQuery<QuestionDto[]>({
-    auto: true,
-    requestFn: questionService.getList,
+  const { data, isLoading } = useQuery({
+    queryKey: ["questions"],
+    queryFn: () => questionService.getList(),
   });
 
   return (
@@ -74,7 +75,7 @@ export default function QuestionPage() {
         highlightOnHover
         loaderVariant="bars"
         loaderSize="xl"
-        fetching={loading}
+        fetching={isLoading}
         records={data!}
         columns={questionTableColumns}
       />

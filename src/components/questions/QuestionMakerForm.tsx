@@ -4,6 +4,8 @@ import {
   Paper,
   SegmentedControl,
   Select,
+  Text,
+  Title,
 } from "@mantine/core";
 import { Difficulties, OptionTypes, SectionTypes } from "@/constants/enums";
 import { FormProvider, useForm } from "react-hook-form";
@@ -18,6 +20,7 @@ import { buttonListMini } from "../common/richEditor/buttonList";
 import { questionFormValidator } from "@/lib/client/validators/form.validator";
 import { useMediaQuery } from "@mantine/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { debounce } from "@/lib/client/utils/common.util";
 
 type AddQuestionFormProps = {
   onSubmit: (data: QuestionCreateReqDto) => void;
@@ -51,9 +54,12 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
 
   useEffect(() => {
     if (questionInputRef.current) {
-      questionInputRef.current.onChange = (content) => {
-        setValue("question", content);
-      };
+      questionInputRef.current.onChange = debounce((content) => {
+        setValue(
+          "question",
+          questionInputRef.current?.getCharCount?.() ? content : undefined
+        );
+      }, 200);
     }
   }, [setValue, questionInputRef]);
 
@@ -61,35 +67,46 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
     if (watch("section") === "math") {
       setValue("passage", undefined);
     } else if (passageInputRef.current) {
-      passageInputRef.current.onChange = (content) => {
-        setValue("passage", content);
-      };
+      passageInputRef.current.onChange = debounce((content) => {
+        setValue(
+          "passage",
+          passageInputRef.current?.getCharCount?.() ? content : undefined
+        );
+      }, 200);
     }
   }, [passageInputRef, setValue, watch("section")]);
 
   useEffect(() => {
-    if (errors?.question)
-      questionInputRef?.current?.noticeOpen?.(errors?.question?.message!);
-
     if (errors?.passage)
       passageInputRef.current?.noticeOpen?.(errors?.passage?.message!);
+
+    if (errors?.question)
+      questionInputRef?.current?.noticeOpen?.(errors?.question?.message!);
   }, [errors?.question, errors?.passage]);
 
   return (
     <FormProvider {...formMethods}>
-      <div className="flex items-center justify-center">
-        <form
-          className="flex-1 flex flex-col gap-4 max-w-4xl"
-          onSubmit={handleSubmit(onSubmit)}
-        >
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Paper radius={0} className="sticky top-14 w-full border-b z-10">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-4 p-4">
+            <Title order={2}>Create a new question</Title>
+
+            <Button type="submit" size="md">
+              Submit Question
+            </Button>
+          </div>
+        </Paper>
+        <div className="p-5 space-y-5 max-w-4xl mx-auto">
           <Paper
             shadow="xs"
             className="p-6 border-primary border-t-4 flex flex-col gap-4"
           >
-            <h2 className="text-2xl font-semibold">Question</h2>
+            <Title order={2}>Question</Title>
 
             <div>
-              <h6 className="font-semibold mb-2.5">Section</h6>
+              <Text fz={"lg"} fw={500} mb={"xs"}>
+                Section
+              </Text>
               <SegmentedControl
                 orientation={largeScreen ? "horizontal" : "vertical"}
                 fullWidth
@@ -102,7 +119,9 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
 
             {watch("section") !== "math" && (
               <div>
-                <h6 className="font-semibold mb-2.5">Passage</h6>
+                <Text fz={"lg"} fw={500} mb={"xs"}>
+                  Passage
+                </Text>
                 <RichEditor
                   ref={passageInputRef}
                   minHeight="100px"
@@ -115,7 +134,9 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
             )}
 
             <div>
-              <h6 className="font-semibold mb-2.5">Image (optional)</h6>
+              <Text fz={"lg"} fw={500} mb={"xs"}>
+                Image (optional)
+              </Text>
               <FileDrop
                 onChange={(blob) => setValue("questionImage", blob)}
                 value={watch("questionImage")}
@@ -123,7 +144,9 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
             </div>
 
             <div>
-              <h6 className="font-semibold mb-2.5">Question</h6>
+              <Text fz={"lg"} fw={500} mb={"xs"}>
+                Question
+              </Text>
               <RichEditor
                 ref={questionInputRef}
                 minHeight="100px"
@@ -135,7 +158,9 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
             </div>
 
             <div>
-              <h6 className="font-semibold mb-2.5">Difficulty</h6>
+              <Text fz={"lg"} fw={500} mb={"xs"}>
+                Difficulty
+              </Text>
               <SegmentedControl
                 orientation={largeScreen ? "horizontal" : "vertical"}
                 fullWidth
@@ -150,8 +175,11 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
 
             <MultiSelect
               size="md"
-              label="Tags"
-              labelProps={{ className: "text-lg mb-2.5 text-text-color" }}
+              label={
+                <Text fz={"lg"} fw={500} mb={"xs"}>
+                  Tags
+                </Text>
+              }
               data={[]}
               placeholder="Create or select multiple tags"
               searchable
@@ -170,15 +198,11 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
             shadow="xs"
             className="p-6 border-primary border-l-4 flex flex-col gap-4"
           >
-            <h2 className="text-2xl font-semibold">Answer</h2>
+            <Title order={2}>Answer</Title>
             <QuestionOptionAdder />
           </Paper>
-
-          <Button type="submit" size="lg">
-            Submit Question
-          </Button>
-        </form>
-      </div>
+        </div>
+      </form>
     </FormProvider>
   );
 }

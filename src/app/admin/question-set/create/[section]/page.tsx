@@ -19,7 +19,7 @@ import {
 import { Difficulties, SectionTypes } from "@/constants/enums";
 import { difficulties, questionSetSize, sections } from "@/constants/data";
 import { questionService, questionSetService } from "@/lib/client/services";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import AvailableQuestions from "@/components/question-set/AvailableQuestions";
 import { QuestionDto } from "@/dtos/question.dto";
@@ -29,9 +29,9 @@ import { notifications } from "@mantine/notifications";
 import { questionSetFormValidator } from "@/lib/client/validators/form.validator";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
-import useQuery from "@/hooks/useQuery";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 interface PageProps {
   params: {
@@ -60,18 +60,19 @@ export default function QuestionSetCreatePage({
     resolver: zodResolver(questionSetFormValidator),
   });
 
-  useQuery<QuestionDto[]>({
-    auto: !!section,
-    requestFn: () => questionService.getList(section),
+  useQuery({
+    enabled: !!section,
+    queryKey: ["questions", section],
+    queryFn: () => questionService.getList(section),
     onSuccess: (data: QuestionDto[]) => {
       setQuestionMap(new Map(data.map((q) => [q.id, q])));
       setAvailableQuestions(data.map((q) => q.id));
     },
   });
 
-  const { request: createQuestionSet } = useQuery({
-    requestFn: questionSetService.create,
-    onRequest: () => {
+  const { mutate: createQuestionSet } = useMutation({
+    mutationFn: questionSetService.create,
+    onMutate: () => {
       notifications.show({
         id: "create-question-set",
         title: "Creating Question Set",
@@ -185,7 +186,7 @@ export default function QuestionSetCreatePage({
         </form>
       </Modal>
 
-      <Paper className="sticky top-14 w-full border-b z-10">
+      <Paper radius={0} className="sticky top-14 w-full border-b z-10">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-4 p-4">
           <h1 className="text-text-color text-xl font-semibold">
             Create <span className="text-primary">{section}</span> question set

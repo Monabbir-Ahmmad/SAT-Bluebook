@@ -8,22 +8,12 @@
   --primary-color: hsl(208, 80%, 52%);
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
 html,
 body {
   min-height: 100vh;
   height: 100%;
   overflow-x: hidden;
   color: var(--text-color);
-}
-
-body.no-scroll::-webkit-scrollbar {
-  width: 0px;
 }
 
 ::-webkit-slider-thumb {

@@ -4,9 +4,9 @@ import { DataTable, DataTableColumn } from "mantine-datatable";
 
 import { Badge, Button, Divider } from "@mantine/core";
 import { userManagementService } from "@/lib/client/services";
-import useQuery from "@/hooks/useQuery";
 import { UserDto } from "@/dtos/user.dto";
 import { UserRoles } from "@/constants/enums";
+import { useQuery } from "@tanstack/react-query";
 
 const userTableColumns: DataTableColumn<UserDto>[] = [
   {
@@ -44,9 +44,9 @@ const userTableColumns: DataTableColumn<UserDto>[] = [
 ];
 
 export default function UserManagementPage() {
-  const { data, loading } = useQuery<UserDto[]>({
-    auto: true,
-    requestFn: userManagementService.getUsers,
+  const { data, isLoading } = useQuery({
+    queryKey: ["users"],
+    queryFn: userManagementService.getUsers,
   });
 
   return (
@@ -63,7 +63,7 @@ export default function UserManagementPage() {
         highlightOnHover
         loaderVariant="bars"
         loaderSize="xl"
-        fetching={loading}
+        fetching={isLoading}
         records={data!}
         columns={userTableColumns}
       />

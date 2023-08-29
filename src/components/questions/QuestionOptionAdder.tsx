@@ -1,4 +1,4 @@
-import { Button, SegmentedControl, TextInput } from "@mantine/core";
+import { Button, SegmentedControl, Text, TextInput } from "@mantine/core";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
 import { RiAddLine as AddIcon } from "react-icons/ri";
@@ -36,7 +36,9 @@ export default function QuestionOptionAdder() {
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <label className="font-semibold text-base">Type</label>
+        <Text fz={"lg"} fw={500} mb={"xs"}>
+          Type
+        </Text>
         <SegmentedControl
           orientation={largeScreen ? "horizontal" : "vertical"}
           fullWidth
@@ -63,7 +65,9 @@ export default function QuestionOptionAdder() {
       {watch("optionType") !== OptionTypes.GRID_IN && (
         <>
           <div className="space-y-2">
-            <h6 className="font-semibold">Options</h6>
+            <Text fz={"lg"} fw={500} mb={"xs"}>
+              Options
+            </Text>
             {fields.map((option, index) => (
               <QuestionOption
                 key={option.id}
@@ -72,8 +76,12 @@ export default function QuestionOptionAdder() {
               />
             ))}
           </div>
-          <Button onClick={() => append({})} variant="light">
-            <AddIcon /> Add Option
+          <Button
+            onClick={() => append({})}
+            variant="light"
+            leftIcon={<AddIcon size={25} />}
+          >
+            Add Option
           </Button>
         </>
       )}

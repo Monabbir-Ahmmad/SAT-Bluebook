@@ -6,14 +6,14 @@ import { RegisterReqDto } from "@/dtos/auth.dto";
 import SignupForm from "@/components/auth/SignupForm";
 import { authService } from "@/lib/client/services";
 import { notifications } from "@mantine/notifications";
-import useQuery from "@/hooks/useQuery";
 import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
 
 export default function SignupPage() {
   const router = useRouter();
-  const { request: signupRequest } = useQuery({
-    requestFn: authService.register,
-    onRequest: () => {
+  const { mutate: signupRequest } = useMutation({
+    mutationFn: authService.register,
+    onMutate: () => {
       notifications.show({
         id: "signup",
         title: "Signing up",
