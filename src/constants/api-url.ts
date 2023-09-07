@@ -25,12 +25,15 @@ const apiUrl = {
   },
   // Exam
   exam: {
-    get: "/student/exam",
+    getExamSection: "/student/exam",
+    verifySection: "/student/exam",
+    submitExamResult: "/student/exam/result",
   },
 
   // User Management
   userManagement: {
     getList: "/admin/user-management",
+    updateAdminRole: "/admin/user-management",
   },
 };
 

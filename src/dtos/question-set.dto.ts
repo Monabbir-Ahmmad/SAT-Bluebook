@@ -1,6 +1,5 @@
 import { Difficulties, SectionTypes } from "@/constants/enums";
 
-import { IQuestion } from "@/lib/server/models/question.model";
 import { IQuestionSet } from "@/lib/server/models/question-set.model";
 import { QuestionDto } from "./question.dto";
 
@@ -24,7 +23,7 @@ export class QuestionSetDto {
     this.section = questionSet.section;
     this.difficulty = questionSet.difficulty;
     this.questions = questionSet.questions.map(
-      (question) => new QuestionDto(question as IQuestion)
+      (question) => new QuestionDto(question)
     );
   }
 }

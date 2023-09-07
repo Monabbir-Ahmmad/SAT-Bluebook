@@ -5,7 +5,7 @@ import { StatusCode } from "@/constants/status-code";
 import { asyncHandler } from "@/lib/server/utils/async.handler";
 import { questionSetAction } from "@/lib/server/actions";
 import { questionSetCreateValidationSchema } from "@/lib/server/validators/question-set.validator";
-import { sendResponse } from "@/lib/server/utils/response.util";
+import { responseHandler } from "@/lib/server/utils/response.handler";
 import { validateData } from "@/lib/server/utils/validation.util";
 
 const createQuestionSet = asyncHandler(async (req: NextRequest) => {
@@ -16,7 +16,7 @@ const createQuestionSet = asyncHandler(async (req: NextRequest) => {
 
   const data = await questionSetAction.create(body);
 
-  return sendResponse(StatusCode.OK, data);
+  return responseHandler(StatusCode.OK, data);
 });
 
 const getQuestionSet = asyncHandler(async (req: NextRequest) => {
@@ -26,7 +26,7 @@ const getQuestionSet = asyncHandler(async (req: NextRequest) => {
       answers: 0,
     },
   });
-  return sendResponse(StatusCode.OK, section);
+  return responseHandler(StatusCode.OK, section);
 });
 
 export { createQuestionSet as POST, getQuestionSet as GET };

@@ -1,24 +1,90 @@
 "use client";
 
-import { Badge, Button, Group, Paper } from "@mantine/core";
-import { ExamQuestionDto } from "@/dtos/exam.dto";
+import {
+  ExamQuestionDto,
+  ExamResultDto,
+  ExamSectionDto,
+  ExamSectionResultDto,
+} from "@/dtos/exam.dto";
+import { Loader, LoadingOverlay } from "@mantine/core";
+import { useEffect, useMemo, useState } from "react";
+import { useIsMutating, useMutation, useQuery } from "@tanstack/react-query";
 
-import ExamCheckReview from "@/components/exam/ExamCheckReview";
 import ExamQuestionItem from "@/components/exam/ExamQuestionItem";
+import ExamSectionFooter from "@/components/exam/ExamSectionFooter";
+import ExamSectionHeader from "@/components/exam/ExamSectionHeader";
+import ExamSectionReview from "@/components/exam/ExamSectionReview";
+import ExamStartGuide from "@/components/exam/ExamStartGuide";
+import { SectionTypes } from "@/constants/enums";
+import { examSectionTime } from "@/constants/data";
 import { examService } from "@/lib/client/services";
-
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { modals } from "@mantine/modals";
+import { shuffle } from "@/lib/client/utils/common.util";
+import { useInterval } from "@mantine/hooks";
+import { useRouter } from "next/navigation";
 
 export default function ExamPage() {
-  const [questions, setQuestions] = useState<ExamQuestionDto[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const router = useRouter();
 
-  useQuery({
-    queryKey: ["exam"],
-    queryFn: examService.get,
+  const examSections = useMemo(
+    () =>
+      shuffle([SectionTypes.MATH, SectionTypes.READING, SectionTypes.WRITING]),
+    []
+  );
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
+  const [remainingTime, setRemainingTime] = useState(0);
+  const [exams, setExams] = useState<ExamSectionDto[]>([]);
+  const [questions, setQuestions] = useState<ExamQuestionDto[]>([]);
+
+  const timer = useInterval(() => setRemainingTime((prev) => prev - 1), 1000);
+
+  const isMutating = useIsMutating({
+    mutationKey: ["exam-result"],
+  });
+
+  const { refetch, isFetching } = useQuery({
+    enabled: !!currentSectionIndex,
+    queryKey: ["exam", examSections[currentSectionIndex]],
+    queryFn: async () =>
+      await examService.getExamSection(examSections[currentSectionIndex]),
     onSuccess: (data) => {
+      setRemainingTime(examSectionTime[examSections[currentSectionIndex]]);
+      setExams((prev) => [...prev, data]);
       setQuestions(data.questions);
+      timer.start();
+    },
+  });
+
+  const { mutate: submitExamResult } = useMutation({
+    mutationKey: ["exam-result"],
+    mutationFn: examService.submitExamResult,
+    onSuccess: (data: ExamResultDto) =>
+      router.push("/student/exam/result/" + data.id),
+  });
+
+  const { mutate: submitExamSection } = useMutation({
+    mutationKey: ["exam-result"],
+    mutationFn: examService.submitExamSection,
+    onSuccess: (data: ExamSectionResultDto) => {
+      if (currentSectionIndex < examSections.length - 1) {
+        setExams((prev) =>
+          prev.map((e) => (e.id === data.id ? { ...e, score: data.score } : e))
+        );
+        setCurrentSectionIndex((prev) => prev + 1);
+        setCurrentQuestionIndex(0);
+      } else {
+        submitExamResult(
+          exams.map(
+            (e) =>
+              new ExamSectionResultDto(
+                e.id,
+                e.section,
+                e.id === data.id ? data.score : e.score
+              )
+          )
+        );
+      }
     },
   });
 
@@ -88,31 +154,77 @@ export default function ExamPage() {
     );
   };
 
-  return (
-    <div className="w-full h-full">
-      <Paper className="sticky top-14 w-full border-b z-10">
-        <div className="text-text-color font-semibold flex flex-col md:flex-row items-center justify-between gap-4 p-4 relative">
-          <h1 className="text-xl">Section</h1>
-          <h1 className="text-xl md:absolute inset-x-0 text-center">
-            Time: 00:00
-          </h1>
-          <Group noWrap>
-            <Badge variant="dot" size="xl">
-              {questions.filter((q) => q.selectedOption !== undefined).length}{" "}
-              answered
-            </Badge>
+  const finishSection = async () => {
+    modals.closeAll();
+    modals.open({
+      size: "lg",
+      centered: true,
+      title: remainingTime ? "Section Review" : "Time's up!",
+      classNames: {
+        title: "text-2xl font-semibold",
+      },
+      closeOnClickOutside: !!remainingTime,
+      closeOnEscape: !!remainingTime,
+      closeButtonProps: { display: !!remainingTime ? "flex" : "none" },
+      children: (
+        <ExamSectionReview
+          questions={questions}
+          onSubmit={() => {
+            timer.stop();
+            submitExamSection({
+              id: exams[currentSectionIndex].id!,
+              questions: questions,
+            });
+            modals.closeAll();
+          }}
+        />
+      ),
+    });
+  };
 
-            <Badge variant="dot" size="xl" color="yellow">
-              {questions.filter((q) => q.markedForReview).length} reviews
-            </Badge>
-          </Group>
-        </div>
-      </Paper>
+  useEffect(() => {
+    if (remainingTime <= 0 && timer.active) {
+      timer.stop();
+      finishSection();
+    }
+  }, [remainingTime]);
+
+  if (exams.length === 0)
+    return (
+      <div className="max-w-2xl mx-auto p-8">
+        <ExamStartGuide
+          onStart={async () => {
+            await refetch();
+            modals.closeAll();
+          }}
+        />
+        <LoadingOverlay
+          visible={isFetching}
+          overlayBlur={2}
+          loader={<Loader variant="bars" size={"xl"} />}
+        />
+      </div>
+    );
+
+  return (
+    <div className="w-full h-full relative">
+      <LoadingOverlay
+        visible={isFetching || !!isMutating}
+        overlayBlur={2}
+        loader={<Loader variant="bars" size={"xl"} />}
+      />
+
+      <ExamSectionHeader
+        currentSectionIndex={currentSectionIndex}
+        remainingTime={remainingTime}
+        questions={questions}
+        examSections={examSections}
+      />
 
       {questions.length > 0 && (
         <ExamQuestionItem
-          data={questions[currentIndex]}
-          title={`Question ${currentIndex + 1}`}
+          data={questions[currentQuestionIndex]}
+          title={`Question ${currentQuestionIndex + 1}`}
           toggleAnswer={toggleAnswer}
           toggleMarkAsWrong={toggleMarkAsWrong}
           toggleMarkForReview={toggleMarkForReview}
@@ -120,29 +232,14 @@ export default function ExamPage() {
         />
       )}
 
-      <Paper className="sticky z-10 bottom-0 w-full" withBorder radius={0}>
-        <Group className="max-w-4xl mx-auto p-4" noWrap position="apart">
-          <Button
-            disabled={currentIndex === 0}
-            onClick={() => setCurrentIndex((prev) => prev - 1)}
-          >
-            Back
-          </Button>
-
-          <ExamCheckReview
-            examQuestions={questions}
-            currentIndex={currentIndex}
-            onIndexSelect={setCurrentIndex}
-          />
-
-          <Button
-            disabled={currentIndex === questions.length - 1}
-            onClick={() => setCurrentIndex((prev) => prev + 1)}
-          >
-            Next
-          </Button>
-        </Group>
-      </Paper>
+      <ExamSectionFooter
+        currentQuestionIndex={currentQuestionIndex}
+        onBackClick={() => setCurrentQuestionIndex((prev) => prev - 1)}
+        onNextClick={() => setCurrentQuestionIndex((prev) => prev + 1)}
+        onFinishClick={finishSection}
+        onIndexSelect={setCurrentQuestionIndex}
+        questions={questions}
+      />
     </div>
   );
 }

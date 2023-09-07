@@ -1,16 +1,28 @@
+import {
+  ExamResultDto,
+  ExamSectionDto,
+  ExamSectionResultDto,
+  ExamSectionSubmitDto,
+} from "@/dtos/exam.dto";
+import { OptionTypes, SectionTypes } from "@/constants/enums";
+
 import { HttpError } from "../utils/httpError";
+import { IQuestion } from "../models/question.model";
 import { IQuestionSet } from "../models/question-set.model";
-import { QuestionSet } from "../models";
-import { QuestionSetDto } from "@/dtos/question-set.dto";
+import { ExamResult, QuestionSet } from "../models";
 import { StatusCode } from "@/constants/status-code";
 
 export default class ExamAction {
-  async getQuestionSet() {
-    const count = await QuestionSet.countDocuments();
+  async getExamSection(section: SectionTypes) {
+    const count = await QuestionSet.countDocuments({
+      section: section,
+    });
 
     const random = Math.floor(Math.random() * count);
 
-    const questionSet: IQuestionSet | null = await QuestionSet.findOne()
+    const questionSet: IQuestionSet | null = await QuestionSet.findOne({
+      section,
+    })
       .skip(random)
       .populate({
         path: "questions",
@@ -20,8 +32,66 @@ export default class ExamAction {
       });
 
     if (!questionSet)
+      throw new HttpError(StatusCode.NOT_FOUND, "Exam section not found.");
+
+    return new ExamSectionDto(questionSet);
+  }
+
+  async verifyExamSection(data: ExamSectionSubmitDto) {
+    const questionSet = await QuestionSet.findById(data.id).populate({
+      path: "questions",
+    });
+
+    if (!questionSet)
       throw new HttpError(StatusCode.NOT_FOUND, "Question set not found.");
 
-    return new QuestionSetDto(questionSet);
+    let score = 0;
+
+    const questions = questionSet.questions as IQuestion[];
+
+    questions.forEach((question: IQuestion) => {
+      const submittedAns = data.questions.find((q) => q.id === question.id);
+
+      if (
+        question.optionType === OptionTypes.GRID_IN &&
+        question.options[0] === submittedAns?.textAnswer
+      )
+        score += 1;
+      else if (
+        submittedAns?.selectedOption !== undefined &&
+        question.answers.includes(submittedAns.selectedOption)
+      ) {
+        score += 1;
+      }
+    });
+
+    return new ExamSectionResultDto(questionSet.id, questionSet.section, score);
+  }
+
+  async submitExamResult(userId: string, data: ExamSectionResultDto[]) {
+    data = data.sort((a, b) => {
+      if (a.section < b.section) return -1;
+      else if (a.section > b.section) return 1;
+      else return 0;
+    });
+
+    let examResult = await ExamResult.create({
+      user: userId,
+      results: data.map((d) => ({
+        questionSet: d.id,
+        score: d.score,
+      })),
+    });
+
+    examResult = await examResult.populate([
+      {
+        path: "results.questionSet",
+      },
+      {
+        path: "user",
+      },
+    ]);
+
+    return new ExamResultDto(examResult);
   }
 }

@@ -6,6 +6,12 @@ export const questionSetSize = {
   [SectionTypes.WRITING]: 27,
 };
 
+export const examSectionTime = {
+  [SectionTypes.MATH]: 5,
+  [SectionTypes.READING]: 5,
+  [SectionTypes.WRITING]: 5,
+};
+
 export const answerType: { value: OptionTypes; label: string }[] = [
   { value: OptionTypes.MCQ_TEXT, label: "Multiple Choice Text" },
   { value: OptionTypes.MCQ_IMAGE, label: "Multiple Choice Image" },

@@ -2,12 +2,15 @@ import { NextRequest } from "next/server";
 import { StatusCode } from "@/constants/status-code";
 import { asyncHandler } from "@/lib/server/utils/async.handler";
 import { examAction } from "@/lib/server/actions";
-import { sendResponse } from "@/lib/server/utils/response.util";
+import { responseHandler } from "@/lib/server/utils/response.handler";
+import { ExamSectionSubmitDto } from "@/dtos/exam.dto";
 
-const getQuestionSet = asyncHandler(async (req: NextRequest) => {
-  const section = await examAction.getQuestionSet();
+const verifyExamSection = asyncHandler(async (req: NextRequest) => {
+  const data: ExamSectionSubmitDto = await req.json();
 
-  return sendResponse(StatusCode.OK, section);
+  const result = await examAction.verifyExamSection(data);
+
+  return responseHandler(StatusCode.OK, result);
 });
 
-export { getQuestionSet as GET };
+export { verifyExamSection as POST };

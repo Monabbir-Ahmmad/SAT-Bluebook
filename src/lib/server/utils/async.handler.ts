@@ -1,4 +1,4 @@
-import { sendError } from "./response.util";
+import { errorResponseHandler } from "./response.handler";
 
 export function asyncHandler(callback: Function) {
   return async (...args: any[]) => {
@@ -6,7 +6,7 @@ export function asyncHandler(callback: Function) {
       return await callback(...args);
     } catch (error: any) {
       console.error(error);
-      return sendError(error);
+      return errorResponseHandler(error);
     }
   };
 }

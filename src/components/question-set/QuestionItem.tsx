@@ -3,12 +3,12 @@ import {
   Badge,
   Button,
   Divider,
-  Group,
   Image,
   Paper,
   Spoiler,
   Text,
   ThemeIcon,
+  Title,
 } from "@mantine/core";
 import { QuestionDto, QuestionOptionDto } from "@/dtos/question.dto";
 
@@ -73,25 +73,7 @@ export default function QuestionItem({
 }: QuestionItemProps) {
   return (
     <Paper withBorder className="flex flex-col gap-4 w-full p-6">
-      <Divider
-        label={
-          <Badge size="xl" variant="outline">
-            {difficulties.find((d) => d.value === data.difficulty)?.label}
-          </Badge>
-        }
-        labelPosition="center"
-      />
-
-      <div className="flex flex-wrap items-center gap-2">
-        Tags:{" "}
-        {data.tags.map((tag: string) => (
-          <Badge key={tag} size="lg">
-            {tag}
-          </Badge>
-        ))}
-      </div>
-
-      <Divider />
+      <Divider label={<Title order={5}>Question #{data.id}</Title>} />
 
       {data.passage && (
         <Spoiler
@@ -132,6 +114,22 @@ export default function QuestionItem({
           </Accordion.Panel>
         </Accordion.Item>
       </Accordion>
+
+      <div className="flex flex-wrap items-center gap-2">
+        Difficulty:{" "}
+        <Badge size="lg" variant="outline">
+          {difficulties.find((d) => d.value === data.difficulty)?.label}
+        </Badge>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2">
+        Tags:{" "}
+        {data.tags.map((tag: string) => (
+          <Badge key={tag} size="lg">
+            {tag}
+          </Badge>
+        ))}
+      </div>
 
       {selected ? (
         <Button
