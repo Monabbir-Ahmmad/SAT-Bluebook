@@ -30,7 +30,7 @@ export const sections: { value: SectionTypes; label: string }[] = [
   { value: SectionTypes.WRITING, label: "Writing" },
 ];
 
-export const adminDashboardItems = [
+export const adminDashboardOptions = [
   {
     id: "1",
     image: "https://img.icons8.com/clouds/256/000000/books.png",
@@ -78,7 +78,7 @@ export const adminDashboardItems = [
   },
 ];
 
-export const studentDashboardItems = [
+export const studentDashboardOptions = [
   {
     id: "1",
     image: "https://img.icons8.com/clouds/256/000000/survey.png",

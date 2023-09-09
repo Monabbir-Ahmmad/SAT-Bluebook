@@ -46,7 +46,13 @@ export default function QuestionSetPage() {
 
   return (
     <div className="min-h-full p-6 space-y-4">
-      <div className="flex gap-4 flex-col lg:flex-row">
+      <Divider
+        label={
+          <h1 className="text-text-color font-semibold">Create Question Set</h1>
+        }
+      />
+
+      <div className="flex gap-4 flex-col xl:flex-row">
         <Link href={"/admin/question-set/create/math"}>
           <DashboardCard
             label={"Create Math Question Set"}
@@ -83,7 +89,7 @@ export default function QuestionSetPage() {
       />
 
       <DataTable
-        height={"65vh"}
+        height={"60vh"}
         withBorder
         borderRadius="sm"
         highlightOnHover

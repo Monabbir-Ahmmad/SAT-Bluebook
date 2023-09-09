@@ -1,7 +1,6 @@
 "use client";
 
 import { examSectionTime, questionSetSize, sections } from "@/constants/data";
-import { SectionTypes } from "@/constants/enums";
 import { examService } from "@/lib/client/services";
 import { secondsToMmSs } from "@/lib/client/utils/common.util";
 import {
@@ -10,10 +9,10 @@ import {
   LoadingOverlay,
   Paper,
   RingProgress,
-  Text,
   Title,
 } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 interface ExamResultPageProps {
   params: { examId: string };
@@ -21,19 +20,19 @@ interface ExamResultPageProps {
 
 const ScoreProgressBar = ({
   score,
-  totalExamScore,
+  totalScore,
 }: {
   score: number;
-  totalExamScore: number;
+  totalScore: number;
 }) => (
   <RingProgress
     size={250}
-    sections={[{ value: (score / totalExamScore) * 100, color: "blue" }]}
+    sections={[{ value: (score / totalScore) * 100, color: "blue" }]}
     label={
       <div className="text-center">
         <Title order={4}>Score</Title>
         <Title order={2} color="blue">
-          {score} / {totalExamScore}
+          {score} / {totalScore}
         </Title>
       </div>
     }
@@ -42,21 +41,21 @@ const ScoreProgressBar = ({
 
 const TimeTakenProgressBar = ({
   timeTaken,
-  totalExamTime,
+  totalTime,
 }: {
   timeTaken: number;
-  totalExamTime: number;
+  totalTime: number;
 }) => (
   <RingProgress
     size={250}
-    sections={[{ value: (timeTaken / totalExamTime) * 100, color: "blue" }]}
+    sections={[{ value: (timeTaken / totalTime) * 100, color: "blue" }]}
     label={
       <div className="text-center">
         <Title order={4}>Time Taken</Title>
         <Title order={2} color="blue">
           {secondsToMmSs(timeTaken)} mins
         </Title>
-        <Title order={4}>{secondsToMmSs(totalExamTime)} mins</Title>
+        <Title order={4}>{secondsToMmSs(totalTime)} mins</Title>
       </div>
     }
   />
@@ -65,30 +64,48 @@ const TimeTakenProgressBar = ({
 export default function ExamResultPage({
   params: { examId },
 }: ExamResultPageProps) {
+  const [totalResult, setTotalResult] = useState({
+    score: 0,
+    timeTaken: 0,
+    examScore: 0,
+    examTime: 0,
+  });
+
   const { data: examResult, isFetching } = useQuery({
     queryKey: ["exam-result", examId],
     queryFn: async () => await examService.getExamResult(examId),
   });
 
-  const totalScore = examResult?.results?.reduce(
-    (acc, curr) => acc + curr.score,
-    0
-  );
+  useEffect(() => {
+    if (examResult) {
+      const score = examResult?.results?.reduce(
+        (acc, curr) => acc + curr.score,
+        0
+      );
 
-  const totalTimeTaken = examResult?.results?.reduce(
-    (acc, curr) => acc + curr.timeTaken,
-    0
-  );
+      const timeTaken = examResult?.results?.reduce(
+        (acc, curr) => acc + curr.timeTaken,
+        0
+      );
 
-  const totalExamScore = Object.values(questionSetSize).reduce(
-    (acc, curr) => acc + curr,
-    0
-  );
+      const examScore = examResult?.results?.reduce(
+        (acc, curr) => acc + questionSetSize[curr.section],
+        0
+      );
 
-  const totalExamTime = Object.values(examSectionTime).reduce(
-    (acc, curr) => acc + curr,
-    0
-  );
+      const examTime = examResult?.results?.reduce(
+        (acc, curr) => acc + examSectionTime[curr.section],
+        0
+      );
+
+      setTotalResult({
+        score,
+        timeTaken,
+        examScore,
+        examTime,
+      });
+    }
+  }, [examResult]);
 
   return (
     <div className="space-y-6 p-6 text-center">
@@ -100,7 +117,7 @@ export default function ExamResultPage({
 
       <Title order={1}>Exam Result</Title>
 
-      {totalScore !== undefined && totalTimeTaken !== undefined && (
+      {totalResult.examScore > 0 && (
         <Paper
           withBorder
           className="w-full p-6 flex flex-col gap-6 items-center justify-center"
@@ -109,12 +126,12 @@ export default function ExamResultPage({
 
           <Group noWrap>
             <ScoreProgressBar
-              score={totalScore}
-              totalExamScore={totalExamScore}
+              score={totalResult.score}
+              totalScore={totalResult.examScore}
             />
             <TimeTakenProgressBar
-              timeTaken={totalTimeTaken}
-              totalExamTime={totalExamTime}
+              timeTaken={totalResult.timeTaken}
+              totalTime={totalResult.examTime}
             />
           </Group>
         </Paper>
@@ -133,11 +150,11 @@ export default function ExamResultPage({
             <Group noWrap>
               <ScoreProgressBar
                 score={result.score}
-                totalExamScore={questionSetSize[result.section]}
+                totalScore={questionSetSize[result.section]}
               />
               <TimeTakenProgressBar
                 timeTaken={result.timeTaken}
-                totalExamTime={examSectionTime[result.section]}
+                totalTime={examSectionTime[result.section]}
               />
             </Group>
           </Paper>

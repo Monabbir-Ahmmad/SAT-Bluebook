@@ -2,10 +2,11 @@
 
 import { Divider, Paper } from "@mantine/core";
 
-import AdminDashboardOptions from "@/components/dashboard/AdminDashboardOptions";
+import DashboardOptions from "@/components/dashboard/DashboardOptions";
 import { MdAdminPanelSettings as EducationIcon } from "react-icons/md";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
+import { adminDashboardOptions } from "@/constants/data";
 
 export default function AdminDashboardPage() {
   const session = useSession();
@@ -39,7 +40,7 @@ export default function AdminDashboardPage() {
         labelPosition="left"
       />
 
-      <AdminDashboardOptions />
+      <DashboardOptions options={adminDashboardOptions} />
     </div>
   );
 }

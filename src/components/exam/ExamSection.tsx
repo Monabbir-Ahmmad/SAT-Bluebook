@@ -1,8 +1,9 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { useIsMutating, useMutation, useQuery } from "@tanstack/react-query";
 import { Loader, LoadingOverlay } from "@mantine/core";
 import { useInterval } from "@mantine/hooks";
-import { useRouter } from "next/navigation";
 import { modals } from "@mantine/modals";
 import { examService } from "@/lib/client/services";
 import { examSectionTime } from "@/constants/data";
@@ -11,25 +12,18 @@ import ExamQuestionItem from "@/components/exam/ExamQuestionItem";
 import ExamSectionFooter from "@/components/exam/ExamSectionFooter";
 import ExamSectionHeader from "@/components/exam/ExamSectionHeader";
 import ExamSectionReview from "@/components/exam/ExamSectionReview";
-import ExamStartGuide from "@/components/exam/ExamStartGuide";
 import { ExamResultDto, ExamSectionResultDto } from "@/dtos/exam.dto";
 import { SectionTypes } from "@/constants/enums";
 
 export interface ExamSectionProps {
   sectionsOrder: SectionTypes[];
-  onExamFinish?: (examResult: ExamResultDto) => void;
+  onExamFinish: (examResult: ExamResultDto) => any;
 }
 
 export default function ExamSection({
-  sectionsOrder = [
-    SectionTypes.MATH,
-    SectionTypes.READING,
-    SectionTypes.WRITING,
-  ],
+  sectionsOrder = Object.values(SectionTypes),
   onExamFinish,
 }: ExamSectionProps) {
-  const router = useRouter();
-
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
   const [remainingTime, setRemainingTime] = useState(0);
@@ -41,8 +35,7 @@ export default function ExamSection({
     mutationKey: ["exam-result"],
   });
 
-  const { refetch, isFetching } = useQuery({
-    enabled: !!currentSectionIndex,
+  const { isFetching } = useQuery({
     queryKey: ["exam", sectionsOrder[currentSectionIndex]],
     queryFn: async () =>
       await examService.getExamSection(
@@ -59,13 +52,7 @@ export default function ExamSection({
   const { mutate: submitExamResult } = useMutation({
     mutationKey: ["exam-result"],
     mutationFn: examService.submitExamResult,
-    onSuccess: (data: ExamResultDto) => {
-      if (onExamFinish) {
-        onExamFinish(data);
-      } else {
-        router.push("/student/exam/result/" + data.id);
-      }
-    },
+    onSuccess: (data: ExamResultDto) => onExamFinish(data),
   });
 
   const { mutate: submitExamSection } = useMutation({
@@ -193,23 +180,6 @@ export default function ExamSection({
     }
   }, [remainingTime]);
 
-  const startExam = async () => {
-    await refetch();
-    modals.closeAll();
-  };
-
-  if (exams.length === 0)
-    return (
-      <div className="max-w-2xl mx-auto p-8">
-        <ExamStartGuide onStart={startExam} />
-        <LoadingOverlay
-          visible={isFetching}
-          overlayBlur={2}
-          loader={<Loader variant="bars" size={"xl"} />}
-        />
-      </div>
-    );
-
   return (
     <div className="w-full h-full relative">
       <LoadingOverlay
@@ -222,19 +192,21 @@ export default function ExamSection({
         currentSectionIndex={currentSectionIndex}
         examSection={sectionsOrder[currentSectionIndex]}
         remainingTime={remainingTime}
-        questions={exams[currentSectionIndex].questions}
+        questions={exams[currentSectionIndex]?.questions}
       />
 
-      {exams[currentSectionIndex].questions.length > 0 && (
-        <ExamQuestionItem
-          data={exams[currentSectionIndex].questions[currentQuestionIndex]}
-          title={`Question ${currentQuestionIndex + 1}`}
-          toggleAnswer={toggleAnswer}
-          toggleMarkAsWrong={toggleMarkAsWrong}
-          toggleMarkForReview={toggleMarkForReview}
-          onTextAnswerChange={onTextAnswerChange}
-        />
-      )}
+      <div className="min-h-[calc(100vh-195px)]">
+        {exams[currentSectionIndex]?.questions.length > 0 && (
+          <ExamQuestionItem
+            data={exams[currentSectionIndex]?.questions[currentQuestionIndex]}
+            title={`Question ${currentQuestionIndex + 1}`}
+            toggleAnswer={toggleAnswer}
+            toggleMarkAsWrong={toggleMarkAsWrong}
+            toggleMarkForReview={toggleMarkForReview}
+            onTextAnswerChange={onTextAnswerChange}
+          />
+        )}
+      </div>
 
       <ExamSectionFooter
         currentQuestionIndex={currentQuestionIndex}
@@ -242,7 +214,7 @@ export default function ExamSection({
         onNextClick={() => setCurrentQuestionIndex((prev) => prev + 1)}
         onFinishClick={finishSection}
         onIndexSelect={setCurrentQuestionIndex}
-        questions={exams[currentSectionIndex].questions}
+        questions={exams[currentSectionIndex]?.questions}
       />
     </div>
   );

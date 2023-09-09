@@ -1,16 +1,17 @@
 "use client";
 
-import { Card, Divider, Paper } from "@mantine/core";
+import { Divider, Paper } from "@mantine/core";
 
 import { GiGraduateCap as EducationIcon } from "react-icons/gi";
 import Image from "next/image";
-import StudentDashboardTests from "@/components/dashboard/StudentDashboardTests";
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import { examService } from "@/lib/client/services";
 import { DataTable, DataTableColumn } from "mantine-datatable";
 import { ExamResultDto } from "@/dtos/exam.dto";
 import { secondsToMmSs } from "@/lib/client/utils/common.util";
+import DashboardOptions from "@/components/dashboard/DashboardOptions";
+import { studentDashboardOptions } from "@/constants/data";
 
 const examResultTableColumns: DataTableColumn<ExamResultDto>[] = [
   {
@@ -76,7 +77,7 @@ export default function StudentDashboardPage() {
         labelPosition="left"
       />
 
-      <StudentDashboardTests />
+      <DashboardOptions options={studentDashboardOptions} />
 
       <Divider
         label={

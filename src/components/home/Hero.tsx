@@ -16,14 +16,6 @@ function Hero() {
     }
   };
 
-  const onGoToDashboardClick = () => {
-    if (session?.data?.user?.role === UserRoles.ADMIN) {
-      router.push("/admin/dashboard");
-    } else {
-      router.push("/student/dashboard");
-    }
-  };
-
   return (
     <div
       className="relative bg-cover bg-center"
@@ -49,10 +41,6 @@ function Hero() {
         <div className="flex gap-5">
           <Button variant="gradient" size="xl" onClick={onGetStartedClick}>
             Get started
-          </Button>
-
-          <Button variant="white" size="xl" onClick={onGoToDashboardClick}>
-            Go to dashboard
           </Button>
         </div>
       </div>
