@@ -8,6 +8,7 @@ export interface IExamResult extends Document {
   results: Types.Array<{
     questionSet: IQuestionSet;
     score: number;
+    timeTaken: number;
   }>;
   createdAt: Date;
   updatedAt: Date;
@@ -28,6 +29,10 @@ const ExamResultSchema = new Schema<IExamResult>(
           ref: "QuestionSet",
         },
         score: {
+          type: Number,
+          required: true,
+        },
+        timeTaken: {
           type: Number,
           required: true,
         },

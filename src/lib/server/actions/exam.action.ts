@@ -1,27 +1,38 @@
+import { ExamResult, QuestionSet } from "../models";
 import {
   ExamResultDto,
   ExamSectionDto,
   ExamSectionResultDto,
   ExamSectionSubmitDto,
 } from "@/dtos/exam.dto";
-import { OptionTypes, SectionTypes } from "@/constants/enums";
+import { Difficulties, OptionTypes, SectionTypes } from "@/constants/enums";
 
 import { HttpError } from "../utils/httpError";
 import { IQuestion } from "../models/question.model";
 import { IQuestionSet } from "../models/question-set.model";
-import { ExamResult, QuestionSet } from "../models";
 import { StatusCode } from "@/constants/status-code";
+import { questionSetSize } from "@/constants/data";
 
 export default class ExamAction {
-  async getExamSection(section: SectionTypes) {
+  async getExamSection(section: SectionTypes, score: number = -1) {
+    if (score < 0) score = Math.floor(Math.random() * questionSetSize[section]);
+
+    let difficulty = Difficulties.EASY;
+
+    if (score / questionSetSize[section] > 0.75) difficulty = Difficulties.HARD;
+    else if (score / questionSetSize[section] > 0.5)
+      difficulty = Difficulties.MEDIUM;
+
     const count = await QuestionSet.countDocuments({
-      section: section,
+      section,
+      difficulty,
     });
 
     const random = Math.floor(Math.random() * count);
 
     const questionSet: IQuestionSet | null = await QuestionSet.findOne({
       section,
+      difficulty,
     })
       .skip(random)
       .populate({
@@ -65,7 +76,12 @@ export default class ExamAction {
       }
     });
 
-    return new ExamSectionResultDto(questionSet.id, questionSet.section, score);
+    return new ExamSectionResultDto(
+      questionSet.id,
+      questionSet.section,
+      score,
+      data.timeTaken
+    );
   }
 
   async submitExamResult(userId: string, data: ExamSectionResultDto[]) {
@@ -80,6 +96,7 @@ export default class ExamAction {
       results: data.map((d) => ({
         questionSet: d.id,
         score: d.score,
+        timeTaken: d.timeTaken,
       })),
     });
 
@@ -93,5 +110,34 @@ export default class ExamAction {
     ]);
 
     return new ExamResultDto(examResult);
+  }
+
+  async getExamResult(examId: string) {
+    const examResult = await ExamResult.findById(examId).populate([
+      {
+        path: "results.questionSet",
+      },
+      {
+        path: "user",
+      },
+    ]);
+
+    if (!examResult)
+      throw new HttpError(StatusCode.NOT_FOUND, "Exam result not found.");
+
+    return new ExamResultDto(examResult);
+  }
+
+  async getExamResults(userId: string) {
+    const examResults = await ExamResult.find({ user: userId }).populate([
+      {
+        path: "results.questionSet",
+      },
+      {
+        path: "user",
+      },
+    ]);
+
+    return examResults.map((examResult) => new ExamResultDto(examResult));
   }
 }

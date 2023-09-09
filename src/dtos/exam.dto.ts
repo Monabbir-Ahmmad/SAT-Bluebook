@@ -1,8 +1,8 @@
+import { IExamResult } from "@/lib/server/models/exam-result.model";
+import { IQuestionSet } from "@/lib/server/models/question-set.model";
 import { QuestionDto } from "./question.dto";
 import { SectionTypes } from "@/constants/enums";
 import { UserDto } from "./user.dto";
-import { IExamResult } from "@/lib/server/models/exam-result.model";
-import { IQuestionSet } from "@/lib/server/models/question-set.model";
 
 export interface ExamQuestionDto extends QuestionDto {
   selectedOption?: number;
@@ -17,6 +17,7 @@ export class ExamSectionDto {
   section: SectionTypes;
   questions: ExamQuestionDto[];
   score?: number = 0;
+  timeTaken?: number = 0;
 
   constructor(data: IQuestionSet) {
     this.id = data.id;
@@ -40,6 +41,7 @@ export class ExamQuestionSubmitDto {
 
 export class ExamSectionSubmitDto {
   id: string;
+  timeTaken: number;
   questions: ExamQuestionSubmitDto[];
 }
 
@@ -47,11 +49,18 @@ export class ExamSectionResultDto {
   id: string;
   section: SectionTypes;
   score: number;
+  timeTaken: number;
 
-  constructor(id: string, section: SectionTypes, score: number = 0) {
+  constructor(
+    id: string,
+    section: SectionTypes,
+    score: number = 0,
+    timeTaken: number
+  ) {
     this.id = id;
     this.section = section;
     this.score = score;
+    this.timeTaken = timeTaken;
   }
 }
 
@@ -70,7 +79,8 @@ export class ExamResultDto {
         new ExamSectionResultDto(
           result.questionSet.id,
           result.questionSet.section,
-          result.score
+          result.score,
+          result.timeTaken
         )
     );
     this.createdAt = data.createdAt;

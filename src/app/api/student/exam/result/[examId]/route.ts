@@ -1,22 +1,19 @@
-import { NextRequest } from "next/server";
-import { SectionTypes } from "@/constants/enums";
 import { StatusCode } from "@/constants/status-code";
-import { asyncHandler } from "@/lib/server/utils/async.handler";
 import { examAction } from "@/lib/server/actions";
+import { asyncHandler } from "@/lib/server/utils/async.handler";
 import { responseHandler } from "@/lib/server/utils/response.handler";
+import { NextRequest } from "next/server";
 
 const getExamSection = asyncHandler(
   async (
     req: NextRequest,
     {
-      params: { section },
+      params: { examId },
     }: {
-      params: { section: SectionTypes };
+      params: { examId: string };
     }
   ) => {
-    const score = parseInt(req.nextUrl.searchParams.get("score") || "-1");
-
-    const questionSet = await examAction.getExamSection(section, score);
+    const questionSet = await examAction.getExamResult(examId);
 
     return responseHandler(StatusCode.OK, questionSet);
   }

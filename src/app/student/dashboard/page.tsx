@@ -1,14 +1,51 @@
 "use client";
 
-import { Divider, Paper } from "@mantine/core";
+import { Card, Divider, Paper } from "@mantine/core";
 
 import { GiGraduateCap as EducationIcon } from "react-icons/gi";
 import Image from "next/image";
 import StudentDashboardTests from "@/components/dashboard/StudentDashboardTests";
 import { useSession } from "next-auth/react";
+import { useQuery } from "@tanstack/react-query";
+import { examService } from "@/lib/client/services";
+import { DataTable, DataTableColumn } from "mantine-datatable";
+import { ExamResultDto } from "@/dtos/exam.dto";
+import { secondsToMmSs } from "@/lib/client/utils/common.util";
+
+const examResultTableColumns: DataTableColumn<ExamResultDto>[] = [
+  {
+    accessor: "id",
+    title: "#",
+    width: 250,
+    textAlignment: "right",
+  },
+  {
+    accessor: "createdAt",
+    title: "Date",
+    textAlignment: "center",
+  },
+  {
+    accessor: "results",
+    title: "Total Score",
+    textAlignment: "center",
+    render: ({ results }) => results.reduce((a, b) => a + b.score, 0),
+  },
+  {
+    accessor: "results",
+    title: "Total Time Taken",
+    textAlignment: "center",
+    render: ({ results }) =>
+      secondsToMmSs(results.reduce((a, b) => a + b.timeTaken, 0)) + " mins",
+  },
+];
 
 export default function StudentDashboardPage() {
   const session = useSession();
+
+  const { data: examResults, isLoading } = useQuery({
+    queryKey: ["exam-results"],
+    queryFn: examService.getExamResults,
+  });
 
   return (
     <div className="mx-auto max-w-7xl w-full flex flex-col gap-5 p-4">
@@ -42,8 +79,23 @@ export default function StudentDashboardPage() {
       <StudentDashboardTests />
 
       <Divider
-        label={<h1 className="text-2xl text-text-color">Previous Exams</h1>}
+        label={
+          <h1 className="text-2xl text-text-color">Your Previous Exams</h1>
+        }
         labelPosition="left"
+      />
+
+      <DataTable
+        verticalSpacing={"md"}
+        height={"80vh"}
+        withBorder
+        borderRadius="sm"
+        highlightOnHover
+        loaderVariant="bars"
+        loaderSize="xl"
+        fetching={isLoading}
+        records={examResults!}
+        columns={examResultTableColumns}
       />
     </div>
   );

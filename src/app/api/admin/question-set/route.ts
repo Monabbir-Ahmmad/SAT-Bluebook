@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { QuestionSet } from "@/lib/server/models";
 import { QuestionSetCreateReqDto } from "@/dtos/question-set.dto";
 import { StatusCode } from "@/constants/status-code";
 import { asyncHandler } from "@/lib/server/utils/async.handler";
@@ -19,14 +18,10 @@ const createQuestionSet = asyncHandler(async (req: NextRequest) => {
   return responseHandler(StatusCode.OK, data);
 });
 
-const getQuestionSet = asyncHandler(async (req: NextRequest) => {
-  const section = await QuestionSet.find({}).populate({
-    path: "questions",
-    select: {
-      answers: 0,
-    },
-  });
-  return responseHandler(StatusCode.OK, section);
+const getQuestionSetList = asyncHandler(async (req: NextRequest) => {
+  const questionSets = await questionSetAction.getQuestionSetList();
+
+  return responseHandler(StatusCode.OK, questionSets);
 });
 
-export { createQuestionSet as POST, getQuestionSet as GET };
+export { createQuestionSet as POST, getQuestionSetList as GET };

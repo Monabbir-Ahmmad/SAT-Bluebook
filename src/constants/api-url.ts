@@ -19,7 +19,7 @@ const apiUrl = {
   // Question Set
   questionSet: {
     create: "/admin/question-set",
-    get: "/admin/question-set",
+    getList: "/admin/question-set",
     update: "/admin/question-set",
     delete: "/admin/question-set",
   },
@@ -28,6 +28,8 @@ const apiUrl = {
     getExamSection: "/student/exam",
     verifySection: "/student/exam",
     submitExamResult: "/student/exam/result",
+    getExamResult: "/student/exam/result",
+    getExamResults: "/student/exam/result",
   },
 
   // User Management

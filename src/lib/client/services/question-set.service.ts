@@ -8,8 +8,8 @@ export default class QuestionSetService {
     return res.data;
   }
 
-  async get() {
-    const res = await httpClient.get(apiUrl.questionSet.get);
+  async getList() {
+    const res = await httpClient.get(apiUrl.questionSet.getList);
     return res.data;
   }
 }

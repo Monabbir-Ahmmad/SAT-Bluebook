@@ -2,14 +2,14 @@ import { Difficulties, OptionTypes, SectionTypes } from "./enums";
 
 export const questionSetSize = {
   [SectionTypes.MATH]: 44,
-  [SectionTypes.READING]: 3,
+  [SectionTypes.READING]: 27,
   [SectionTypes.WRITING]: 27,
 };
 
 export const examSectionTime = {
-  [SectionTypes.MATH]: 5,
-  [SectionTypes.READING]: 5,
-  [SectionTypes.WRITING]: 5,
+  [SectionTypes.MATH]: 70 * 60,
+  [SectionTypes.READING]: 32 * 60,
+  [SectionTypes.WRITING]: 32 * 60,
 };
 
 export const answerType: { value: OptionTypes; label: string }[] = [
@@ -88,16 +88,9 @@ export const studentDashboardItems = [
       {
         id: "1.1",
         href: "/student/exam",
-        label: "SAT Random Difficulty",
-        description: "Take a full-length SAT exam with random difficulty.",
-        image: "https://img.icons8.com/clouds/256/000000/learning.png",
-      },
-      {
-        id: "1.2",
-        href: "/student/exam",
-        label: "SAT In Order Difficulty",
+        label: "SAT Increasing Difficulty",
         description:
-          "Take a full-length SAT exam with increasing difficulty based on your performance.",
+          "Take a full-length SAT exam with increasing difficulty based on your performance on each section.",
         image: "https://img.icons8.com/clouds/256/000000/glossary.png",
       },
     ],
@@ -110,21 +103,21 @@ export const studentDashboardItems = [
     content: [
       {
         id: "2.1",
-        href: "/student/section/math",
+        href: "/student/exam/math",
         label: "Mathmatics",
         description: "Take a full-length mathmatics test.",
         image: "https://img.icons8.com/clouds/256/000000/calculator.png",
       },
       {
         id: "2.2",
-        href: "/student/section/reading",
+        href: "/student/exam/reading",
         label: "Reading",
         description: "Take a full-length reading test.",
         image: "https://img.icons8.com/clouds/256/000000/book-reading.png",
       },
       {
         id: "2.3",
-        href: "/student/section/writing",
+        href: "/student/exam/writing",
         label: "Writing",
         description: "Take a full-length writing test.",
         image: "https://img.icons8.com/clouds/256/000000/hand-with-pen.png",

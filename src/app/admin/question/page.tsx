@@ -1,15 +1,14 @@
 "use client";
 
-import { Badge, Button, Divider } from "@mantine/core";
+import { Badge, Divider } from "@mantine/core";
 import { DataTable, DataTableColumn } from "mantine-datatable";
 import { difficulties, sections } from "@/constants/data";
 
-import { RiAddFill as AddIcon } from "react-icons/ri";
+import DashboardCard from "@/components/dashboard/DashboardCard";
+import Link from "next/link";
 import { QuestionDto } from "@/dtos/question.dto";
 import { convertHtmlToPlain } from "@/lib/client/utils/common.util";
 import { questionService } from "@/lib/client/services";
-
-import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 
 const questionTableColumns: DataTableColumn<QuestionDto>[] = [
@@ -47,8 +46,6 @@ const questionTableColumns: DataTableColumn<QuestionDto>[] = [
 ];
 
 export default function QuestionPage() {
-  const router = useRouter();
-
   const { data, isLoading } = useQuery({
     queryKey: ["questions"],
     queryFn: () => questionService.getList(),
@@ -56,20 +53,20 @@ export default function QuestionPage() {
 
   return (
     <div className="min-h-full p-6 space-y-4">
-      <Button
-        color="blue"
-        leftIcon={<AddIcon size={25} />}
-        onClick={() => router.push("/admin/question/create")}
-      >
-        Create New Question
-      </Button>
+      <Link href={"/admin/question/create"}>
+        <DashboardCard
+          label={"Create New Question"}
+          description={"Create a new question to add to a question sets."}
+          image="https://img.icons8.com/clouds/256/000000/question-mark.png"
+        />
+      </Link>
 
       <Divider
         label={<h1 className="text-text-color font-semibold">Questions</h1>}
       />
 
       <DataTable
-        height={"70vh"}
+        height={"65vh"}
         withBorder
         borderRadius="sm"
         highlightOnHover

@@ -14,7 +14,7 @@ type ExamCheckReviewProps = {
 };
 
 export default function ExamSectionReview({
-  questions,
+  questions = [],
   onSubmit,
 }: ExamCheckReviewProps) {
   const answered = questions.filter(

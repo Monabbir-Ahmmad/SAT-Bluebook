@@ -19,7 +19,7 @@ export default function ExamSectionFooter({
   onNextClick,
   onFinishClick,
   onIndexSelect,
-  questions,
+  questions = [],
 }: ExamSectionFooterProps) {
   return (
     <Paper className="sticky z-10 bottom-0 w-full" withBorder radius={0}>

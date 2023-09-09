@@ -1,4 +1,4 @@
-import { Question, QuestionSet } from "../models";
+import { QuestionSet } from "../models";
 import {
   QuestionSetCreateReqDto,
   QuestionSetDto,
@@ -13,6 +13,14 @@ export default class QuestionSetAction {
 
   async getQuestionSetBySection(section: string) {
     const questionSets = await QuestionSet.find({ section });
+
+    return questionSets.map((questionSet) => new QuestionSetDto(questionSet));
+  }
+
+  async getQuestionSetList() {
+    const questionSets = await QuestionSet.find().populate({
+      path: "questions",
+    });
 
     return questionSets.map((questionSet) => new QuestionSetDto(questionSet));
   }

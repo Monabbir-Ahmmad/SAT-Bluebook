@@ -17,4 +17,12 @@ const submitExamResult = asyncHandler(async (req: NextRequest) => {
   return responseHandler(StatusCode.OK, result);
 });
 
-export { submitExamResult as POST };
+const getExamResults = asyncHandler(async (req: NextRequest) => {
+  const session = await getServerSession(authOptions);
+
+  const result = await examAction.getExamResults(session?.user?.id!);
+
+  return responseHandler(StatusCode.OK, result);
+});
+
+export { submitExamResult as POST, getExamResults as GET };

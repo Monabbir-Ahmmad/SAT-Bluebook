@@ -10,9 +10,14 @@ import apiUrl from "@/constants/api-url";
 import { httpClient } from "../http-client";
 
 export default class ExamService {
-  async getExamSection(section: SectionTypes) {
+  async getExamSection(section: SectionTypes, score?: number) {
     const res = await httpClient.get<ExamSectionDto>(
-      apiUrl.exam.getExamSection + `/${section}`
+      apiUrl.exam.getExamSection + `/${section}`,
+      {
+        params: {
+          score,
+        },
+      }
     );
     return res.data;
   }
@@ -29,6 +34,20 @@ export default class ExamService {
     const res = await httpClient.post<ExamResultDto>(
       apiUrl.exam.submitExamResult,
       data
+    );
+    return res.data;
+  }
+
+  async getExamResult(examId: string) {
+    const res = await httpClient.get<ExamResultDto>(
+      apiUrl.exam.getExamResult + `/${examId}`
+    );
+    return res.data;
+  }
+
+  async getExamResults() {
+    const res = await httpClient.get<ExamResultDto[]>(
+      apiUrl.exam.getExamResults
     );
     return res.data;
   }
