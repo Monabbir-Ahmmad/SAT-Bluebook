@@ -1,6 +1,6 @@
 import { ChangeEvent, DragEvent, forwardRef } from "react";
 
-import RemoveIcon from "remixicon-react/CloseLineIcon";
+import { RiCloseLine as RemoveIcon } from "react-icons/ri";
 import { twMerge } from "tailwind-merge";
 
 interface ImagePreviewProps {
@@ -18,6 +18,14 @@ interface FileDropProps {
   previewHeight?: number;
   onChange: (blob?: string) => any;
 }
+
+const toBase64 = (file: File): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+  });
 
 const ImagePreview = ({ image, height, onRemoveClick }: ImagePreviewProps) => {
   if (!image) return null;
@@ -71,15 +79,11 @@ const FileDrop = forwardRef<HTMLDivElement, FileDropProps>(
     };
 
     const validateFile = (file: File) => {
-      if (file.size <= maxSizeKB * 1024) {
-        if (allowedMimeTypes.includes(file.type)) {
-          onChange(URL.createObjectURL(file));
-        } else {
-          alert("Invalid file type. Please choose a valid file type.");
-        }
-      } else {
+      if (file.size > maxSizeKB * 1024)
         alert(`File size exceeds the maximum limit of ${maxSizeKB}KB.`);
-      }
+      else if (!allowedMimeTypes.includes(file.type))
+        alert("Invalid file type. Please choose a valid file type.");
+      else toBase64(file).then((base64) => onChange(base64));
     };
 
     const handleRemoveImage = () => onChange(undefined);

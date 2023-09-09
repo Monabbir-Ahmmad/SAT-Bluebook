@@ -1,33 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { ModalsProvider } from "@mantine/modals";
+import { SessionProvider } from "next-auth/react";
+import ThemeProvider from "./ThemeProvider";
+import QueryProvider from "./QueryProvider";
 
-import {
-  MantineProvider,
-  ColorScheme,
-  ColorSchemeProvider,
-} from "@mantine/core";
+interface ProvidersProps {
+  children: React.ReactNode;
+}
 
-export function Providers({ children }: { children: React.ReactNode }) {
-  const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
-
-  const toggleColorScheme = (value?: ColorScheme) => {
-    const nextColorScheme =
-      value || (colorScheme === "dark" ? "light" : "dark");
-    setColorScheme(nextColorScheme);
-  };
-
+export default function Providers({ children }: ProvidersProps) {
   return (
-    <ColorSchemeProvider
-      colorScheme={colorScheme}
-      toggleColorScheme={toggleColorScheme}
-    >
-      <MantineProvider
-        withGlobalStyles
-        withNormalizeCSS
-      >
-        {children}
-      </MantineProvider>
-    </ColorSchemeProvider>
+    <QueryProvider>
+      <SessionProvider>
+        <ThemeProvider>
+          <ModalsProvider>{children}</ModalsProvider>
+        </ThemeProvider>
+      </SessionProvider>
+    </QueryProvider>
   );
 }

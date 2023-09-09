@@ -1,0 +1,47 @@
+@import url("normalize.css");
+
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --text-color: hsl(210, 13%, 30%);
+  --primary-color: hsl(208, 80%, 52%);
+}
+
+html,
+body {
+  min-height: 100vh;
+  height: 100%;
+  overflow-x: hidden;
+  color: var(--text-color);
+}
+
+::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* total width */
+::-webkit-scrollbar {
+  background-color: transparent;
+  width: 5px;
+}
+
+/* background of the scrollbar except button or resizer */
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/* scrollbar itself */
+::-webkit-scrollbar-thumb {
+  background-color: slategray;
+}
+
+/* set button(top and bottom of the scrollbar) */
+::-webkit-scrollbar-button {
+  display: none;
+}

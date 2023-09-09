@@ -1,116 +1,86 @@
 "use client";
 
 import { Button, PasswordInput, TextInput } from "@mantine/core";
-import { Controller, useForm } from "react-hook-form";
+import {
+  RiEyeCloseLine as InvisibleIcon,
+  RiLockLine as LockIcon,
+  RiMailLine as MailIcon,
+  RiUserLine as UserIcon,
+  RiEyeLine as VisibleIcon,
+} from "react-icons/ri";
+import { SubmitHandler, useForm } from "react-hook-form";
 
-import InvisibleIcon from "remixicon-react/EyeCloseLineIcon";
-import LockIcon from "remixicon-react/LockLineIcon";
-import MailIcon from "remixicon-react/MailLineIcon";
-import VisibleIcon from "remixicon-react/EyeLineIcon";
+import Link from "next/link";
+import { RegisterReqDto } from "@/dtos/auth.dto";
+import { signupFormValidator } from "@/lib/client/validators/form.validator";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-function SignupForm() {
-  const { control, watch, handleSubmit } = useForm();
+type SignupFormProps = {
+  onSubmit: SubmitHandler<RegisterReqDto>;
+};
+
+function SignupForm({ onSubmit }: SignupFormProps) {
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<RegisterReqDto>({
+    resolver: zodResolver(signupFormValidator),
+  });
 
   return (
-    <form
-      className="flex flex-col gap-3 w-full"
-      onSubmit={handleSubmit((data) => console.log(data))}
-    >
-      <Controller
-        name="email"
-        control={control}
-        defaultValue=""
-        rules={{
-          validate: (value) => !!value.trim() || "Email is required",
-          pattern: {
-            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-            message: "Email is invalid",
-          },
-        }}
-        render={({ field, fieldState: { error } }) => (
-          <TextInput
-            {...field}
-            size="lg"
-            type="email"
-            label="Email"
-            placeholder="Enter your email"
-            icon={<MailIcon />}
-            error={error?.message}
-          />
-        )}
+    <form className="space-y-6 w-full" onSubmit={handleSubmit(onSubmit)}>
+      <TextInput
+        {...register("name")}
+        size="md"
+        type="text"
+        label="Name"
+        placeholder="Enter your name"
+        icon={<UserIcon />}
+        error={errors.name?.message}
       />
 
-      <Controller
-        name="password"
-        control={control}
-        defaultValue=""
-        rules={{
-          required: "Password is required",
-          minLength: {
-            value: 8,
-            message: "Password must have at least 8 characters",
-          },
-          maxLength: {
-            value: 20,
-            message: "Password can have at most 20 characters",
-          },
-          pattern: {
-            value:
-              /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#.,;+_=\/\\\$%\^&\*\-])/,
-            message:
-              "Password must contain at least one uppercase, one lowercase, one number and one special character",
-          },
-        }}
-        render={({ field, fieldState: { error } }) => (
-          <PasswordInput
-            {...field}
-            size="lg"
-            label="Password"
-            placeholder="Enter a strong password"
-            icon={<LockIcon />}
-            visibilityToggleIcon={({ reveal, size }) =>
-              reveal ? (
-                <InvisibleIcon size={size} />
-              ) : (
-                <VisibleIcon size={size} />
-              )
-            }
-            error={error?.message}
-          />
-        )}
+      <TextInput
+        {...register("email")}
+        size="md"
+        type="email"
+        label="Email"
+        placeholder="Enter your email"
+        icon={<MailIcon />}
+        error={errors.email?.message}
       />
 
-      <Controller
-        name="confirmPassword"
-        control={control}
-        defaultValue=""
-        rules={{
-          required: "Please confirm your password",
-          validate: (value) =>
-            value === watch("password") || "The passwords do not match",
-        }}
-        render={({ field, fieldState: { error } }) => (
-          <PasswordInput
-            {...field}
-            size="lg"
-            label="Confirm Password"
-            placeholder="Enter your password again"
-            icon={<LockIcon />}
-            visibilityToggleIcon={({ reveal, size }) =>
-              reveal ? (
-                <InvisibleIcon size={size} />
-              ) : (
-                <VisibleIcon size={size} />
-              )
-            }
-            error={error?.message}
-          />
-        )}
+      <PasswordInput
+        {...register("password")}
+        size="md"
+        label="Password"
+        placeholder="Enter a strong password"
+        icon={<LockIcon />}
+        visibilityToggleIcon={({ reveal, size }) =>
+          reveal ? <InvisibleIcon size={size} /> : <VisibleIcon size={size} />
+        }
+        error={errors.password?.message}
       />
 
-      <Button type="submit" uppercase>
-        Create Account
-      </Button>
+      <PasswordInput
+        {...register("confirmPassword")}
+        size="md"
+        label="Confirm Password"
+        placeholder="Enter your password again"
+        icon={<LockIcon />}
+        visibilityToggleIcon={({ reveal, size }) =>
+          reveal ? <InvisibleIcon size={size} /> : <VisibleIcon size={size} />
+        }
+        error={errors.confirmPassword?.message}
+      />
+
+      <div className="flex gap-2 items-center justify-between">
+        <Link className="hover:underline text-primary" href="/auth/signin">
+          Already have an account? Login
+        </Link>
+
+        <Button type="submit">Sign Up</Button>
+      </div>
     </form>
   );
 }

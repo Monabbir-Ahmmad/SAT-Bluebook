@@ -1,12 +1,16 @@
-import { ActionIcon, Image, Text, Tooltip } from "@mantine/core";
+import { ActionIcon, Divider, Image, Text, Tooltip } from "@mantine/core";
+import {
+  RiCloseFill as CloseIcon,
+  RiArrowGoBackFill as UndoIcon,
+} from "react-icons/ri";
 
-import CloseIcon from "remixicon-react/CloseLineIcon";
-import UndoIcon from "remixicon-react/ArrowGoBackLineIcon";
+import { OptionTypes } from "@/constants/enums";
+import { QuestionOptionDto } from "@/dtos/question.dto";
 import { twMerge } from "tailwind-merge";
 
 type ExamAnswerOptionProps = {
-  optionType: OptionType;
-  option: QuestionOptionDTO;
+  optionType: OptionTypes;
+  option: QuestionOptionDto;
   selected?: boolean;
   markedWrong?: boolean;
   toggleSelect: (index: number, selected: boolean) => void;
@@ -43,12 +47,15 @@ function ExamAnswerOption({
     <div className="flex gap-2 items-center w-full">
       <div
         className={twMerge(
-          "w-full cursor-pointer bg-white hover:shadow-md border-2 rounded-lg flex items-center py-2.5 px-4 gap-4 transition-all",
-          selected && "border-primary shadow-md",
-          markedWrong && "line-through bg-slate-50"
+          "w-full relative cursor-pointer bg-white hover:shadow-md border-2 rounded-lg flex items-center py-2.5 px-4 gap-4 transition-all",
+          selected && "border-primary",
+          markedWrong && "bg-slate-50"
         )}
         onClick={onSelect}
       >
+        {markedWrong && (
+          <Divider className="absolute -inset-x-2 top-1/2" color="dark" />
+        )}
         <span
           className={twMerge(
             "min-w-[2rem] w-8 aspect-square flex items-center justify-center rounded-full border-2 border-slate-300 transition-all",
@@ -58,16 +65,16 @@ function ExamAnswerOption({
           {index + 1}
         </span>
 
-        {optionType === "mcq-text" && <Text>{option?.text}</Text>}
+        {optionType === OptionTypes.MCQ_TEXT && <Text>{option?.text}</Text>}
 
-        {optionType === "mcq-image" && (
+        {optionType === OptionTypes.MCQ_IMAGE && (
           <Image src={option?.image} alt="" height={200} />
         )}
       </div>
 
       <Tooltip label={markedWrong ? "Undo mark" : "Mark as wrong"} withArrow>
         <ActionIcon size="xl" radius="xl" onClick={onMarkAsWrong}>
-          {markedWrong ? <UndoIcon /> : <CloseIcon />}
+          {markedWrong ? <UndoIcon size={25} /> : <CloseIcon size={25} />}
         </ActionIcon>
       </Tooltip>
     </div>

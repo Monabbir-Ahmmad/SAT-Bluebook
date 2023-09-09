@@ -2,6 +2,8 @@ import { Checkbox, CloseButton, TextInput } from "@mantine/core";
 
 import { ChangeEvent } from "react";
 import FileDrop from "../common/fileDrop/FileDrop";
+import { OptionTypes } from "@/constants/enums";
+import { QuestionCreateReqDto } from "@/dtos/question.dto";
 import { useFormContext } from "react-hook-form";
 
 interface QuestionOptionProps {
@@ -9,14 +11,17 @@ interface QuestionOptionProps {
   onRemoveClick?: () => void;
 }
 
-function QuestionOption({ index, onRemoveClick }: QuestionOptionProps) {
+export default function QuestionOption({
+  index,
+  onRemoveClick,
+}: QuestionOptionProps) {
   const {
     register,
     formState: { errors },
     setValue,
     getValues,
     watch,
-  } = useFormContext<QuestionDTO>();
+  } = useFormContext<QuestionCreateReqDto>();
 
   const pickAnswer = (e: ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
@@ -48,7 +53,7 @@ function QuestionOption({ index, onRemoveClick }: QuestionOptionProps) {
         error={!!errors?.answers}
       />
 
-      {watch("optionType") === "mcq-image" && (
+      {watch("optionType") === OptionTypes.MCQ_IMAGE && (
         <FileDrop
           onChange={handleFileChange}
           value={watch(`options.${index}.image`)}
@@ -57,7 +62,7 @@ function QuestionOption({ index, onRemoveClick }: QuestionOptionProps) {
         />
       )}
 
-      {watch("optionType") === "mcq-text" && (
+      {watch("optionType") === OptionTypes.MCQ_TEXT && (
         <TextInput
           {...register(`options.${index}.text`)}
           className="w-full"
@@ -78,5 +83,3 @@ function QuestionOption({ index, onRemoveClick }: QuestionOptionProps) {
     </div>
   );
 }
-
-export default QuestionOption;

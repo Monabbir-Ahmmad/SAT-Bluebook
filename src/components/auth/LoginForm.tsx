@@ -1,88 +1,63 @@
 "use client";
 
 import { Button, PasswordInput, TextInput } from "@mantine/core";
-import { Controller, useForm } from "react-hook-form";
+import {
+  RiEyeCloseLine as InvisibleIcon,
+  RiLockLine as LockIcon,
+  RiMailLine as MailIcon,
+  RiEyeLine as VisibleIcon,
+} from "react-icons/ri";
+import { SubmitHandler, useForm } from "react-hook-form";
 
-import InvisibleIcon from "remixicon-react/EyeCloseLineIcon";
-import LockIcon from "remixicon-react/LockLineIcon";
-import MailIcon from "remixicon-react/MailLineIcon";
-import VisibleIcon from "remixicon-react/EyeLineIcon";
+import Link from "next/link";
+import { LoginReqDto } from "@/dtos/auth.dto";
+import { loginFormValidator } from "@/lib/client/validators/form.validator";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-function LoginForm() {
-  const { control, handleSubmit } = useForm();
+type LoginFormProps = {
+  onSubmit: SubmitHandler<LoginReqDto>;
+};
+
+function LoginForm({ onSubmit }: LoginFormProps) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginReqDto>({
+    resolver: zodResolver(loginFormValidator),
+  });
 
   return (
-    <form
-      className="flex flex-col gap-3 w-full"
-      onSubmit={handleSubmit((date) => console.log(date))}
-    >
-      <Controller
-        name="email"
-        control={control}
-        defaultValue=""
-        rules={{
-          validate: (value) => !!value.trim() || "Email is required",
-          pattern: {
-            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-            message: "Email is invalid",
-          },
-        }}
-        render={({ field, fieldState: { error } }) => (
-          <TextInput
-            {...field}
-            type="email"
-            label="Email"
-            size="lg"
-            placeholder="Enter your email"
-            icon={<MailIcon />}
-            error={error?.message}
-          />
-        )}
+    <form className="space-y-6 w-full" onSubmit={handleSubmit(onSubmit)}>
+      <TextInput
+        {...register("email")}
+        type="email"
+        label="Email"
+        size="md"
+        placeholder="Enter your email"
+        icon={<MailIcon />}
+        error={errors.email?.message}
       />
 
-      <Controller
-        name="password"
-        control={control}
-        defaultValue=""
-        rules={{
-          required: "Password is required",
-          minLength: {
-            value: 8,
-            message: "Password must have at least 8 characters",
-          },
-          maxLength: {
-            value: 20,
-            message: "Password can have at most 20 characters",
-          },
-          pattern: {
-            value:
-              /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#.,;+_=\/\\\$%\^&\*\-])/,
-            message:
-              "Password must contain at least one uppercase, one lowercase, one number and one special character",
-          },
-        }}
-        render={({ field, fieldState: { error } }) => (
-          <PasswordInput
-            {...field}
-            label="Password"
-            size="lg"
-            placeholder="Enter a strong password"
-            icon={<LockIcon />}
-            visibilityToggleIcon={({ reveal, size }) =>
-              reveal ? (
-                <InvisibleIcon size={size} />
-              ) : (
-                <VisibleIcon size={size} />
-              )
-            }
-            error={error?.message}
-          />
-        )}
+      <PasswordInput
+        {...register("password")}
+        label="Password"
+        size="md"
+        placeholder="Enter a strong password"
+        icon={<LockIcon />}
+        visibilityToggleIcon={({ reveal, size }) =>
+          reveal ? <InvisibleIcon size={size} /> : <VisibleIcon size={size} />
+        }
+        error={errors.password?.message}
       />
 
-      <Button type="submit" uppercase>
-        Login
-      </Button>
+      <div className="flex gap-2 items-center justify-between">
+        <Link className="hover:underline text-primary" href="/auth/signup">
+          Don&apos;t have an account? Register
+        </Link>
+
+        <Button type="submit">Login</Button>
+      </div>
     </form>
   );
 }
