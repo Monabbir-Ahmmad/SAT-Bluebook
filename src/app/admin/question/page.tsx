@@ -53,7 +53,7 @@ export default function QuestionPage() {
 
   return (
     <div className="min-h-full p-6 space-y-4">
-      <Link href={"/admin/question/create"}>
+      <Link href={"/admin/question/create"} className="flex">
         <DashboardCard
           label={"Create New Question"}
           description={"Create a new question to add to a question sets."}

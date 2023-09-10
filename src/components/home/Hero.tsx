@@ -27,14 +27,14 @@ function Hero() {
       <div className="absolute inset-0 bg-black bg-opacity-70 z-0" />
       <div className="h-screen relative flex flex-col gap-8 justify-center items-start text-white max-w-6xl mx-auto">
         <h1 className="text-7xl font-bold max-w-4xl">
-          SAT{" "}
+          City{" "}
           <Text component="span" inherit variant="gradient">
-            Bluebook
+            Smarts
           </Text>
         </h1>
         <p className="text-xl max-w-3xl">
-          The SAT Bluebook is a free, open-source SAT practice test generator.
-          It is designed to help students prepare for the SAT by providing them
+          The City Smarts is a free, open-source SAT practice test generator. It
+          is designed to help students prepare for the SAT by providing them
           with a realistic testing experience.
         </p>
 

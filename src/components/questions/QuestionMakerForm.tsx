@@ -17,10 +17,10 @@ import FileDrop from "../common/fileDrop/FileDrop";
 import { QuestionCreateReqDto } from "@/dtos/question.dto";
 import QuestionOptionAdder from "./QuestionOptionAdder";
 import { buttonListMini } from "../common/richEditor/buttonList";
+import { debounce } from "@/lib/client/utils/common.util";
 import { questionFormValidator } from "@/lib/client/validators/form.validator";
 import { useMediaQuery } from "@mantine/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { debounce } from "@/lib/client/utils/common.util";
 
 type AddQuestionFormProps = {
   onSubmit: (data: QuestionCreateReqDto) => void;
@@ -64,7 +64,7 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
   }, [setValue, questionInputRef]);
 
   useEffect(() => {
-    if (watch("section") === "math") {
+    if (watch("section") === SectionTypes.MATH) {
       setValue("passage", undefined);
     } else if (passageInputRef.current) {
       passageInputRef.current.onChange = debounce((content) => {
@@ -117,7 +117,7 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
               />
             </div>
 
-            {watch("section") !== "math" && (
+            {watch("section") !== SectionTypes.MATH && (
               <div>
                 <Text fz={"lg"} fw={500} mb={"xs"}>
                   Passage

@@ -6,8 +6,7 @@ export enum OptionTypes {
 
 export enum SectionTypes {
   MATH = "math",
-  READING = "reading",
-  WRITING = "writing",
+  READING_WRITING = "reading-writing",
 }
 
 export enum Difficulties {
