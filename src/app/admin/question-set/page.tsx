@@ -56,30 +56,16 @@ export default function QuestionSetPage() {
         <Link href={"/admin/question-set/create/math"}>
           <DashboardCard
             label={"Create Math Question Set"}
-            description={
-              "Create a new math question set for students to practice."
-            }
+            description={"Create a question set for mathmatics section."}
             image="https://img.icons8.com/clouds/256/000000/calculator.png"
           />
         </Link>
 
-        <Link href={"/admin/question-set/create/reading"}>
+        <Link href={"/admin/question-set/create/reading-writing"}>
           <DashboardCard
-            label={"Create Reading Question Set"}
-            description={
-              "Create a new reading question set for students to practice."
-            }
+            label={"Create Reading & Writing Question Set"}
+            description={"Create a question set for reading & writing section."}
             image="https://img.icons8.com/clouds/256/000000/book-reading.png"
-          />
-        </Link>
-
-        <Link href={"/admin/question-set/create/writing"}>
-          <DashboardCard
-            label={"Create Writing Question Set"}
-            description={
-              "Create a new writing question set for students to practice."
-            }
-            image="https://img.icons8.com/clouds/256/000000/hand-with-pen.png"
           />
         </Link>
       </div>

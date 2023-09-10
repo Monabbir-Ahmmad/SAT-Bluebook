@@ -9,7 +9,6 @@ import {
 
 import DashboardCard from "./DashboardCard";
 import Link from "next/link";
-import { adminDashboardOptions } from "@/constants/data";
 
 interface DashboardOptionsProps {
   options: {
@@ -45,19 +44,13 @@ export default function DashboardOptions({ options }: DashboardOptionsProps) {
               </Group>
             </Accordion.Control>
             <Accordion.Panel>
-              <SimpleGrid
-                cols={3}
-                breakpoints={[
-                  { maxWidth: "xl", cols: 3 },
-                  { maxWidth: "lg", cols: 1 },
-                ]}
-              >
+              <div className="flex gap-4 flex-col xl:flex-row">
                 {item.content.map((content) => (
                   <Link key={content.id} href={content.href}>
                     <DashboardCard {...content} />
                   </Link>
                 ))}
-              </SimpleGrid>
+              </div>
             </Accordion.Panel>
           </Accordion.Item>
         ))}

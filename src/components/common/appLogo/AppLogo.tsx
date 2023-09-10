@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SiBookstack as Logo } from "react-icons/si";
+import { GiBrainstorm as Logo } from "react-icons/gi";
 import { Text } from "@mantine/core";
 
 type AppLogoProps = {
@@ -18,7 +18,7 @@ function AppLogo({ size = 25, className }: AppLogoProps) {
       >
         <Logo size={size + 5} className="text-primary" />
         <Text component="span" inherit variant="gradient">
-          SAT Bluebook
+          City Smarts
         </Text>
       </h1>
     </Link>

@@ -2,14 +2,12 @@ import { Difficulties, OptionTypes, SectionTypes } from "./enums";
 
 export const questionSetSize = {
   [SectionTypes.MATH]: 44,
-  [SectionTypes.READING]: 27,
-  [SectionTypes.WRITING]: 27,
+  [SectionTypes.READING_WRITING]: 54,
 };
 
 export const examSectionTime = {
   [SectionTypes.MATH]: 70 * 60,
-  [SectionTypes.READING]: 32 * 60,
-  [SectionTypes.WRITING]: 32 * 60,
+  [SectionTypes.READING_WRITING]: 64 * 60,
 };
 
 export const answerType: { value: OptionTypes; label: string }[] = [
@@ -26,8 +24,7 @@ export const difficulties: { value: Difficulties; label: string }[] = [
 
 export const sections: { value: SectionTypes; label: string }[] = [
   { value: SectionTypes.MATH, label: "Mathematics" },
-  { value: SectionTypes.READING, label: "Reading" },
-  { value: SectionTypes.WRITING, label: "Writing" },
+  { value: SectionTypes.READING_WRITING, label: "Reading & Writing" },
 ];
 
 export const adminDashboardOptions = [
@@ -61,18 +58,10 @@ export const adminDashboardOptions = [
       },
       {
         id: "2.2",
-        href: "/admin/question-set/create/reading",
-        label: "Create Reading Question Set",
-        description: "Create a question set for reading section.",
+        href: "/admin/question-set/create/reading-writing",
+        label: "Create Reading & Writing Question Set",
+        description: "Create a question set for reading & writing section.",
         image: "https://img.icons8.com/clouds/256/000000/book-reading.png",
-      },
-
-      {
-        id: "2.3",
-        href: "/admin/question-set/create/writing",
-        label: "Create Writing Question Set",
-        description: "Create a question set for writing section.",
-        image: "https://img.icons8.com/clouds/256/000000/hand-with-pen.png",
       },
     ],
   },
@@ -110,17 +99,10 @@ export const studentDashboardOptions = [
       },
       {
         id: "2.2",
-        href: "/student/exam/reading",
-        label: "Reading",
-        description: "Take a full-length reading test.",
+        href: "/student/exam/reading-writing",
+        label: "Reading & Writing",
+        description: "Take a full-length reading & writing test.",
         image: "https://img.icons8.com/clouds/256/000000/book-reading.png",
-      },
-      {
-        id: "2.3",
-        href: "/student/exam/writing",
-        label: "Writing",
-        description: "Take a full-length writing test.",
-        image: "https://img.icons8.com/clouds/256/000000/hand-with-pen.png",
       },
     ],
   },
