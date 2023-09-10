@@ -5,6 +5,7 @@ import { GithubProfile } from "next-auth/providers/github";
 import GithubProvider from "next-auth/providers/github";
 import { OAuthProviders } from "@/constants/enums";
 import { authAction } from "@/lib/server/actions";
+import connectDB from "@/lib/server/config/connect-db";
 
 export const authOptions: NextAuthOptions = {
   pages: {
@@ -14,6 +15,8 @@ export const authOptions: NextAuthOptions = {
   providers: [
     GithubProvider({
       async profile(profile: GithubProfile) {
+        await connectDB();
+
         const user = await authAction.OAuthLogin({
           email: profile.email!,
           name: profile.name!,
@@ -46,6 +49,8 @@ export const authOptions: NextAuthOptions = {
 
       async authorize(credentials) {
         try {
+          await connectDB();
+
           const user = await authAction.login({
             email: credentials?.email!,
             password: credentials?.password!,
