@@ -19,7 +19,7 @@ import {
 import { Difficulties, SectionTypes } from "@/constants/enums";
 import { difficulties, questionSetSize, sections } from "@/constants/data";
 import { questionService, questionSetService } from "@/lib/client/services";
-import { useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import AvailableQuestions from "@/components/question-set/AvailableQuestions";
 import { QuestionDto } from "@/dtos/question.dto";
@@ -30,8 +30,8 @@ import { questionSetFormValidator } from "@/lib/client/validators/form.validator
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery } from "@tanstack/react-query";
 
 interface PageProps {
   params: {
@@ -130,13 +130,16 @@ export default function QuestionSetCreatePage({
       <Drawer
         opened={openedDrawer}
         onClose={drawer.close}
+        position="right"
+        size={"xl"}
+        transitionProps={{
+          duration: 0,
+        }}
         title={
           <p className="text-text-color text-lg font-semibold">
             Available <span className="text-primary">{section}</span> questions
           </p>
         }
-        position="right"
-        size={"xl"}
       >
         <AvailableQuestions
           questionIds={availableQuestions}
