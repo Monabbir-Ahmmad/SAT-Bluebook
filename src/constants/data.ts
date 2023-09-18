@@ -76,7 +76,7 @@ export const studentDashboardOptions = [
     content: [
       {
         id: "1.1",
-        href: "/student/exam",
+        href: "/student/exam/full-sat",
         label: "SAT Increasing Difficulty",
         description:
           "Take a full-length SAT exam with increasing difficulty based on your performance on each section.",

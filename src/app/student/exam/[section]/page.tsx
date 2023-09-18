@@ -3,10 +3,17 @@
 import { useRouter } from "next/navigation";
 
 import { SectionTypes } from "@/constants/enums";
+import {
+  ExamResultDto,
+  ExamSectionResultDto,
+  ExamSectionSubmitDto,
+} from "@/dtos/exam.dto";
+import { examSectionTime, sections } from "@/constants/data";
 import ExamSection from "@/components/exam/ExamSection";
+import { Loader, LoadingOverlay } from "@mantine/core";
+import { examService } from "@/lib/client/services";
+import { useIsMutating, useMutation, useQuery } from "@tanstack/react-query";
 import ExamStartGuide from "@/components/exam/ExamStartGuide";
-import { useState } from "react";
-import { ExamResultDto } from "@/dtos/exam.dto";
 
 interface SectionExamPageProps {
   params: {
@@ -19,17 +26,42 @@ export default function SectionExamPage({
 }: SectionExamPageProps) {
   const router = useRouter();
 
-  const [examSections, setExamSections] = useState<SectionTypes[]>([]);
+  const isMutating = useIsMutating({
+    mutationKey: ["exam-result"],
+  });
+
+  const {
+    data: examModule,
+    isFetching,
+    refetch,
+  } = useQuery({
+    enabled: false,
+    queryKey: ["exam", section],
+    queryFn: async () => await examService.getExamSection(section),
+  });
+
+  const { mutate: submitExamSection } = useMutation({
+    mutationKey: ["exam-result"],
+    mutationFn: examService.submitExamSection,
+    onSuccess: (data: ExamSectionResultDto) => submitExamResult([data]),
+  });
+
+  const { mutate: submitExamResult } = useMutation({
+    mutationKey: ["exam-result"],
+    mutationFn: examService.submitExamResult,
+    onSuccess: (data: ExamResultDto) =>
+      router.push(`/student/exam/result/${data.id}`),
+  });
 
   const onExamStart = () => {
-    setExamSections([section]);
+    refetch();
   };
 
-  const onExamFinish = (examResult: ExamResultDto) => {
-    router.push(`/student/exam/result/${examResult.id}`);
+  const onExamSectionSubmit = (examSection: ExamSectionSubmitDto) => {
+    submitExamSection(examSection);
   };
 
-  if (examSections.length === 0)
+  if (!examModule && !isFetching)
     return (
       <div className="max-w-2xl mx-auto p-8">
         <ExamStartGuide onStart={onExamStart} />
@@ -37,6 +69,21 @@ export default function SectionExamPage({
     );
 
   return (
-    <ExamSection sectionsOrder={examSections} onExamFinish={onExamFinish} />
+    <div>
+      <LoadingOverlay
+        visible={isFetching || !!isMutating}
+        overlayBlur={2}
+        loader={<Loader variant="bars" size={"xl"} />}
+      />
+
+      {examModule && (
+        <ExamSection
+          section={examModule}
+          title={sections.find((s) => s.value === section)?.label}
+          timeLimit={examSectionTime[section]}
+          onSectionSubmit={onExamSectionSubmit}
+        />
+      )}
+    </div>
   );
 }

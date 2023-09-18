@@ -10,7 +10,7 @@ interface ExamSectionFooterProps {
   onNextClick: () => any;
   onFinishClick: () => any;
   onIndexSelect: (index: number) => any;
-  questions: ExamQuestionDto[];
+  questions?: ExamQuestionDto[];
 }
 
 export default function ExamSectionFooter({
