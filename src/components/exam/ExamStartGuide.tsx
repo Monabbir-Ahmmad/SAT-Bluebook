@@ -25,12 +25,6 @@ export default function ExamStartGuide({ onStart }: ExamStartGuideProps) {
         </List.Item>
 
         <List.Item>
-          You will be given random question sets from the question bank. You
-          have to give exams for all 3 the sections (Math, Reading, Writing) in
-          random given order.
-        </List.Item>
-
-        <List.Item>
           The exam will be automatically submitted when the time is up. You can
           also submit the exam manually at the end of each section.
         </List.Item>

@@ -11,7 +11,7 @@ export enum SectionTypes {
 
 export enum Difficulties {
   EASY = "easy",
-  MEDIUM = "medium",
+  BASE = "base",
   HARD = "hard",
 }
 

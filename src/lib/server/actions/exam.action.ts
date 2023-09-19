@@ -1,3 +1,4 @@
+import { Difficulties, OptionTypes, SectionTypes } from "@/constants/enums";
 import { ExamResult, QuestionSet } from "../models";
 import {
   ExamResultDto,
@@ -5,7 +6,6 @@ import {
   ExamSectionResultDto,
   ExamSectionSubmitDto,
 } from "@/dtos/exam.dto";
-import { Difficulties, OptionTypes, SectionTypes } from "@/constants/enums";
 
 import { HttpError } from "../utils/httpError";
 import { IQuestion } from "../models/question.model";
@@ -14,14 +14,37 @@ import { StatusCode } from "@/constants/status-code";
 import { questionSetSize } from "@/constants/data";
 
 export default class ExamAction {
-  async getExamSection(section: SectionTypes, score: number = -1) {
-    if (score < 0) score = Math.floor(Math.random() * questionSetSize[section]);
+  async getExamSection(section: SectionTypes) {
+    const count = await QuestionSet.countDocuments({
+      section,
+    });
 
-    let difficulty = Difficulties.EASY;
+    const random = Math.floor(Math.random() * count);
 
-    if (score / questionSetSize[section] > 0.75) difficulty = Difficulties.HARD;
-    else if (score / questionSetSize[section] > 0.5)
-      difficulty = Difficulties.MEDIUM;
+    const questionSet: IQuestionSet | null = await QuestionSet.findOne({
+      section,
+    })
+      .skip(random)
+      .populate({
+        path: "questions",
+        select: {
+          answers: 0,
+        },
+      });
+
+    if (!questionSet)
+      throw new HttpError(StatusCode.NOT_FOUND, "Exam section not found.");
+
+    return new ExamSectionDto(questionSet);
+  }
+
+  async getDynamicExamSection(section: SectionTypes, score?: number) {
+    let difficulty;
+
+    if (score === undefined) difficulty = Difficulties.BASE;
+    else if (score / questionSetSize[section] > 0.6)
+      difficulty = Difficulties.HARD;
+    else difficulty = Difficulties.EASY;
 
     const count = await QuestionSet.countDocuments({
       section,

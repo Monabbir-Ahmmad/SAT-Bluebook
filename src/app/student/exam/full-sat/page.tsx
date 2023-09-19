@@ -1,21 +1,20 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { shuffle } from "@/lib/client/utils/common.util";
-
-import { SectionTypes } from "@/constants/enums";
-import ExamStartGuide from "@/components/exam/ExamStartGuide";
-import { useEffect, useMemo, useState } from "react";
 import {
   ExamResultDto,
   ExamSectionResultDto,
   ExamSectionSubmitDto,
 } from "@/dtos/exam.dto";
-import ExamSection from "@/components/exam/ExamSection";
-import { useIsMutating, useMutation, useQuery } from "@tanstack/react-query";
-import { examService } from "@/lib/client/services";
-import { examSectionTime, sections } from "@/constants/data";
 import { Loader, LoadingOverlay } from "@mantine/core";
+import { examSectionTime, sections } from "@/constants/data";
+import { useEffect, useMemo, useState } from "react";
+import { useIsMutating, useMutation, useQuery } from "@tanstack/react-query";
+
+import ExamSection from "@/components/exam/ExamSection";
+import ExamStartGuide from "@/components/exam/ExamStartGuide";
+import { SectionTypes } from "@/constants/enums";
+import { examService } from "@/lib/client/services";
+import { useRouter } from "next/navigation";
 
 export default function FullSATExamPage() {
   const router = useRouter();
@@ -23,7 +22,15 @@ export default function FullSATExamPage() {
   const [examScores, setExamScores] = useState<ExamSectionResultDto[]>([]);
   const [currentSectionIndex, setCurrentSectionIndex] = useState(-1);
 
-  const sectionsOrder = useMemo(() => shuffle(Object.values(SectionTypes)), []);
+  const sectionsOrder = useMemo(
+    () => [
+      SectionTypes.MATH,
+      SectionTypes.MATH,
+      SectionTypes.READING_WRITING,
+      SectionTypes.READING_WRITING,
+    ],
+    []
+  );
 
   const isMutating = useIsMutating({
     mutationKey: ["exam-result"],
@@ -32,11 +39,13 @@ export default function FullSATExamPage() {
   const { data: examModule, isFetching } = useQuery({
     enabled:
       currentSectionIndex >= 0 && currentSectionIndex < sectionsOrder.length,
-    queryKey: ["exam", sectionsOrder[currentSectionIndex]],
+    queryKey: ["exam", sectionsOrder[currentSectionIndex], currentSectionIndex],
     queryFn: async () =>
-      await examService.getExamSection(
+      await examService.getDynamicExamSection(
         sectionsOrder[currentSectionIndex],
-        examScores.length ? examScores[examScores.length - 1].score : undefined
+        examScores.length && currentSectionIndex % 2 != 0
+          ? examScores[examScores.length - 1].score
+          : undefined
       ),
   });
 
@@ -87,10 +96,9 @@ export default function FullSATExamPage() {
       {examModule && (
         <ExamSection
           section={examModule}
-          title={
-            sections.find((s) => s.value === sectionsOrder[currentSectionIndex])
-              ?.label
-          }
+          title={`${sections.find(
+            (s) => s.value === sectionsOrder[currentSectionIndex]
+          )?.label} - Module ${(currentSectionIndex % 2) + 1}`}
           timeLimit={examSectionTime[sectionsOrder[currentSectionIndex]]}
           onSectionSubmit={onExamSectionSubmit}
         />

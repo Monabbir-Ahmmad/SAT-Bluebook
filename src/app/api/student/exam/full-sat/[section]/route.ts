@@ -14,7 +14,14 @@ const getExamSection = asyncHandler(
       params: { section: SectionTypes };
     }
   ) => {
-    const questionSet = await examAction.getExamSection(section);
+    const searchParams = req.nextUrl.searchParams;
+
+    const score =
+      searchParams.get("score") !== null
+        ? parseInt(searchParams.get("score") || "0")
+        : undefined;
+
+    const questionSet = await examAction.getDynamicExamSection(section, score);
 
     return responseHandler(StatusCode.OK, questionSet);
   }

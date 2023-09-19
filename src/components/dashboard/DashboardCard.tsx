@@ -1,7 +1,5 @@
 import { Avatar, Group, Paper, Text } from "@mantine/core";
 
-import React from "react";
-
 interface PropType {
   image: string;
   label: string;

@@ -10,9 +10,16 @@ import apiUrl from "@/constants/api-url";
 import { httpClient } from "../http-client";
 
 export default class ExamService {
-  async getExamSection(section: SectionTypes, score?: number) {
+  async getExamSection(section: SectionTypes) {
     const res = await httpClient.get<ExamSectionDto>(
-      apiUrl.exam.getExamSection + `/${section}`,
+      apiUrl.exam.getExamSection + `/${section}`
+    );
+    return res.data;
+  }
+
+  async getDynamicExamSection(section: SectionTypes, score?: number) {
+    const res = await httpClient.get<ExamSectionDto>(
+      apiUrl.exam.getDynamicExamSection + `/${section}`,
       {
         params: {
           score,

@@ -1,19 +1,19 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
-import { SectionTypes } from "@/constants/enums";
 import {
   ExamResultDto,
   ExamSectionResultDto,
   ExamSectionSubmitDto,
 } from "@/dtos/exam.dto";
-import { examSectionTime, sections } from "@/constants/data";
-import ExamSection from "@/components/exam/ExamSection";
 import { Loader, LoadingOverlay } from "@mantine/core";
-import { examService } from "@/lib/client/services";
+import { examSectionTime, sections } from "@/constants/data";
 import { useIsMutating, useMutation, useQuery } from "@tanstack/react-query";
+
+import ExamSection from "@/components/exam/ExamSection";
 import ExamStartGuide from "@/components/exam/ExamStartGuide";
+import { SectionTypes } from "@/constants/enums";
+import { examService } from "@/lib/client/services";
+import { useRouter } from "next/navigation";
 
 interface SectionExamPageProps {
   params: {

@@ -1,13 +1,13 @@
 import { Difficulties, OptionTypes, SectionTypes } from "./enums";
 
 export const questionSetSize = {
-  [SectionTypes.MATH]: 44,
-  [SectionTypes.READING_WRITING]: 54,
+  [SectionTypes.MATH]: 22,
+  [SectionTypes.READING_WRITING]: 27,
 };
 
 export const examSectionTime = {
-  [SectionTypes.MATH]: 70 * 60,
-  [SectionTypes.READING_WRITING]: 64 * 60,
+  [SectionTypes.MATH]: 35 * 60,
+  [SectionTypes.READING_WRITING]: 32 * 60,
 };
 
 export const answerType: { value: OptionTypes; label: string }[] = [
@@ -18,7 +18,7 @@ export const answerType: { value: OptionTypes; label: string }[] = [
 
 export const difficulties: { value: Difficulties; label: string }[] = [
   { value: Difficulties.EASY, label: "Easy" },
-  { value: Difficulties.MEDIUM, label: "Medium" },
+  { value: Difficulties.BASE, label: "Base" },
   { value: Difficulties.HARD, label: "Hard" },
 ];
 
@@ -62,6 +62,22 @@ export const adminDashboardOptions = [
         label: "Create Reading & Writing Question Set",
         description: "Create a question set for reading & writing section.",
         image: "https://img.icons8.com/clouds/256/000000/book-reading.png",
+      },
+    ],
+  },
+  {
+    id: "3",
+    image: "https://img.icons8.com/clouds/256/000000/documents.png",
+    label: "Create Exams",
+    description: "Create exams for the students.",
+    content: [
+      {
+        id: "3.1",
+        href: "/admin/exam/create",
+        label: "Create Complete Exam",
+        description:
+          "Create a complete exam for the students with all sections.",
+        image: "https://img.icons8.com/clouds/256/000000/document.png",
       },
     ],
   },

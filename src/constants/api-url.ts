@@ -26,6 +26,7 @@ const apiUrl = {
   // Exam
   exam: {
     getExamSection: "/student/exam",
+    getDynamicExamSection: "/student/exam/full-sat",
     verifySection: "/student/exam",
     submitExamResult: "/student/exam/result",
     getExamResult: "/student/exam/result",

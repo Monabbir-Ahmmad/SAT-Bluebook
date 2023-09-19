@@ -19,7 +19,9 @@ const createQuestionSet = asyncHandler(async (req: NextRequest) => {
 });
 
 const getQuestionSetList = asyncHandler(async (req: NextRequest) => {
-  const questionSets = await questionSetAction.getQuestionSetList();
+  const section = req.nextUrl.searchParams.get("section");
+
+  const questionSets = await questionSetAction.getQuestionSetList(section);
 
   return responseHandler(StatusCode.OK, questionSets);
 });

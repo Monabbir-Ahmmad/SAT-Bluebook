@@ -2,8 +2,9 @@
 
 import {
   LuLayoutDashboard as DashboardIcon,
+  LuLayers as ExamIcon,
   LuListChecks as QuestionIcon,
-  LuLayers as QuestionSetIcon,
+  LuLayoutList as QuestionSetIcon,
   LuUser as UserIcon,
 } from "react-icons/lu";
 
@@ -28,6 +29,11 @@ const adminNavItems = [
     label: "Question Sets",
     href: "/admin/question-set",
     icon: QuestionSetIcon,
+  },
+  {
+    label: "Exams",
+    href: "/admin/exam",
+    icon: ExamIcon,
   },
   {
     label: "User Management",

@@ -2,7 +2,6 @@ import { Button, Group, Paper } from "@mantine/core";
 
 import ExamCheckReview from "./ExamCheckReview";
 import { ExamQuestionDto } from "@/dtos/exam.dto";
-import React from "react";
 
 interface ExamSectionFooterProps {
   currentQuestionIndex: number;
