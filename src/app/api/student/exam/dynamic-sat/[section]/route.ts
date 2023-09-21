@@ -5,7 +5,7 @@ import { asyncHandler } from "@/lib/server/utils/async.handler";
 import { examAction } from "@/lib/server/actions";
 import { responseHandler } from "@/lib/server/utils/response.handler";
 
-const getExamSection = asyncHandler(
+const getDynamicExamSection = asyncHandler(
   async (
     req: NextRequest,
     {
@@ -27,4 +27,4 @@ const getExamSection = asyncHandler(
   }
 );
 
-export { getExamSection as GET };
+export { getDynamicExamSection as GET };

@@ -1,11 +1,11 @@
 "use client";
 
+import { Button, Loader, LoadingOverlay } from "@mantine/core";
 import {
   ExamResultDto,
   ExamSectionResultDto,
   ExamSectionSubmitDto,
 } from "@/dtos/exam.dto";
-import { Loader, LoadingOverlay } from "@mantine/core";
 import { examSectionTime, sections } from "@/constants/data";
 import { useIsMutating, useMutation, useQuery } from "@tanstack/react-query";
 
@@ -63,8 +63,11 @@ export default function SectionExamPage({
 
   if (!examModule && !isFetching)
     return (
-      <div className="max-w-2xl mx-auto p-8">
-        <ExamStartGuide onStart={onExamStart} />
+      <div className="max-w-2xl mx-auto p-8 space-y-8">
+        <ExamStartGuide />
+        <Button fullWidth onClick={onExamStart}>
+          I understand, start the exam
+        </Button>
       </div>
     );
 

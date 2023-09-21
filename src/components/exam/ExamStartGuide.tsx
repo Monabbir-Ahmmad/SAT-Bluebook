@@ -1,12 +1,8 @@
-import { Button, List, Text, ThemeIcon, Title } from "@mantine/core";
+import { List, Text, ThemeIcon, Title } from "@mantine/core";
 
 import { BsInfoLg as WarningIcon } from "react-icons/bs";
 
-interface ExamStartGuideProps {
-  onStart: () => any;
-}
-
-export default function ExamStartGuide({ onStart }: ExamStartGuideProps) {
+export default function ExamStartGuide() {
   return (
     <div className="space-y-8">
       <Title order={2}>Instructions</Title>
@@ -72,10 +68,6 @@ export default function ExamStartGuide({ onStart }: ExamStartGuideProps) {
           question number.
         </List.Item>
       </List>
-
-      <Button fullWidth onClick={onStart}>
-        I understand, start the exam
-      </Button>
     </div>
   );
 }

@@ -21,7 +21,7 @@ export interface IExam extends Document {
   assignedTo: Types.Array<IUser>;
   attendedBy: Types.Array<{
     user: IUser;
-    result: IExamResult;
+    result?: IExamResult;
   }>;
   createdAt: Date;
   updatedAt: Date;
@@ -83,7 +83,6 @@ const ExamSchema = new Schema<IExam>(
         },
         result: {
           type: Schema.Types.ObjectId,
-          required: true,
           ref: "ExamResult",
         },
       },

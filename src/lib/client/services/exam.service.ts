@@ -23,8 +23,31 @@ export default class ExamService {
     return res.data;
   }
 
+  async startExamById(examId: string) {
+    const res = await httpClient.get<ExamDto>(
+      apiUrl.exam.startExamById + "/" + examId
+    );
+    return res.data;
+  }
+
   async getList() {
     const res = await httpClient.get<ExamDto[]>(apiUrl.exam.getExamList);
+    return res.data;
+  }
+
+  async getExamSectionByExamId(
+    examId: string,
+    section: SectionTypes,
+    score?: number
+  ) {
+    const res = await httpClient.get<ExamSectionDto>(
+      apiUrl.exam.getExamSectionByExamId + `/${examId}/${section}`,
+      {
+        params: {
+          score,
+        },
+      }
+    );
     return res.data;
   }
 

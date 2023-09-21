@@ -129,7 +129,7 @@ export class ExamDto {
   assignedTo: UserDto[];
   attendedBy: Array<{
     user: UserDto;
-    result: ExamResultDto;
+    result?: ExamResultDto;
   }>;
 
   constructor(data: IExam) {
@@ -165,7 +165,7 @@ export class ExamDto {
 
     this.attendedBy = data.attendedBy.map((d) => ({
       user: new UserDto(d.user),
-      result: new ExamResultDto(d.result),
+      result: d.result ? new ExamResultDto(d.result) : undefined,
     }));
   }
 }

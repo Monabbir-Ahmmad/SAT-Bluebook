@@ -14,6 +14,7 @@ import { HttpError } from "../utils/httpError";
 import { IQuestion } from "../models/question.model";
 import { IQuestionSet } from "../models/question-set.model";
 import { StatusCode } from "@/constants/status-code";
+import { Types } from "mongoose";
 import { questionSetSize } from "@/constants/data";
 
 export default class ExamAction {
@@ -71,6 +72,82 @@ export default class ExamAction {
     ]);
 
     return new ExamDto(exam);
+  }
+
+  async getExamById(examId: string) {
+    if (!Types.ObjectId.isValid(examId))
+      throw new HttpError(StatusCode.NOT_FOUND, "Exam not found.");
+
+    const exam = await Exam.findById(examId).populate([
+      {
+        path: `${SectionTypes.MATH}.${Difficulties.EASY}`,
+      },
+      { path: `${SectionTypes.MATH}.${Difficulties.BASE}` },
+      { path: `${SectionTypes.MATH}.${Difficulties.HARD}` },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.EASY}`,
+      },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.BASE}`,
+      },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.HARD}`,
+      },
+    ]);
+
+    if (!exam) throw new HttpError(StatusCode.NOT_FOUND, "Exam not found.");
+
+    return new ExamDto(exam);
+  }
+
+  async startExamById(examId: string, userId: string) {
+    const exam = await this.getExamById(examId);
+
+    if (exam.attendedBy.find((val) => val.user.id == userId))
+      throw new HttpError(StatusCode.FORBIDDEN, "You already took this exam.");
+
+    await Exam.findByIdAndUpdate(examId, {
+      $addToSet: {
+        attendedBy: [
+          {
+            user: new Types.ObjectId(userId),
+          },
+        ],
+      },
+    });
+
+    return exam;
+  }
+
+  async getExamSectionByExamId(
+    examId: string,
+    section: SectionTypes,
+    score?: number
+  ) {
+    const exam = await this.getExamById(examId);
+
+    let difficulty;
+
+    if (score === undefined) difficulty = Difficulties.BASE;
+    else if (score / questionSetSize[section] > 0.6)
+      difficulty = Difficulties.HARD;
+    else difficulty = Difficulties.EASY;
+
+    const questionSetId = exam[section][difficulty].id;
+
+    const questionSet: IQuestionSet | null = await QuestionSet.findById(
+      questionSetId
+    ).populate({
+      path: "questions",
+      select: {
+        answers: 0,
+      },
+    });
+
+    if (!questionSet)
+      throw new HttpError(StatusCode.NOT_FOUND, "Exam section not found.");
+
+    return new ExamSectionDto(questionSet);
   }
 
   async getExamList() {
