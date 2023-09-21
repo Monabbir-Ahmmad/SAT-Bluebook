@@ -64,3 +64,17 @@ export const questionSetFormValidator = z
       "Number of questions must be 44 for math and 27 for reading and writing",
     path: ["questions"],
   });
+
+export const examCreateFormValidator = z.object({
+  title: z.string().min(1),
+  [SectionTypes.MATH]: z.object({
+    [Difficulties.EASY]: z.string().min(1),
+    [Difficulties.BASE]: z.string().min(1),
+    [Difficulties.HARD]: z.string().min(1),
+  }),
+  [SectionTypes.READING_WRITING]: z.object({
+    [Difficulties.EASY]: z.string().min(1),
+    [Difficulties.BASE]: z.string().min(1),
+    [Difficulties.HARD]: z.string().min(1),
+  }),
+});

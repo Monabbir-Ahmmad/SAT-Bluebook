@@ -1,17 +1,17 @@
 "use client";
 
+import { DataTable, DataTableColumn } from "mantine-datatable";
 import { Divider, Paper } from "@mantine/core";
 
-import { GiGraduateCap as EducationIcon } from "react-icons/gi";
-import Image from "next/image";
-import { useSession } from "next-auth/react";
-import { useQuery } from "@tanstack/react-query";
-import { examService } from "@/lib/client/services";
-import { DataTable, DataTableColumn } from "mantine-datatable";
-import { ExamResultDto } from "@/dtos/exam.dto";
-import { secondsToMmSs } from "@/lib/client/utils/common.util";
 import DashboardOptions from "@/components/dashboard/DashboardOptions";
+import { GiGraduateCap as EducationIcon } from "react-icons/gi";
+import { ExamResultDto } from "@/dtos/exam.dto";
+import Image from "next/image";
+import { examService } from "@/lib/client/services";
+import { secondsToMmSs } from "@/lib/client/utils/common.util";
 import { studentDashboardOptions } from "@/constants/data";
+import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 
 const examResultTableColumns: DataTableColumn<ExamResultDto>[] = [
   {
@@ -87,6 +87,7 @@ export default function StudentDashboardPage() {
       />
 
       <DataTable
+        striped
         verticalSpacing={"md"}
         height={"80vh"}
         withBorder

@@ -1,6 +1,9 @@
 import { Difficulties, OptionTypes, SectionTypes } from "@/constants/enums";
-import { ExamResult, QuestionSet } from "../models";
+import { Exam, ExamResult, QuestionSet } from "../models";
 import {
+  ExamAssignReqDto,
+  ExamCreateReqDto,
+  ExamDto,
   ExamResultDto,
   ExamSectionDto,
   ExamSectionResultDto,
@@ -14,6 +17,83 @@ import { StatusCode } from "@/constants/status-code";
 import { questionSetSize } from "@/constants/data";
 
 export default class ExamAction {
+  async createExam(examCreateReq: ExamCreateReqDto) {
+    const exam = await Exam.create(examCreateReq);
+
+    await exam.populate([
+      {
+        path: `${SectionTypes.MATH}.${Difficulties.EASY}`,
+      },
+      { path: `${SectionTypes.MATH}.${Difficulties.BASE}` },
+      { path: `${SectionTypes.MATH}.${Difficulties.HARD}` },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.EASY}`,
+      },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.BASE}`,
+      },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.HARD}`,
+      },
+    ]);
+
+    return new ExamDto(exam);
+  }
+
+  async assignExam(examAssignReq: ExamAssignReqDto) {
+    const exam = await Exam.findByIdAndUpdate(
+      examAssignReq.examId,
+      {
+        $set: {
+          assignedTo: examAssignReq.userIds,
+        },
+      },
+      { new: true }
+    );
+
+    if (!exam) throw new HttpError(StatusCode.NOT_FOUND, "Exam not found");
+
+    await exam.populate([
+      {
+        path: `${SectionTypes.MATH}.${Difficulties.EASY}`,
+      },
+      { path: `${SectionTypes.MATH}.${Difficulties.BASE}` },
+      { path: `${SectionTypes.MATH}.${Difficulties.HARD}` },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.EASY}`,
+      },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.BASE}`,
+      },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.HARD}`,
+      },
+    ]);
+
+    return new ExamDto(exam);
+  }
+
+  async getExamList() {
+    const exams = await Exam.find().populate([
+      {
+        path: `${SectionTypes.MATH}.${Difficulties.EASY}`,
+      },
+      { path: `${SectionTypes.MATH}.${Difficulties.BASE}` },
+      { path: `${SectionTypes.MATH}.${Difficulties.HARD}` },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.EASY}`,
+      },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.BASE}`,
+      },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.HARD}`,
+      },
+    ]);
+
+    return exams.map((exam) => new ExamDto(exam));
+  }
+
   async getExamSection(section: SectionTypes) {
     const count = await QuestionSet.countDocuments({
       section,

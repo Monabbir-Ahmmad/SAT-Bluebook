@@ -41,7 +41,7 @@ const questionSetTableColumns: DataTableColumn<QuestionSetDto>[] = [
 export default function QuestionSetPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["question-sets"],
-    queryFn: () => questionSetService.getList(),
+    queryFn: async () => await questionSetService.getList(),
   });
 
   return (
@@ -75,6 +75,7 @@ export default function QuestionSetPage() {
       />
 
       <DataTable
+        striped
         height={"60vh"}
         withBorder
         borderRadius="sm"

@@ -25,6 +25,9 @@ const apiUrl = {
   },
   // Exam
   exam: {
+    createExam: "/admin/exam",
+    assignExam: "/admin/exam/assign",
+    getExamList: "/admin/exam",
     getExamSection: "/student/exam",
     getDynamicExamSection: "/student/exam/full-sat",
     verifySection: "/student/exam",

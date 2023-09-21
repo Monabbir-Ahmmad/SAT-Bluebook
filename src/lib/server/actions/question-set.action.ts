@@ -18,9 +18,13 @@ export default class QuestionSetAction {
     return questionSets.map((questionSet) => new QuestionSetDto(questionSet));
   }
 
-  async getQuestionSetList(section?: string | null) {
+  async getQuestionSetList(
+    section?: string | null,
+    difficulty?: string | null
+  ) {
     const questionSets = await QuestionSet.find({
       section: section || { $exists: true },
+      difficulty: difficulty || { $exists: true },
     }).populate({
       path: "questions",
     });
