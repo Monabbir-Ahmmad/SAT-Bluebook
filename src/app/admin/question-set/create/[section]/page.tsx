@@ -11,6 +11,7 @@ import {
   SimpleGrid,
   Text,
   TextInput,
+  Title,
 } from "@mantine/core";
 import {
   RiErrorWarningLine as AlertIcon,
@@ -191,9 +192,10 @@ export default function QuestionSetCreatePage({
 
       <Paper radius={0} className="sticky top-14 w-full border-b z-10">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-4 p-4">
-          <h1 className="text-text-color text-xl font-semibold">
-            Create <span className="text-primary">{section}</span> question set
-          </h1>
+          <Title order={3}>
+            Compose a <span className="text-primary">{section}</span> question
+            set
+          </Title>
 
           <Badge variant="dot" size="xl">
             {formMethods.watch("questions").length} of {sectionLimit} questions

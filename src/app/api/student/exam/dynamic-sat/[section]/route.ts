@@ -5,7 +5,7 @@ import { asyncHandler } from "@/lib/server/utils/async.handler";
 import { examAction } from "@/lib/server/actions";
 import { responseHandler } from "@/lib/server/utils/response.handler";
 
-const getExamSection = asyncHandler(
+const getDynamicExamSection = asyncHandler(
   async (
     req: NextRequest,
     {
@@ -14,12 +14,17 @@ const getExamSection = asyncHandler(
       params: { section: SectionTypes };
     }
   ) => {
-    const score = parseInt(req.nextUrl.searchParams.get("score") || "-1");
+    const searchParams = req.nextUrl.searchParams;
 
-    const questionSet = await examAction.getExamSection(section, score);
+    const score =
+      searchParams.get("score") !== null
+        ? parseInt(searchParams.get("score") || "0")
+        : undefined;
+
+    const questionSet = await examAction.getDynamicExamSection(section, score);
 
     return responseHandler(StatusCode.OK, questionSet);
   }
 );
 
-export { getExamSection as GET };
+export { getDynamicExamSection as GET };

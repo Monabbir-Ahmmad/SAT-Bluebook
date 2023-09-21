@@ -1,27 +1,207 @@
-import { ExamResult, QuestionSet } from "../models";
+import { Difficulties, OptionTypes, SectionTypes } from "@/constants/enums";
+import { Exam, ExamResult, QuestionSet } from "../models";
 import {
+  ExamAssignReqDto,
+  ExamCreateReqDto,
+  ExamDto,
   ExamResultDto,
   ExamSectionDto,
   ExamSectionResultDto,
   ExamSectionSubmitDto,
 } from "@/dtos/exam.dto";
-import { Difficulties, OptionTypes, SectionTypes } from "@/constants/enums";
 
 import { HttpError } from "../utils/httpError";
 import { IQuestion } from "../models/question.model";
 import { IQuestionSet } from "../models/question-set.model";
 import { StatusCode } from "@/constants/status-code";
+import { Types } from "mongoose";
 import { questionSetSize } from "@/constants/data";
 
 export default class ExamAction {
-  async getExamSection(section: SectionTypes, score: number = -1) {
-    if (score < 0) score = Math.floor(Math.random() * questionSetSize[section]);
+  async createExam(examCreateReq: ExamCreateReqDto) {
+    const exam = await Exam.create(examCreateReq);
 
-    let difficulty = Difficulties.EASY;
+    await exam.populate([
+      {
+        path: `${SectionTypes.MATH}.${Difficulties.EASY}`,
+      },
+      { path: `${SectionTypes.MATH}.${Difficulties.BASE}` },
+      { path: `${SectionTypes.MATH}.${Difficulties.HARD}` },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.EASY}`,
+      },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.BASE}`,
+      },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.HARD}`,
+      },
+    ]);
 
-    if (score / questionSetSize[section] > 0.75) difficulty = Difficulties.HARD;
-    else if (score / questionSetSize[section] > 0.5)
-      difficulty = Difficulties.MEDIUM;
+    return new ExamDto(exam);
+  }
+
+  async assignExam(examAssignReq: ExamAssignReqDto) {
+    const exam = await Exam.findByIdAndUpdate(
+      examAssignReq.examId,
+      {
+        $set: {
+          assignedTo: examAssignReq.userIds,
+        },
+      },
+      { new: true }
+    );
+
+    if (!exam) throw new HttpError(StatusCode.NOT_FOUND, "Exam not found");
+
+    await exam.populate([
+      {
+        path: `${SectionTypes.MATH}.${Difficulties.EASY}`,
+      },
+      { path: `${SectionTypes.MATH}.${Difficulties.BASE}` },
+      { path: `${SectionTypes.MATH}.${Difficulties.HARD}` },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.EASY}`,
+      },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.BASE}`,
+      },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.HARD}`,
+      },
+    ]);
+
+    return new ExamDto(exam);
+  }
+
+  async getExamById(examId: string) {
+    if (!Types.ObjectId.isValid(examId))
+      throw new HttpError(StatusCode.NOT_FOUND, "Exam not found.");
+
+    const exam = await Exam.findById(examId).populate([
+      {
+        path: `${SectionTypes.MATH}.${Difficulties.EASY}`,
+      },
+      { path: `${SectionTypes.MATH}.${Difficulties.BASE}` },
+      { path: `${SectionTypes.MATH}.${Difficulties.HARD}` },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.EASY}`,
+      },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.BASE}`,
+      },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.HARD}`,
+      },
+    ]);
+
+    if (!exam) throw new HttpError(StatusCode.NOT_FOUND, "Exam not found.");
+
+    return new ExamDto(exam);
+  }
+
+  async startExamById(examId: string, userId: string) {
+    const exam = await this.getExamById(examId);
+
+    if (exam.attendedBy.find((val) => val.user.id == userId))
+      throw new HttpError(StatusCode.FORBIDDEN, "You already took this exam.");
+
+    await Exam.findByIdAndUpdate(examId, {
+      $addToSet: {
+        attendedBy: [
+          {
+            user: new Types.ObjectId(userId),
+          },
+        ],
+      },
+    });
+
+    return exam;
+  }
+
+  async getExamSectionByExamId(
+    examId: string,
+    section: SectionTypes,
+    score?: number
+  ) {
+    const exam = await this.getExamById(examId);
+
+    let difficulty;
+
+    if (score === undefined) difficulty = Difficulties.BASE;
+    else if (score / questionSetSize[section] > 0.6)
+      difficulty = Difficulties.HARD;
+    else difficulty = Difficulties.EASY;
+
+    const questionSetId = exam[section][difficulty].id;
+
+    const questionSet: IQuestionSet | null = await QuestionSet.findById(
+      questionSetId
+    ).populate({
+      path: "questions",
+      select: {
+        answers: 0,
+      },
+    });
+
+    if (!questionSet)
+      throw new HttpError(StatusCode.NOT_FOUND, "Exam section not found.");
+
+    return new ExamSectionDto(questionSet);
+  }
+
+  async getExamList() {
+    const exams = await Exam.find().populate([
+      {
+        path: `${SectionTypes.MATH}.${Difficulties.EASY}`,
+      },
+      { path: `${SectionTypes.MATH}.${Difficulties.BASE}` },
+      { path: `${SectionTypes.MATH}.${Difficulties.HARD}` },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.EASY}`,
+      },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.BASE}`,
+      },
+      {
+        path: `${SectionTypes.READING_WRITING}.${Difficulties.HARD}`,
+      },
+    ]);
+
+    return exams.map((exam) => new ExamDto(exam));
+  }
+
+  async getExamSection(section: SectionTypes) {
+    const count = await QuestionSet.countDocuments({
+      section,
+    });
+
+    const random = Math.floor(Math.random() * count);
+
+    const questionSet: IQuestionSet | null = await QuestionSet.findOne({
+      section,
+    })
+      .skip(random)
+      .populate({
+        path: "questions",
+        select: {
+          answers: 0,
+        },
+      });
+
+    if (!questionSet)
+      throw new HttpError(StatusCode.NOT_FOUND, "Exam section not found.");
+
+    return new ExamSectionDto(questionSet);
+  }
+
+  async getDynamicExamSection(section: SectionTypes, score?: number) {
+    let difficulty;
+
+    if (score === undefined) difficulty = Difficulties.BASE;
+    else if (score / questionSetSize[section] > 0.6)
+      difficulty = Difficulties.HARD;
+    else difficulty = Difficulties.EASY;
 
     const count = await QuestionSet.countDocuments({
       section,

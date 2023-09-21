@@ -6,12 +6,12 @@ export enum OptionTypes {
 
 export enum SectionTypes {
   MATH = "math",
-  READING_WRITING = "reading-writing",
+  READING_WRITING = "reading_writing",
 }
 
 export enum Difficulties {
   EASY = "easy",
-  MEDIUM = "medium",
+  BASE = "base",
   HARD = "hard",
 }
 

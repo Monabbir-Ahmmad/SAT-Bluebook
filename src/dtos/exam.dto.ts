@@ -1,8 +1,30 @@
+import { Difficulties, SectionTypes } from "@/constants/enums";
+
+import { IExam } from "@/lib/server/models/exam.model";
 import { IExamResult } from "@/lib/server/models/exam-result.model";
 import { IQuestionSet } from "@/lib/server/models/question-set.model";
 import { QuestionDto } from "./question.dto";
-import { SectionTypes } from "@/constants/enums";
+import { QuestionSetDto } from "./question-set.dto";
 import { UserDto } from "./user.dto";
+
+export interface ExamCreateReqDto {
+  title: string;
+  [SectionTypes.MATH]: {
+    [Difficulties.EASY]: string;
+    [Difficulties.BASE]: string;
+    [Difficulties.HARD]: string;
+  };
+  [SectionTypes.READING_WRITING]: {
+    [Difficulties.EASY]: string;
+    [Difficulties.BASE]: string;
+    [Difficulties.HARD]: string;
+  };
+}
+
+export interface ExamAssignReqDto {
+  examId: string;
+  userIds: string[];
+}
 
 export interface ExamQuestionDto extends QuestionDto {
   selectedOption?: number;
@@ -85,5 +107,65 @@ export class ExamResultDto {
     );
     this.createdAt = data.createdAt;
     this.updatedAt = data.updatedAt;
+  }
+}
+
+export class ExamDto {
+  id: string;
+  title: string;
+  createdAt: Date;
+  updatedAt: Date;
+  [SectionTypes.MATH]: {
+    [Difficulties.EASY]: QuestionSetDto;
+    [Difficulties.BASE]: QuestionSetDto;
+    [Difficulties.HARD]: QuestionSetDto;
+  };
+
+  [SectionTypes.READING_WRITING]: {
+    [Difficulties.EASY]: QuestionSetDto;
+    [Difficulties.BASE]: QuestionSetDto;
+    [Difficulties.HARD]: QuestionSetDto;
+  };
+  assignedTo: UserDto[];
+  attendedBy: Array<{
+    user: UserDto;
+    result?: ExamResultDto;
+  }>;
+
+  constructor(data: IExam) {
+    this.id = data.id;
+    this.title = data.title;
+    this.createdAt = data.createdAt;
+    this.updatedAt = data.updatedAt;
+    this[SectionTypes.MATH] = {
+      [Difficulties.EASY]: new QuestionSetDto(
+        data[SectionTypes.MATH][Difficulties.EASY]
+      ),
+      [Difficulties.BASE]: new QuestionSetDto(
+        data[SectionTypes.MATH][Difficulties.BASE]
+      ),
+      [Difficulties.HARD]: new QuestionSetDto(
+        data[SectionTypes.MATH][Difficulties.HARD]
+      ),
+    };
+
+    this[SectionTypes.READING_WRITING] = {
+      [Difficulties.EASY]: new QuestionSetDto(
+        data[SectionTypes.READING_WRITING][Difficulties.EASY]
+      ),
+      [Difficulties.BASE]: new QuestionSetDto(
+        data[SectionTypes.READING_WRITING][Difficulties.BASE]
+      ),
+      [Difficulties.HARD]: new QuestionSetDto(
+        data[SectionTypes.READING_WRITING][Difficulties.HARD]
+      ),
+    };
+
+    this.assignedTo = data.assignedTo.map((user) => new UserDto(user));
+
+    this.attendedBy = data.attendedBy.map((d) => ({
+      user: new UserDto(d.user),
+      result: d.result ? new ExamResultDto(d.result) : undefined,
+    }));
   }
 }

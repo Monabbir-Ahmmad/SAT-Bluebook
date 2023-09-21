@@ -2,7 +2,6 @@ import { Button, Group, Paper } from "@mantine/core";
 
 import ExamCheckReview from "./ExamCheckReview";
 import { ExamQuestionDto } from "@/dtos/exam.dto";
-import React from "react";
 
 interface ExamSectionFooterProps {
   currentQuestionIndex: number;
@@ -10,7 +9,7 @@ interface ExamSectionFooterProps {
   onNextClick: () => any;
   onFinishClick: () => any;
   onIndexSelect: (index: number) => any;
-  questions: ExamQuestionDto[];
+  questions?: ExamQuestionDto[];
 }
 
 export default function ExamSectionFooter({

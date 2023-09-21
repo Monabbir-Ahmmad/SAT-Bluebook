@@ -1,5 +1,4 @@
 import {
-  RiArrowUpSLine as ArrowUpIcon,
   RiCheckboxCircleLine as CheckIcon,
   RiCheckboxBlankCircleFill as CircleIcon,
   RiQuestionLine as QuestionIcon,
@@ -9,7 +8,7 @@ import { Button, Divider, Group, SimpleGrid } from "@mantine/core";
 import { ExamQuestionDto } from "@/dtos/exam.dto";
 
 type ExamCheckReviewProps = {
-  questions: ExamQuestionDto[];
+  questions?: ExamQuestionDto[];
   onSubmit: () => any;
 };
 

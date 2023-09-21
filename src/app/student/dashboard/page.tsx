@@ -1,55 +1,50 @@
 "use client";
 
 import { Divider, Paper } from "@mantine/core";
+import { MRT_ColumnDef, MantineReactTable } from "mantine-react-table";
 
-import { GiGraduateCap as EducationIcon } from "react-icons/gi";
-import Image from "next/image";
-import { useSession } from "next-auth/react";
-import { useQuery } from "@tanstack/react-query";
-import { examService } from "@/lib/client/services";
-import { DataTable, DataTableColumn } from "mantine-datatable";
-import { ExamResultDto } from "@/dtos/exam.dto";
-import { secondsToMmSs } from "@/lib/client/utils/common.util";
 import DashboardOptions from "@/components/dashboard/DashboardOptions";
+import { GiGraduateCap as EducationIcon } from "react-icons/gi";
+import { ExamResultDto } from "@/dtos/exam.dto";
+import Image from "next/image";
+import { examService } from "@/lib/client/services";
+import { secondsToMmSs } from "@/lib/client/utils/common.util";
 import { studentDashboardOptions } from "@/constants/data";
+import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 
-const examResultTableColumns: DataTableColumn<ExamResultDto>[] = [
+const examResultTableColumns: MRT_ColumnDef<ExamResultDto>[] = [
   {
-    accessor: "id",
-    title: "#",
-    width: 250,
-    textAlignment: "right",
+    accessorKey: "id",
+    header: "#",
+    size: 250,
   },
   {
-    accessor: "createdAt",
-    title: "Date",
-    textAlignment: "center",
+    accessorKey: "createdAt",
+    header: "Date",
+    Cell: ({ row }) => new Date(row.original.createdAt).toLocaleString(),
   },
   {
-    accessor: "results",
-    title: "Total Score",
-    textAlignment: "center",
-    render: ({ results }) => results.reduce((a, b) => a + b.score, 0),
+    accessorFn: ({ results }) => results?.reduce((a, b) => a + b.score, 0),
+    header: "Total Score",
   },
   {
-    accessor: "results",
-    title: "Total Time Taken",
-    textAlignment: "center",
-    render: ({ results }) =>
-      secondsToMmSs(results.reduce((a, b) => a + b.timeTaken, 0)) + " mins",
+    accessorFn: ({ results }) =>
+      secondsToMmSs(results?.reduce((a, b) => a + b.timeTaken, 0)) + " mins",
+    header: "Total Time Taken",
   },
 ];
 
 export default function StudentDashboardPage() {
   const session = useSession();
 
-  const { data: examResults, isLoading } = useQuery({
+  const { data: examResults = [], isFetching } = useQuery({
     queryKey: ["exam-results"],
     queryFn: examService.getExamResults,
   });
 
   return (
-    <div className="mx-auto max-w-7xl w-full flex flex-col gap-5 p-4">
+    <div className="mx-auto max-w-7xl w-full flex flex-col gap-6 p-6">
       <EducationIcon size={64} className="text-primary" />
 
       <h1 className="font-bold text-primary">Student Dashboard</h1>
@@ -72,32 +67,29 @@ export default function StudentDashboardPage() {
         />
       </Paper>
 
-      <Divider
-        label={<h1 className="text-2xl text-text-color">Take Exams</h1>}
-        labelPosition="left"
-      />
+      <div className="space-y-4">
+        <Divider
+          label={<h1 className="text-2xl text-text-color">Take Exams</h1>}
+          labelPosition="left"
+        />
 
-      <DashboardOptions options={studentDashboardOptions} />
+        <DashboardOptions options={studentDashboardOptions} />
+      </div>
 
-      <Divider
-        label={
-          <h1 className="text-2xl text-text-color">Your Previous Exams</h1>
-        }
-        labelPosition="left"
-      />
+      <div className="space-y-4">
+        <Divider
+          label={
+            <h1 className="text-2xl text-text-color">Your Previous Exams</h1>
+          }
+          labelPosition="left"
+        />
 
-      <DataTable
-        verticalSpacing={"md"}
-        height={"80vh"}
-        withBorder
-        borderRadius="sm"
-        highlightOnHover
-        loaderVariant="bars"
-        loaderSize="xl"
-        fetching={isLoading}
-        records={examResults!}
-        columns={examResultTableColumns}
-      />
+        <MantineReactTable
+          columns={examResultTableColumns}
+          data={examResults}
+          state={{ isLoading: isFetching }}
+        />
+      </div>
     </div>
   );
 }

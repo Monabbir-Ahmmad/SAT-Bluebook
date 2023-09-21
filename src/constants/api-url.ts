@@ -25,7 +25,13 @@ const apiUrl = {
   },
   // Exam
   exam: {
-    getExamSection: "/student/exam",
+    createExam: "/admin/exam",
+    assignExam: "/admin/exam/assign",
+    getExamList: "/admin/exam",
+    startExamById: "/student/exam/predefined-sat",
+    getExamSectionByExamId: "/student/exam/predefined-sat",
+    getExamSection: "/student/exam/section",
+    getDynamicExamSection: "/student/exam/dynamic-sat",
     verifySection: "/student/exam",
     submitExamResult: "/student/exam/result",
     getExamResult: "/student/exam/result",

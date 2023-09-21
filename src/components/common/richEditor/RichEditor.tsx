@@ -3,7 +3,7 @@
 import "./suneditor.css";
 import "./suneditor-content.css";
 
-import React, { forwardRef, useEffect, useRef } from "react";
+import { forwardRef, useEffect, useRef } from "react";
 
 import SunEditor from "suneditor";
 import SunEditorCore from "suneditor/src/lib/core";

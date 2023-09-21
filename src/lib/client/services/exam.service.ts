@@ -1,4 +1,7 @@
 import {
+  ExamAssignReqDto,
+  ExamCreateReqDto,
+  ExamDto,
   ExamResultDto,
   ExamSectionDto,
   ExamSectionResultDto,
@@ -10,9 +13,54 @@ import apiUrl from "@/constants/api-url";
 import { httpClient } from "../http-client";
 
 export default class ExamService {
-  async getExamSection(section: SectionTypes, score?: number) {
+  async createExam(data: ExamCreateReqDto) {
+    const res = await httpClient.post<ExamDto>(apiUrl.exam.createExam, data);
+    return res.data;
+  }
+
+  async assignExam(data: ExamAssignReqDto) {
+    const res = await httpClient.post<ExamDto>(apiUrl.exam.assignExam, data);
+    return res.data;
+  }
+
+  async startExamById(examId: string) {
+    const res = await httpClient.get<ExamDto>(
+      apiUrl.exam.startExamById + "/" + examId
+    );
+    return res.data;
+  }
+
+  async getList() {
+    const res = await httpClient.get<ExamDto[]>(apiUrl.exam.getExamList);
+    return res.data;
+  }
+
+  async getExamSectionByExamId(
+    examId: string,
+    section: SectionTypes,
+    score?: number
+  ) {
     const res = await httpClient.get<ExamSectionDto>(
-      apiUrl.exam.getExamSection + `/${section}`,
+      apiUrl.exam.getExamSectionByExamId + `/${examId}/${section}`,
+      {
+        params: {
+          score,
+        },
+      }
+    );
+    return res.data;
+  }
+
+  async getExamSection(section: SectionTypes) {
+    const res = await httpClient.get<ExamSectionDto>(
+      apiUrl.exam.getExamSection + `/${section}`
+    );
+    return res.data;
+  }
+
+  async getDynamicExamSection(section: SectionTypes, score?: number) {
+    const res = await httpClient.get<ExamSectionDto>(
+      apiUrl.exam.getDynamicExamSection + `/${section}`,
       {
         params: {
           score,

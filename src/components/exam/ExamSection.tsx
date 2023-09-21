@@ -1,105 +1,65 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useIsMutating, useMutation, useQuery } from "@tanstack/react-query";
-import { Loader, LoadingOverlay } from "@mantine/core";
-import { useInterval } from "@mantine/hooks";
-import { modals } from "@mantine/modals";
-import { examService } from "@/lib/client/services";
-import { examSectionTime } from "@/constants/data";
-import { ExamQuestionDto, ExamSectionDto } from "@/dtos/exam.dto";
+import { Badge, Group, Paper } from "@mantine/core";
+import {
+  ExamQuestionDto,
+  ExamSectionDto,
+  ExamSectionSubmitDto,
+} from "@/dtos/exam.dto";
+import { useEffect, useState } from "react";
+
 import ExamQuestionItem from "@/components/exam/ExamQuestionItem";
 import ExamSectionFooter from "@/components/exam/ExamSectionFooter";
-import ExamSectionHeader from "@/components/exam/ExamSectionHeader";
 import ExamSectionReview from "@/components/exam/ExamSectionReview";
-import { ExamResultDto, ExamSectionResultDto } from "@/dtos/exam.dto";
-import { SectionTypes } from "@/constants/enums";
+import { RiAlarmLine as TimerIcon } from "react-icons/ri";
+import { modals } from "@mantine/modals";
+import { secondsToMmSs } from "@/lib/client/utils/common.util";
+import { twMerge } from "tailwind-merge";
+import { useInterval } from "@mantine/hooks";
 
 export interface ExamSectionProps {
-  sectionsOrder: SectionTypes[];
-  onExamFinish: (examResult: ExamResultDto) => any;
+  section: ExamSectionDto;
+  title?: string;
+  timeLimit: number;
+  onSectionSubmit: (examSection: ExamSectionSubmitDto) => any;
 }
 
 export default function ExamSection({
-  sectionsOrder = Object.values(SectionTypes),
-  onExamFinish,
+  section,
+  title,
+  timeLimit,
+  onSectionSubmit,
 }: ExamSectionProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
   const [remainingTime, setRemainingTime] = useState(0);
-  const [exams, setExams] = useState<ExamSectionDto[]>([]);
+  const [examSection, setExamSection] = useState<ExamSectionDto>();
 
   const timer = useInterval(() => setRemainingTime((prev) => prev - 1), 1000);
 
-  const isMutating = useIsMutating({
-    mutationKey: ["exam-result"],
-  });
-
-  const { isFetching } = useQuery({
-    queryKey: ["exam", sectionsOrder[currentSectionIndex]],
-    queryFn: async () =>
-      await examService.getExamSection(
-        sectionsOrder[currentSectionIndex],
-        exams.length ? exams[exams.length - 1].score : undefined
-      ),
-    onSuccess: (data) => {
-      setRemainingTime(examSectionTime[sectionsOrder[currentSectionIndex]]);
-      setExams((prev) => [...prev, data]);
+  useEffect(() => {
+    if (section) {
+      setCurrentQuestionIndex(0);
+      setExamSection(section);
+      setRemainingTime(timeLimit);
       timer.start();
-    },
-  });
-
-  const { mutate: submitExamResult } = useMutation({
-    mutationKey: ["exam-result"],
-    mutationFn: examService.submitExamResult,
-    onSuccess: (data: ExamResultDto) => onExamFinish(data),
-  });
-
-  const { mutate: submitExamSection } = useMutation({
-    mutationKey: ["exam-result"],
-    mutationFn: examService.submitExamSection,
-    onSuccess: (data: ExamSectionResultDto) => {
-      if (currentSectionIndex < sectionsOrder.length - 1) {
-        setExams((prev) =>
-          prev.map((e) =>
-            e.id === data.id
-              ? { ...e, score: data.score, timeTaken: data.timeTaken }
-              : e
-          )
-        );
-        setCurrentSectionIndex((prev) => prev + 1);
-        setCurrentQuestionIndex(0);
-      } else {
-        submitExamResult(
-          exams.map(
-            (e) =>
-              new ExamSectionResultDto(
-                e.id,
-                e.section,
-                e.id === data.id ? data.score : e.score,
-                e.id === data.id ? data.timeTaken : e.timeTaken!
-              )
-          )
-        );
-      }
-    },
-  });
+    }
+  }, [section]);
 
   const toggleQuestionProperty = (
     question: ExamQuestionDto,
     propertyName: string,
     value: any
   ) => {
-    const currentExam = exams[currentSectionIndex];
-    const updatedQuestions = currentExam.questions.map((q) =>
+    const updatedQuestions = examSection?.questions.map((q) =>
       q.id === question.id ? { ...q, [propertyName]: value } : q
     );
-    setExams((prevExams) =>
-      prevExams.map((exam, index) =>
-        index === currentSectionIndex
-          ? { ...exam, questions: updatedQuestions }
-          : exam
-      )
+
+    setExamSection(
+      (prev) =>
+        prev && {
+          ...prev,
+          questions: updatedQuestions || [],
+        }
     );
   };
 
@@ -151,20 +111,18 @@ export default function ExamSection({
       closeButtonProps: { display: !!remainingTime ? "flex" : "none" },
       children: (
         <ExamSectionReview
-          questions={exams[currentSectionIndex].questions}
+          questions={examSection?.questions}
           onSubmit={() => {
             timer.stop();
-
-            setRemainingTime((remainingTime) => {
-              submitExamSection({
-                id: exams[currentSectionIndex].id!,
-                questions: exams[currentSectionIndex].questions,
-                timeTaken:
-                  examSectionTime[sectionsOrder[currentSectionIndex]] -
-                  remainingTime,
+            if (examSection)
+              setRemainingTime((remainingTime) => {
+                onSectionSubmit({
+                  id: examSection?.id,
+                  questions: examSection?.questions,
+                  timeTaken: timeLimit - remainingTime,
+                });
+                return remainingTime;
               });
-              return remainingTime;
-            });
 
             modals.closeAll();
           }}
@@ -182,23 +140,40 @@ export default function ExamSection({
 
   return (
     <div className="w-full h-full relative">
-      <LoadingOverlay
-        visible={isFetching || !!isMutating}
-        overlayBlur={2}
-        loader={<Loader variant="bars" size={"xl"} />}
-      />
+      <Paper className="sticky top-14 w-full border-b z-10">
+        <div className="text-text-color font-semibold flex flex-col md:flex-row items-center justify-between gap-4 p-4 relative">
+          <h1 className="text-xl uppercase">{title}</h1>
+          <div
+            className={twMerge(
+              "text-xl md:absolute inset-x-0 flex items-center justify-center gap-2",
+              remainingTime < 60 && "text-red-500"
+            )}
+          >
+            <TimerIcon size={30} />
+            <span>{secondsToMmSs(remainingTime)}</span>
+          </div>
+          <Group noWrap>
+            <Badge variant="dot" size="xl">
+              {
+                examSection?.questions.filter(
+                  (q) => q.selectedOption !== undefined
+                ).length
+              }{" "}
+              answered
+            </Badge>
 
-      <ExamSectionHeader
-        currentSectionIndex={currentSectionIndex}
-        examSection={sectionsOrder[currentSectionIndex]}
-        remainingTime={remainingTime}
-        questions={exams[currentSectionIndex]?.questions}
-      />
+            <Badge variant="dot" size="xl" color="yellow">
+              {examSection?.questions.filter((q) => q.markedForReview).length}{" "}
+              reviews
+            </Badge>
+          </Group>
+        </div>
+      </Paper>
 
       <div className="min-h-[calc(100vh-195px)]">
-        {exams[currentSectionIndex]?.questions.length > 0 && (
+        {!!examSection?.questions?.length && (
           <ExamQuestionItem
-            data={exams[currentSectionIndex]?.questions[currentQuestionIndex]}
+            data={examSection?.questions[currentQuestionIndex]}
             title={`Question ${currentQuestionIndex + 1}`}
             toggleAnswer={toggleAnswer}
             toggleMarkAsWrong={toggleMarkAsWrong}
@@ -214,7 +189,7 @@ export default function ExamSection({
         onNextClick={() => setCurrentQuestionIndex((prev) => prev + 1)}
         onFinishClick={finishSection}
         onIndexSelect={setCurrentQuestionIndex}
-        questions={exams[currentSectionIndex]?.questions}
+        questions={examSection?.questions}
       />
     </div>
   );
