@@ -1,7 +1,7 @@
 "use client";
 
 import { Badge, Divider } from "@mantine/core";
-import { DataTable, DataTableColumn } from "mantine-datatable";
+import { MRT_ColumnDef, MantineReactTable } from "mantine-react-table";
 import { difficulties, sections } from "@/constants/data";
 
 import DashboardCard from "@/components/dashboard/DashboardCard";
@@ -11,33 +11,34 @@ import { convertHtmlToPlain } from "@/lib/client/utils/common.util";
 import { questionService } from "@/lib/client/services";
 import { useQuery } from "@tanstack/react-query";
 
-const questionTableColumns: DataTableColumn<QuestionDto>[] = [
+const questionTableColumns: MRT_ColumnDef<QuestionDto>[] = [
   {
-    accessor: "id",
-    title: "#",
-    width: 250,
-    textAlignment: "right",
+    accessorKey: "id",
+    header: "#",
   },
   {
-    accessor: "question",
-    ellipsis: true,
-    width: 500,
-    render: ({ question }) => convertHtmlToPlain(question),
+    accessorKey: "question",
+    header: "Question",
+    Cell: ({ row }) => convertHtmlToPlain(row.original.question),
   },
 
   {
-    accessor: "section",
-    render: ({ section }) => sections.find((s) => s.value === section)?.label,
+    accessorKey: "section",
+    header: "Section",
+    Cell: ({ row }) =>
+      sections.find((s) => s.value === row.original.section)?.label,
   },
   {
-    accessor: "difficulty",
-    render: ({ difficulty }) =>
-      difficulties.find((d) => d.value === difficulty)?.label,
+    accessorKey: "difficulty",
+    header: "Difficulty",
+    Cell: ({ row }) =>
+      difficulties.find((d) => d.value === row.original.difficulty)?.label,
   },
   {
-    accessor: "tags",
-    render: ({ tags }: { tags: string[] }) =>
-      tags.map((tag) => (
+    accessorKey: "tags",
+    header: "Tags",
+    Cell: ({ row }) =>
+      row.original.tags.map((tag) => (
         <Badge key={tag} m={4}>
           {tag}
         </Badge>
@@ -46,7 +47,7 @@ const questionTableColumns: DataTableColumn<QuestionDto>[] = [
 ];
 
 export default function QuestionPage() {
-  const { data, isLoading } = useQuery({
+  const { data: questions = [], isFetching } = useQuery({
     queryKey: ["questions"],
     queryFn: async () => await questionService.getList(),
   });
@@ -65,17 +66,10 @@ export default function QuestionPage() {
         label={<h1 className="text-text-color font-semibold">Questions</h1>}
       />
 
-      <DataTable
-        striped
-        height={"65vh"}
-        withBorder
-        borderRadius="sm"
-        highlightOnHover
-        loaderVariant="bars"
-        loaderSize="xl"
-        fetching={isLoading}
-        records={data!}
+      <MantineReactTable
         columns={questionTableColumns}
+        data={questions}
+        state={{ isLoading: isFetching }}
       />
     </div>
   );

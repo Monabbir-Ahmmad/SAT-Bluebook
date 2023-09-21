@@ -13,14 +13,15 @@ import {
   RiCheckLine as CheckIcon,
   RiCloseLine as WrongIcon,
 } from "react-icons/ri";
-import { DataTable, DataTableColumn } from "mantine-datatable";
 import { Difficulties, SectionTypes } from "@/constants/enums";
+import { MRT_ColumnDef, MantineReactTable } from "mantine-react-table";
 import { difficulties, sections } from "@/constants/data";
 import { examService, questionSetService } from "@/lib/client/services";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { ExamCreateReqDto } from "@/dtos/exam.dto";
+import { QuestionDto } from "@/dtos/question.dto";
 import { QuestionSetDto } from "@/dtos/question-set.dto";
 import { examCreateFormValidator } from "@/lib/client/validators/form.validator";
 import { modals } from "@mantine/modals";
@@ -28,52 +29,31 @@ import { notifications } from "@mantine/notifications";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-const questionSetTableColumns = ({
-  onAdd,
-  onRemove,
-}: {
-  onAdd?: (questionSet: QuestionSetDto) => void;
-  onRemove?: (questionSet: QuestionSetDto) => void;
-}): DataTableColumn<QuestionSetDto>[] => [
+const questionSetTableColumns: MRT_ColumnDef<QuestionSetDto>[] = [
   {
-    accessor: "id",
-    title: "#",
-    width: 250,
-    textAlignment: "right",
+    accessorKey: "id",
+    header: "#",
   },
   {
-    accessor: "title",
-    ellipsis: true,
-    width: 300,
+    accessorKey: "title",
+    header: "Title",
   },
   {
-    accessor: "section",
-    render: ({ section }) => sections.find((s) => s.value === section)?.label,
+    accessorKey: "section",
+    header: "Section",
+    Cell: ({ row }) =>
+      sections.find((s) => s.value === row.original.section)?.label,
   },
   {
-    accessor: "difficulty",
-    render: ({ difficulty }) =>
-      difficulties.find((d) => d.value === difficulty)?.label,
+    accessorKey: "difficulty",
+    header: "Difficulty",
+    Cell: ({ row }) =>
+      difficulties.find((d) => d.value === row.original.difficulty)?.label,
   },
   {
-    accessor: "questions",
-    textAlignment: "center",
-    render: ({ questions }) => questions.length,
-  },
-  {
-    accessor: "actions",
-    title: "Actions",
-    textAlignment: "center",
-    render: (row: QuestionSetDto) => (
-      <div className="flex gap-2 justify-center">
-        {onAdd && <Button onClick={() => onAdd(row)}>Add</Button>}
-        {onRemove && (
-          <Button color="red" onClick={() => onRemove(row)}>
-            Remove
-          </Button>
-        )}
-      </div>
-    ),
+    accessorKey: "questions",
+    header: "Questions",
+    Cell: ({ row }) => row.original.questions.length,
   },
 ];
 
@@ -123,7 +103,7 @@ export default function ExamCreatePage() {
     QuestionSetDto[]
   >([]);
 
-  const { data: questionSets, isFetching } = useQuery({
+  const { data: questionSets = [], isFetching } = useQuery({
     queryKey: ["question-sets"],
     queryFn: () => questionSetService.getList(),
   });
@@ -220,18 +200,22 @@ export default function ExamCreatePage() {
       title: "Select a question set",
       size: "auto",
       children: (
-        <DataTable
-          striped
-          height={"70vh"}
-          withBorder
-          borderRadius="sm"
-          highlightOnHover
-          loaderVariant="bars"
-          loaderSize="xl"
-          records={questionSets || []}
-          columns={questionSetTableColumns({
-            onAdd: onQuestionSetAdd,
-          })}
+        <MantineReactTable
+          columns={questionSetTableColumns}
+          data={questionSets}
+          state={{
+            isLoading: isFetching,
+          }}
+          enableRowActions
+          positionActionsColumn="last"
+          renderRowActions={({ row }) => (
+            <Button
+              variant="gradient"
+              onClick={() => onQuestionSetAdd(row.original)}
+            >
+              Add
+            </Button>
+          )}
         />
       ),
     });
@@ -318,18 +302,19 @@ export default function ExamCreatePage() {
         <div className="space-y-4">
           <Title order={4}>Selected question sets</Title>
 
-          <DataTable
-            striped
-            height={"50vh"}
-            withBorder
-            borderRadius="sm"
-            highlightOnHover
-            loaderVariant="bars"
-            loaderSize="xl"
-            records={selectedQuestionSets}
-            columns={questionSetTableColumns({
-              onRemove: onQuestionSetRemove,
-            })}
+          <MantineReactTable
+            columns={questionSetTableColumns}
+            data={selectedQuestionSets}
+            enableRowActions
+            positionActionsColumn="last"
+            renderRowActions={({ row }) => (
+              <Button
+                color="red"
+                onClick={() => onQuestionSetRemove(row.original)}
+              >
+                Remove
+              </Button>
+            )}
           />
         </div>
       </div>

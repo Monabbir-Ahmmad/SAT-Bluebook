@@ -1,6 +1,6 @@
 "use client";
 
-import { DataTable, DataTableColumn } from "mantine-datatable";
+import { MRT_ColumnDef, MantineReactTable } from "mantine-react-table";
 import { difficulties, sections } from "@/constants/data";
 
 import DashboardCard from "@/components/dashboard/DashboardCard";
@@ -10,36 +10,36 @@ import { QuestionSetDto } from "@/dtos/question-set.dto";
 import { questionSetService } from "@/lib/client/services";
 import { useQuery } from "@tanstack/react-query";
 
-const questionSetTableColumns: DataTableColumn<QuestionSetDto>[] = [
+const questionSetTableColumns: MRT_ColumnDef<QuestionSetDto>[] = [
   {
-    accessor: "id",
-    title: "#",
-    width: 250,
-    textAlignment: "right",
+    accessorKey: "id",
+    header: "#",
   },
   {
-    accessor: "title",
-    ellipsis: true,
-    width: 350,
+    accessorKey: "title",
+    header: "Title",
   },
   {
-    accessor: "section",
-    render: ({ section }) => sections.find((s) => s.value === section)?.label,
+    accessorKey: "section",
+    header: "Section",
+    Cell: ({ row }) =>
+      sections.find((s) => s.value === row.original.section)?.label,
   },
   {
-    accessor: "difficulty",
-    render: ({ difficulty }) =>
-      difficulties.find((d) => d.value === difficulty)?.label,
+    accessorKey: "difficulty",
+    header: "Difficulty",
+    Cell: ({ row }) =>
+      difficulties.find((d) => d.value === row.original.difficulty)?.label,
   },
   {
-    accessor: "questions",
-    textAlignment: "center",
-    render: ({ questions }) => questions.length,
+    accessorKey: "questions",
+    header: "Questions",
+    Cell: ({ row }) => row.original.questions.length,
   },
 ];
 
 export default function QuestionSetPage() {
-  const { data, isLoading } = useQuery({
+  const { data: questionSets = [], isFetching } = useQuery({
     queryKey: ["question-sets"],
     queryFn: async () => await questionSetService.getList(),
   });
@@ -74,17 +74,10 @@ export default function QuestionSetPage() {
         label={<h1 className="text-text-color font-semibold">Question Sets</h1>}
       />
 
-      <DataTable
-        striped
-        height={"60vh"}
-        withBorder
-        borderRadius="sm"
-        highlightOnHover
-        loaderVariant="bars"
-        loaderSize="xl"
-        fetching={isLoading}
-        records={data!}
+      <MantineReactTable
         columns={questionSetTableColumns}
+        data={questionSets}
+        state={{ isLoading:isFetching }}
       />
     </div>
   );

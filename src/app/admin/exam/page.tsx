@@ -1,8 +1,13 @@
 "use client";
 
 import { Button, Divider, Modal } from "@mantine/core";
-import { DataTable, DataTableColumn } from "mantine-datatable";
+import {
+  MRT_ColumnDef,
+  MRT_RowSelectionState,
+  MantineReactTable,
+} from "mantine-react-table";
 import { examService, userManagementService } from "@/lib/client/services";
+import { useEffect, useState } from "react";
 import {
   useIsMutating,
   useMutation,
@@ -14,62 +19,40 @@ import DashboardCard from "@/components/dashboard/DashboardCard";
 import { ExamDto } from "@/dtos/exam.dto";
 import Link from "next/link";
 import { UserDto } from "@/dtos/user.dto";
-import { useState } from "react";
 
-const examTableColumns = ({
-  onAssign,
-}: {
-  onAssign?: (data: ExamDto) => any;
-}): DataTableColumn<ExamDto>[] => [
+const examTableColumns: MRT_ColumnDef<ExamDto>[] = [
   {
-    accessor: "id",
-    title: "#",
-    width: 250,
-    textAlignment: "right",
+    accessorKey: "id",
+    header: "#",
   },
   {
-    accessor: "title",
-    ellipsis: true,
-    width: 350,
+    accessorKey: "title",
+    header: "Title",
   },
   {
-    accessor: "createdAt",
-    title: "Created At",
-    textAlignment: "center",
-    render: ({ createdAt }) => new Date(createdAt).toLocaleString(),
+    accessorKey: "createdAt",
+    header: "Created At",
+    Cell: ({ row }) => new Date(row.original.createdAt).toLocaleString(),
   },
   {
-    accessor: "assignedTo",
-    title: "Assigned To",
-    textAlignment: "center",
-    render: ({ assignedTo }) => assignedTo.length,
+    accessorKey: "assignedTo",
+    header: "Assigned To",
+    Cell: ({ row }) => row.original.assignedTo.length,
   },
   {
-    accessor: "attendedBy",
-    title: "Attended By",
-    textAlignment: "center",
-    render: ({ attendedBy }) => attendedBy.length,
-  },
-  {
-    accessor: "actions",
-    title: "Actions",
-    textAlignment: "center",
-    render: (row: ExamDto) =>
-      onAssign && (
-        <Button onClick={() => onAssign(row)}>Assign To Student</Button>
-      ),
+    accessorKey: "attendedBy",
+    header: "Attended By",
+    Cell: ({ row }) => row.original.attendedBy.length,
   },
 ];
 
-const userTableColumns: DataTableColumn<UserDto>[] = [
+const userTableColumns: MRT_ColumnDef<UserDto>[] = [
   {
-    accessor: "id",
-    title: "#",
-    width: 250,
-    textAlignment: "right",
+    accessorKey: "id",
+    header: "#",
   },
-  { accessor: "name" },
-  { accessor: "email" },
+  { accessorKey: "name", header: "Name" },
+  { accessorKey: "email", header: "Email" },
 ];
 
 export default function AdminExamPage() {
@@ -77,13 +60,14 @@ export default function AdminExamPage() {
   const isMutating = useIsMutating({ mutationKey: ["assign-exam"] });
 
   const [examToAssign, setExamToAssign] = useState<ExamDto>();
+  const [selectedUsers, setSelectedUsers] = useState<MRT_RowSelectionState>({});
 
-  const { data: exams = [], isLoading: isExamsLoading } = useQuery({
+  const { data: exams = [], isFetching: isExamsLoading } = useQuery({
     queryKey: ["exams"],
     queryFn: examService.getList,
   });
 
-  const { data: users = [], isLoading: isUsersLoading } = useQuery({
+  const { data: users = [], isFetching: isUsersLoading } = useQuery({
     queryKey: ["users"],
     queryFn: userManagementService.getUsers,
   });
@@ -105,8 +89,17 @@ export default function AdminExamPage() {
   const onExamAssign = () =>
     assignExamMutation({
       examId: examToAssign?.id!,
-      userIds: examToAssign?.assignedTo.map((user) => user.id) || [],
+      userIds: Object.keys(selectedUsers),
     });
+
+  useEffect(() => {
+    setSelectedUsers(
+      examToAssign?.assignedTo.reduce(
+        (acc, user) => ({ ...acc, [user.id]: true }),
+        {}
+      ) || {}
+    );
+  }, [examToAssign]);
 
   return (
     <div className="min-h-full p-6 space-y-4">
@@ -116,24 +109,16 @@ export default function AdminExamPage() {
         title="Assign Exam To Students"
         onClose={() => setExamToAssign(undefined)}
       >
-        <DataTable
-          striped
-          height={"50vh"}
-          withBorder
-          borderRadius="sm"
-          highlightOnHover
-          loaderVariant="bars"
-          loaderSize="xl"
-          fetching={isUsersLoading || !!isMutating}
-          records={users}
+        <MantineReactTable
           columns={userTableColumns}
-          selectedRecords={examToAssign?.assignedTo}
-          onSelectedRecordsChange={(users) =>
-            setExamToAssign((prev) => ({
-              ...prev!,
-              assignedTo: users,
-            }))
-          }
+          data={users}
+          state={{
+            isLoading: isUsersLoading || !!isMutating,
+            rowSelection: selectedUsers,
+          }}
+          enableRowSelection
+          onRowSelectionChange={setSelectedUsers}
+          getRowId={(originalRow) => originalRow.id}
         />
         <Button
           my={"md"}
@@ -141,7 +126,7 @@ export default function AdminExamPage() {
           onClick={onExamAssign}
           loading={!!isMutating}
         >
-          Assign to {examToAssign?.assignedTo.length || 0} Students
+          Assign to selected students
         </Button>
       </Modal>
 
@@ -161,19 +146,17 @@ export default function AdminExamPage() {
         label={<h1 className="text-text-color font-semibold">Exams</h1>}
       />
 
-      <DataTable
-        striped
-        height={"60vh"}
-        withBorder
-        borderRadius="sm"
-        highlightOnHover
-        loaderVariant="bars"
-        loaderSize="xl"
-        fetching={isExamsLoading}
-        records={exams}
-        columns={examTableColumns({
-          onAssign: onAssignToStudentClick,
-        })}
+      <MantineReactTable
+        columns={examTableColumns}
+        data={exams}
+        state={{ isLoading: isExamsLoading }}
+        enableRowActions
+        positionActionsColumn="last"
+        renderRowActions={({ row }) => (
+          <Button onClick={() => onAssignToStudentClick(row.original)}>
+            Assign To Student
+          </Button>
+        )}
       />
     </div>
   );
