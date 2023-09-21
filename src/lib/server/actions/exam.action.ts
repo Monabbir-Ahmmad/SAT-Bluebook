@@ -108,11 +108,7 @@ export default class ExamAction {
 
     await Exam.findByIdAndUpdate(examId, {
       $addToSet: {
-        attendedBy: [
-          {
-            user: new Types.ObjectId(userId),
-          },
-        ],
+        attendedBy: [{ user: userId }],
       },
     });
 
