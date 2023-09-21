@@ -90,21 +90,6 @@ export default function StudentDashboardPage() {
           state={{ isLoading: isFetching }}
         />
       </div>
-
-      <div className="space-y-4">
-        <Divider
-          label={
-            <h1 className="text-2xl text-text-color">Pending Assigned Exams</h1>
-          }
-          labelPosition="left"
-        />
-
-        <MantineReactTable
-          columns={examResultTableColumns}
-          data={examResults}
-          state={{ isLoading: isFetching }}
-        />
-      </div>
     </div>
   );
 }
