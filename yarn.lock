@@ -2524,7 +2524,12 @@ mongodb@5.7.0:
   optionalDependencies:
     saslprep "^1.0.3"
 
-mongoose@^7.4.3:
+mongoose-autopopulate@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/mongoose-autopopulate/-/mongoose-autopopulate-1.0.1.tgz"
+  integrity sha512-39rN0QQinA1iz/8JNVKM3MNq/zZrjStiWi8jA15diUC2nnJsvEgRXEir4L4D1azYxY+gBTuqEzLqd7Y+MC6pHQ==
+
+mongoose@^7.4.3, "mongoose@6.x || 7.x":
   version "7.4.3"
   resolved "https://registry.npmjs.org/mongoose/-/mongoose-7.4.3.tgz"
   integrity sha512-eok0lW6mZJHK2vVSWyJb9tUfPMUuRF3h7YC4pU2K2/YSZBlNDUwvKsHgftMOANbokP2Ry+4ylvzAdW4KjkRFjw==

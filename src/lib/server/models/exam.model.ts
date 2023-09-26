@@ -5,6 +5,7 @@ import { IExamResult } from "./exam-result.model";
 import { IQuestionSet } from "./question-set.model";
 import { ITimeStamps } from "./base.model";
 import { IUser } from "./user.model";
+import autopopulate from "mongoose-autopopulate";
 
 interface IFullQuestionSet {
   [Difficulties.EASY]: IQuestionSet;
@@ -31,16 +32,19 @@ const FullQuestionSetSchema = new Schema<IFullQuestionSet>(
       type: Schema.Types.ObjectId,
       required: true,
       ref: "QuestionSet",
+      autopopulate: true,
     },
     [Difficulties.BASE]: {
       type: Schema.Types.ObjectId,
       required: true,
       ref: "QuestionSet",
+      autopopulate: true,
     },
     [Difficulties.HARD]: {
       type: Schema.Types.ObjectId,
       required: true,
       ref: "QuestionSet",
+      autopopulate: true,
     },
   },
   {
@@ -60,6 +64,7 @@ const AttendedBySchema = new Schema<IAttendedBy>(
     result: {
       type: Schema.Types.ObjectId,
       ref: "ExamResult",
+      autopopulate: true,
     },
   },
   {
@@ -98,6 +103,8 @@ const ExamSchema = new Schema<IExam>(
     versionKey: false,
   }
 );
+
+ExamSchema.plugin(autopopulate);
 
 const ExamModel: Model<IExam> = models.Exam || model<IExam>("Exam", ExamSchema);
 

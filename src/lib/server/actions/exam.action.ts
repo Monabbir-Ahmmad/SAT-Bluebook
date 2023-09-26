@@ -31,69 +31,26 @@ export default class ExamAction {
 
     if (!exam) throw new HttpError(StatusCode.NOT_FOUND, "Exam not found");
 
-    await exam.populate([
-      {
-        path: `${SectionTypes.MATH}.${Difficulties.EASY}`,
-      },
-      { path: `${SectionTypes.MATH}.${Difficulties.BASE}` },
-      { path: `${SectionTypes.MATH}.${Difficulties.HARD}` },
-      {
-        path: `${SectionTypes.READING_WRITING}.${Difficulties.EASY}`,
-      },
-      {
-        path: `${SectionTypes.READING_WRITING}.${Difficulties.BASE}`,
-      },
-      {
-        path: `${SectionTypes.READING_WRITING}.${Difficulties.HARD}`,
-      },
-    ]);
-
     return new ExamDto(exam);
   }
 
   async createExam(examCreateReq: ExamCreateReqDto) {
     const exam = await Exam.create(examCreateReq);
 
-    await exam.populate([
-      {
-        path: `${SectionTypes.MATH}.${Difficulties.EASY}`,
-      },
-      { path: `${SectionTypes.MATH}.${Difficulties.BASE}` },
-      { path: `${SectionTypes.MATH}.${Difficulties.HARD}` },
-      {
-        path: `${SectionTypes.READING_WRITING}.${Difficulties.EASY}`,
-      },
-      {
-        path: `${SectionTypes.READING_WRITING}.${Difficulties.BASE}`,
-      },
-      {
-        path: `${SectionTypes.READING_WRITING}.${Difficulties.HARD}`,
-      },
-    ]);
-
     return new ExamDto(exam);
   }
 
   async getAssignedExams(userId: string) {
     const exams = await Exam.find({
-      assignedTo: userId,
-      "attendedBy.user": { $ne: userId },
-    }).populate([
-      {
-        path: `${SectionTypes.MATH}.${Difficulties.EASY}`,
-      },
-      { path: `${SectionTypes.MATH}.${Difficulties.BASE}` },
-      { path: `${SectionTypes.MATH}.${Difficulties.HARD}` },
-      {
-        path: `${SectionTypes.READING_WRITING}.${Difficulties.EASY}`,
-      },
-      {
-        path: `${SectionTypes.READING_WRITING}.${Difficulties.BASE}`,
-      },
-      {
-        path: `${SectionTypes.READING_WRITING}.${Difficulties.HARD}`,
-      },
-    ]);
+      $and: [
+        { assignedTo: userId },
+        {
+          "attendedBy.user": {
+            $ne: userId,
+          },
+        },
+      ],
+    });
 
     return exams.map((exam) => new ExamDto(exam));
   }
@@ -135,22 +92,7 @@ export default class ExamAction {
     if (!Types.ObjectId.isValid(examId))
       throw new HttpError(StatusCode.NOT_FOUND, "Exam not found.");
 
-    const exam = await Exam.findById(examId).populate([
-      {
-        path: `${SectionTypes.MATH}.${Difficulties.EASY}`,
-      },
-      { path: `${SectionTypes.MATH}.${Difficulties.BASE}` },
-      { path: `${SectionTypes.MATH}.${Difficulties.HARD}` },
-      {
-        path: `${SectionTypes.READING_WRITING}.${Difficulties.EASY}`,
-      },
-      {
-        path: `${SectionTypes.READING_WRITING}.${Difficulties.BASE}`,
-      },
-      {
-        path: `${SectionTypes.READING_WRITING}.${Difficulties.HARD}`,
-      },
-    ]);
+    const exam = await Exam.findById(examId);
 
     if (!exam) throw new HttpError(StatusCode.NOT_FOUND, "Exam not found.");
 
@@ -158,35 +100,13 @@ export default class ExamAction {
   }
 
   async getExamList() {
-    const exams = await Exam.find().populate([
-      {
-        path: `${SectionTypes.MATH}.${Difficulties.EASY}`,
-      },
-      { path: `${SectionTypes.MATH}.${Difficulties.BASE}` },
-      { path: `${SectionTypes.MATH}.${Difficulties.HARD}` },
-      {
-        path: `${SectionTypes.READING_WRITING}.${Difficulties.EASY}`,
-      },
-      {
-        path: `${SectionTypes.READING_WRITING}.${Difficulties.BASE}`,
-      },
-      {
-        path: `${SectionTypes.READING_WRITING}.${Difficulties.HARD}`,
-      },
-    ]);
+    const exams = await Exam.find();
 
     return exams.map((exam) => new ExamDto(exam));
   }
 
   async getExamResult(examId: string) {
-    const examResult = await ExamResult.findById(examId).populate([
-      {
-        path: "results.questionSet",
-      },
-      {
-        path: "user",
-      },
-    ]);
+    const examResult = await ExamResult.findById(examId);
 
     if (!examResult)
       throw new HttpError(StatusCode.NOT_FOUND, "Exam result not found.");
@@ -195,14 +115,7 @@ export default class ExamAction {
   }
 
   async getExamResults(userId: string) {
-    const examResults = await ExamResult.find({ user: userId }).populate([
-      {
-        path: "results.questionSet",
-      },
-      {
-        path: "user",
-      },
-    ]);
+    const examResults = await ExamResult.find({ user: userId });
 
     return examResults.map((examResult) => new ExamResultDto(examResult));
   }
@@ -297,15 +210,6 @@ export default class ExamAction {
       })),
     });
 
-    await examResult.populate([
-      {
-        path: "results.questionSet",
-      },
-      {
-        path: "user",
-      },
-    ]);
-
     if (examId && Types.ObjectId.isValid(examId)) {
       await this.addExamResultToExam(examId, examResult.id, userId);
     }
@@ -331,23 +235,6 @@ export default class ExamAction {
     );
 
     if (!exam) throw new HttpError(StatusCode.NOT_FOUND, "Exam not found.");
-
-    await exam.populate([
-      {
-        path: `${SectionTypes.MATH}.${Difficulties.EASY}`,
-      },
-      { path: `${SectionTypes.MATH}.${Difficulties.BASE}` },
-      { path: `${SectionTypes.MATH}.${Difficulties.HARD}` },
-      {
-        path: `${SectionTypes.READING_WRITING}.${Difficulties.EASY}`,
-      },
-      {
-        path: `${SectionTypes.READING_WRITING}.${Difficulties.BASE}`,
-      },
-      {
-        path: `${SectionTypes.READING_WRITING}.${Difficulties.HARD}`,
-      },
-    ]);
 
     return new ExamDto(exam);
   }

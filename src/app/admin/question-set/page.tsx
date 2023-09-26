@@ -61,7 +61,7 @@ export default function QuestionSetPage() {
           />
         </Link>
 
-        <Link href={"/admin/question-set/create/reading-writing"}>
+        <Link href={"/admin/question-set/create/reading_writing"}>
           <DashboardCard
             label={"Create Reading & Writing Question Set"}
             description={"Create a question set for reading & writing section."}
@@ -77,7 +77,7 @@ export default function QuestionSetPage() {
       <MantineReactTable
         columns={questionSetTableColumns}
         data={questionSets}
-        state={{ isLoading:isFetching }}
+        state={{ isLoading: isFetching }}
       />
     </div>
   );

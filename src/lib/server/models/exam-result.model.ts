@@ -3,6 +3,7 @@ import { Document, Model, Schema, model, models } from "mongoose";
 import { IQuestionSet } from "./question-set.model";
 import { ITimeStamps } from "./base.model";
 import { IUser } from "./user.model";
+import autopopulate from "mongoose-autopopulate";
 
 interface ISectionResult {
   questionSet: IQuestionSet;
@@ -21,6 +22,7 @@ const SectionResultSchema = new Schema<ISectionResult>(
       type: Schema.Types.ObjectId,
       required: true,
       ref: "QuestionSet",
+      autopopulate: true,
     },
     score: {
       type: Number,
@@ -55,6 +57,8 @@ const ExamResultSchema = new Schema<IExamResult>(
     versionKey: false,
   }
 );
+
+ExamResultSchema.plugin(autopopulate);
 
 const ExamResultModel: Model<IExamResult> =
   models.ExamResult || model<IExamResult>("ExamResult", ExamResultSchema);
