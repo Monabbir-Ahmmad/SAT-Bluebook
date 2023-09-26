@@ -28,6 +28,7 @@ const apiUrl = {
     createExam: "/admin/exam",
     assignExam: "/admin/exam/assign",
     getExamList: "/admin/exam",
+    getAssignedExams: "/student/exam/predefined-sat",
     startExamById: "/student/exam/predefined-sat",
     getExamSectionByExamId: "/student/exam/predefined-sat",
     getExamSection: "/student/exam/section",

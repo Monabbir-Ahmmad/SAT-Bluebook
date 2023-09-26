@@ -23,10 +23,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ExamCreateReqDto } from "@/dtos/exam.dto";
 import { QuestionDto } from "@/dtos/question.dto";
 import { QuestionSetDto } from "@/dtos/question-set.dto";
-import { examCreateFormValidator } from "@/lib/client/validators/form.validator";
+import { examCreateValidationSchema } from "@/validators/exam.validator";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const questionSetTableColumns: MRT_ColumnDef<QuestionSetDto>[] = [
@@ -75,6 +76,7 @@ const ValidationIcon = ({ valid }: { valid: boolean }) => {
 
 export default function ExamCreatePage() {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const {
     handleSubmit,
@@ -84,7 +86,7 @@ export default function ExamCreatePage() {
     register,
     formState: { errors },
   } = useForm<ExamCreateReqDto>({
-    resolver: zodResolver(examCreateFormValidator),
+    resolver: zodResolver(examCreateValidationSchema),
     defaultValues: {
       [SectionTypes.MATH]: {
         [Difficulties.EASY]: "",
@@ -108,7 +110,7 @@ export default function ExamCreatePage() {
     queryFn: () => questionSetService.getList(),
   });
 
-  const { mutate: createExamMutation } = useMutation({
+  const { mutate: createExamMutation, isLoading } = useMutation({
     mutationFn: examService.createExam,
     onMutate: () => {
       notifications.show({
@@ -128,6 +130,8 @@ export default function ExamCreatePage() {
         color: "green",
         icon: <CheckIcon />,
       });
+
+      router.push("/admin/exam");
     },
     onError: (err: any) => {
       notifications.update({
@@ -240,7 +244,12 @@ export default function ExamCreatePage() {
               Add Question Sets
             </Button>
 
-            <Button variant="gradient" uppercase type="submit">
+            <Button
+              variant="gradient"
+              uppercase
+              type="submit"
+              loading={isLoading}
+            >
               Submit
             </Button>
           </SimpleGrid>

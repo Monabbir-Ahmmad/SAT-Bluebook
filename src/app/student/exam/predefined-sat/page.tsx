@@ -10,6 +10,7 @@ import {
 import { examSectionTime, sections } from "@/constants/data";
 import { useEffect, useMemo, useState } from "react";
 import { useIsMutating, useMutation, useQuery } from "@tanstack/react-query";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { AxiosError } from "axios";
 import ExamSection from "@/components/exam/ExamSection";
@@ -18,10 +19,12 @@ import { SectionTypes } from "@/constants/enums";
 import { examService } from "@/lib/client/services";
 import { modals } from "@mantine/modals";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
 
 export default function PredefinedSATExamPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const examId = searchParams.get("exam-id") || "";
 
   const [examScores, setExamScores] = useState<ExamSectionResultDto[]>([]);
   const [currentSectionIndex, setCurrentSectionIndex] = useState(-1);
@@ -32,7 +35,11 @@ export default function PredefinedSATExamPage() {
     formState: { errors },
   } = useForm<{
     examId: string;
-  }>();
+  }>({
+    defaultValues: {
+      examId,
+    },
+  });
 
   const sectionsOrder = useMemo(
     () => [
@@ -88,7 +95,8 @@ export default function PredefinedSATExamPage() {
 
   const { mutate: submitExamResult } = useMutation({
     mutationKey: ["exam-result"],
-    mutationFn: examService.submitExamResult,
+    mutationFn: async (data: ExamSectionResultDto[]) =>
+      await examService.submitExamResult(data, exam?.id!),
     onSuccess: (data: ExamResultDto) =>
       router.push(`/student/exam/result/${data.id}`),
   });

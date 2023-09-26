@@ -1,19 +1,19 @@
 import { Document, Model, Schema, model, models } from "mongoose";
 import { OAuthProviders, UserRoles } from "@/constants/enums";
 
+import { ITimeStamps } from "./base.model";
+
 export interface IOAuth extends Document {
   oauthId: string;
   provider: OAuthProviders;
 }
 
-export interface IUser extends Document {
+export interface IUser extends Document, ITimeStamps {
   name: string;
   email: string;
   password: string;
   role: UserRoles;
   oauth: IOAuth;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 const OAuthSchema = new Schema<IOAuth>(
@@ -28,9 +28,9 @@ const OAuthSchema = new Schema<IOAuth>(
     },
   },
   {
+    _id: false,
     timestamps: false,
     versionKey: false,
-    _id: false,
   }
 );
 

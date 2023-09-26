@@ -2,15 +2,13 @@ import { Difficulties, SectionTypes } from "@/constants/enums";
 import { Document, Model, Schema, model, models } from "mongoose";
 
 import { IQuestion } from "./question.model";
-import { Types } from "mongoose";
+import { ITimeStamps } from "./base.model";
 
-export interface IQuestionSet extends Document {
+export interface IQuestionSet extends Document, ITimeStamps {
   title: string;
   section: SectionTypes;
   difficulty: Difficulties;
-  questions: Types.Array<IQuestion>;
-  createdAt: Date;
-  updatedAt: Date;
+  questions: IQuestion[];
 }
 
 const QuestionSetSchema = new Schema<IQuestionSet>(
@@ -30,7 +28,6 @@ const QuestionSetSchema = new Schema<IQuestionSet>(
     questions: [
       {
         type: Schema.Types.ObjectId,
-        required: true,
         ref: "Question",
       },
     ],

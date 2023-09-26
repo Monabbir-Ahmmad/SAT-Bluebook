@@ -2,17 +2,23 @@ import { ExamSectionResultDto } from "@/dtos/exam.dto";
 import { NextRequest } from "next/server";
 import { StatusCode } from "@/constants/status-code";
 import { asyncHandler } from "@/lib/server/utils/async.handler";
-import { examAction } from "@/lib/server/actions";
-import { responseHandler } from "@/lib/server/utils/response.handler";
-import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { examAction } from "@/lib/server/actions";
+import { getServerSession } from "next-auth";
+import { responseHandler } from "@/lib/server/utils/response.handler";
 
 const submitExamResult = asyncHandler(async (req: NextRequest) => {
+  const examId = req.nextUrl.searchParams.get("examId");
+
   const data: ExamSectionResultDto[] = await req.json();
 
   const session = await getServerSession(authOptions);
 
-  const result = await examAction.submitExamResult(session?.user?.id!, data);
+  const result = await examAction.submitExamResult(
+    session?.user?.id!,
+    data,
+    examId
+  );
 
   return responseHandler(StatusCode.OK, result);
 });

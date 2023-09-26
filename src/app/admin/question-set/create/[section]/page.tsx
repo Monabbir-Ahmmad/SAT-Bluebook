@@ -27,7 +27,7 @@ import { QuestionDto } from "@/dtos/question.dto";
 import QuestionItem from "@/components/question-set/QuestionItem";
 import { QuestionSetCreateReqDto } from "@/dtos/question-set.dto";
 import { notifications } from "@mantine/notifications";
-import { questionSetFormValidator } from "@/lib/client/validators/form.validator";
+import { questionSetCreateValidationSchema } from "@/validators/question-set.validator";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
@@ -58,7 +58,7 @@ export default function QuestionSetCreatePage({
       section: section,
       questions: [],
     },
-    resolver: zodResolver(questionSetFormValidator),
+    resolver: zodResolver(questionSetCreateValidationSchema),
   });
 
   useQuery({

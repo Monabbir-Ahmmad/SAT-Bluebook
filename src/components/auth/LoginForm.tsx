@@ -11,7 +11,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 
 import Link from "next/link";
 import { LoginReqDto } from "@/dtos/auth.dto";
-import { loginFormValidator } from "@/lib/client/validators/form.validator";
+import { signinValidationSchema } from "@/validators/auth.validator";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 type LoginFormProps = {
@@ -24,7 +24,7 @@ function LoginForm({ onSubmit }: LoginFormProps) {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginReqDto>({
-    resolver: zodResolver(loginFormValidator),
+    resolver: zodResolver(signinValidationSchema),
   });
 
   return (

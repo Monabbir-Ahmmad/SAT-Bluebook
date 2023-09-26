@@ -72,6 +72,7 @@ export default function UserManagementPage() {
         positionActionsColumn="last"
         renderRowActions={({ row }) => (
           <Button
+            fullWidth
             color={row.original.role === UserRoles.ADMIN ? "red" : "blue"}
             onClick={() => onUpdateAdmin(row.original.id)}
           >

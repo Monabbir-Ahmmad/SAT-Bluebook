@@ -3,7 +3,7 @@ import { QuestionCreateReqDto } from "@/dtos/question.dto";
 import { StatusCode } from "@/constants/status-code";
 import { asyncHandler } from "@/lib/server/utils/async.handler";
 import { questionAction } from "@/lib/server/actions";
-import { questionCreateValidationSchema } from "@/lib/server/validators/question.validator";
+import { questionCreateValidationSchema } from "@/validators/question.validator";
 import { responseHandler } from "@/lib/server/utils/response.handler";
 import { validateData } from "@/lib/server/utils/validation.util";
 

@@ -31,7 +31,7 @@ export const adminDashboardOptions = [
   {
     id: "1",
     image: "https://img.icons8.com/clouds/256/000000/books.png",
-    label: "Add Questions",
+    label: "Create Questions",
     description: "Add questions to the question bank.",
     content: [
       {

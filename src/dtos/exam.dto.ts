@@ -42,7 +42,7 @@ export class ExamSectionDto {
   timeTaken?: number = 0;
 
   constructor(data: IQuestionSet) {
-    this.id = data.id;
+    this.id = data._id;
     this.title = data.title;
     this.section = data.section;
     this.questions = data.questions.map((question) => ({
@@ -94,12 +94,12 @@ export class ExamResultDto {
   updatedAt: Date;
 
   constructor(data: IExamResult) {
-    this.id = data.id;
+    this.id = data._id;
     this.user = new UserDto(data.user);
     this.results = data.results.map(
       (result) =>
         new ExamSectionResultDto(
-          result.questionSet.id,
+          result.questionSet._id,
           result.questionSet.section,
           result.score,
           result.timeTaken
@@ -133,7 +133,7 @@ export class ExamDto {
   }>;
 
   constructor(data: IExam) {
-    this.id = data.id;
+    this.id = data._id;
     this.title = data.title;
     this.createdAt = data.createdAt;
     this.updatedAt = data.updatedAt;
