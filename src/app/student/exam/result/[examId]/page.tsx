@@ -1,18 +1,20 @@
 "use client";
 
-import { examSectionTime, questionSetSize, sections } from "@/constants/data";
-import { examService } from "@/lib/client/services";
-import { secondsToMmSs } from "@/lib/client/utils/common.util";
 import {
-  Group,
   Loader,
   LoadingOverlay,
   Paper,
   RingProgress,
+  SimpleGrid,
+  Text,
   Title,
 } from "@mantine/core";
-import { useQuery } from "@tanstack/react-query";
+import { examSectionTime, questionSetSize, sections } from "@/constants/data";
 import { useEffect, useState } from "react";
+
+import { examService } from "@/lib/client/services";
+import { secondsToMmSs } from "@/lib/client/utils/common.util";
+import { useQuery } from "@tanstack/react-query";
 
 interface ExamResultPageProps {
   params: { examId: string };
@@ -26,12 +28,13 @@ const ScoreProgressBar = ({
   totalScore: number;
 }) => (
   <RingProgress
-    size={250}
+    size={200}
+    thickness={6}
     sections={[{ value: (score / totalScore) * 100, color: "blue" }]}
     label={
-      <div className="text-center">
-        <Title order={4}>Score</Title>
-        <Title order={2} color="blue">
+      <div className="text-center font-semibold">
+        <Text>Score</Text>
+        <Title order={3} color="blue">
           {score} / {totalScore}
         </Title>
       </div>
@@ -41,24 +44,50 @@ const ScoreProgressBar = ({
 
 const TimeTakenProgressBar = ({
   timeTaken,
-  totalTime,
+  timeLimit,
 }: {
   timeTaken: number;
-  totalTime: number;
+  timeLimit: number;
 }) => (
   <RingProgress
-    size={250}
-    sections={[{ value: (timeTaken / totalTime) * 100, color: "blue" }]}
+    size={200}
+    thickness={6}
+    sections={[{ value: (timeTaken / timeLimit) * 100, color: "blue" }]}
     label={
-      <div className="text-center">
-        <Title order={4}>Time Taken</Title>
-        <Title order={2} color="blue">
+      <div className="text-center font-semibold">
+        <Text>Time Taken</Text>
+        <Title order={3} color="blue">
           {secondsToMmSs(timeTaken)} mins
         </Title>
-        <Title order={4}>{secondsToMmSs(totalTime)} mins</Title>
+        <Text>{secondsToMmSs(timeLimit)} mins</Text>
       </div>
     }
   />
+);
+
+const ResultCard = ({
+  score,
+  timeTaken,
+  timeLimit,
+  totalScore,
+  title,
+}: {
+  score: number;
+  timeTaken: number;
+  timeLimit: number;
+  totalScore: number;
+  title: string;
+}) => (
+  <Paper
+    withBorder
+    className="w-full p-6 flex flex-col gap-4 items-center justify-center"
+  >
+    <Title order={3}>{title}</Title>
+    <div className="flex flex-col md:flex-row">
+      <ScoreProgressBar score={score} totalScore={totalScore} />
+      <TimeTakenProgressBar timeTaken={timeTaken} timeLimit={timeLimit} />
+    </div>
+  </Paper>
 );
 
 export default function ExamResultPage({
@@ -68,7 +97,7 @@ export default function ExamResultPage({
     score: 0,
     timeTaken: 0,
     examScore: 0,
-    examTime: 0,
+    examTimeLimit: 0,
   });
 
   const { data: examResult, isFetching } = useQuery({
@@ -93,7 +122,7 @@ export default function ExamResultPage({
         0
       );
 
-      const examTime = examResult?.results?.reduce(
+      const examTimeLimit = examResult?.results?.reduce(
         (acc, curr) => acc + examSectionTime[curr.section],
         0
       );
@@ -102,13 +131,13 @@ export default function ExamResultPage({
         score,
         timeTaken,
         examScore,
-        examTime,
+        examTimeLimit,
       });
     }
   }, [examResult]);
 
   return (
-    <div className="space-y-6 p-6 text-center">
+    <div className="space-y-6 p-6 text-center max-w-6xl mx-auto">
       <LoadingOverlay
         visible={isFetching}
         overlayBlur={2}
@@ -117,49 +146,42 @@ export default function ExamResultPage({
 
       <Title order={1}>Exam Result</Title>
 
-      {totalResult.examScore > 0 && (
-        <Paper
-          withBorder
-          className="w-full p-6 flex flex-col gap-6 items-center justify-center"
-        >
-          <Title order={2}>Total Result</Title>
+      {examResult && (
+        <>
+          <Title order={3} weight={600}>
+            Completed At - {new Date(examResult?.createdAt).toLocaleString()}
+          </Title>
 
-          <Group noWrap>
-            <ScoreProgressBar
+          {totalResult.examScore > 0 && (
+            <ResultCard
               score={totalResult.score}
-              totalScore={totalResult.examScore}
-            />
-            <TimeTakenProgressBar
               timeTaken={totalResult.timeTaken}
-              totalTime={totalResult.examTime}
+              timeLimit={totalResult.examTimeLimit}
+              totalScore={totalResult.examScore}
+              title="Total Result"
             />
-          </Group>
-        </Paper>
-      )}
+          )}
 
-      <div className="flex gap-6 flex-col xl:flex-row">
-        {examResult?.results.map((result) => (
-          <Paper
-            withBorder
-            key={result.id}
-            className="w-full p-6 flex flex-col gap-6 items-center justify-center"
+          <SimpleGrid
+            cols={examResult?.results.length > 1 ? 2 : 1}
+            spacing={"lg"}
+            breakpoints={[{ maxWidth: "sm", cols: 1 }]}
           >
-            <Title order={2}>
-              {sections.find((s) => result.section === s.value)?.label}
-            </Title>
-            <Group noWrap>
-              <ScoreProgressBar
+            {examResult?.results.map((result, index) => (
+              <ResultCard
+                key={result.questionSetId}
                 score={result.score}
-                totalScore={questionSetSize[result.section]}
-              />
-              <TimeTakenProgressBar
                 timeTaken={result.timeTaken}
-                totalTime={examSectionTime[result.section]}
+                timeLimit={examSectionTime[result.section]}
+                totalScore={questionSetSize[result.section]}
+                title={`Exam ${index + 1} - ${sections.find(
+                  (s) => result.section === s.value
+                )?.label}`}
               />
-            </Group>
-          </Paper>
-        ))}
-      </div>
+            ))}
+          </SimpleGrid>
+        </>
+      )}
     </div>
   );
 }

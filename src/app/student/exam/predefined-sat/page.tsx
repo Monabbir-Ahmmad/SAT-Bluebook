@@ -23,11 +23,13 @@ import { useForm } from "react-hook-form";
 export default function PredefinedSATExamPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-
   const examId = searchParams.get("exam-id") || "";
 
-  const [examScores, setExamScores] = useState<ExamSectionResultDto[]>([]);
+  const [examSectionResults, setExamSectionResults] = useState<
+    ExamSectionResultDto[]
+  >([]);
   const [currentSectionIndex, setCurrentSectionIndex] = useState(-1);
+  
   const {
     handleSubmit,
     register,
@@ -70,7 +72,7 @@ export default function PredefinedSATExamPage() {
     if (exam) setCurrentSectionIndex(0);
   }, [exam]);
 
-  const { data: examModule, isFetching } = useQuery({
+  const { data: examSection, isFetching } = useQuery({
     enabled:
       currentSectionIndex >= 0 && currentSectionIndex < sectionsOrder.length,
     queryKey: ["exam", sectionsOrder[currentSectionIndex], currentSectionIndex],
@@ -78,8 +80,8 @@ export default function PredefinedSATExamPage() {
       await examService.getExamSectionByExamId(
         exam?.id!,
         sectionsOrder[currentSectionIndex],
-        examScores.length && currentSectionIndex % 2 != 0
-          ? examScores[examScores.length - 1].score
+        examSectionResults.length && currentSectionIndex % 2 != 0
+          ? examSectionResults[examSectionResults.length - 1].score
           : undefined
       ),
   });
@@ -88,7 +90,7 @@ export default function PredefinedSATExamPage() {
     mutationKey: ["exam-result"],
     mutationFn: examService.submitExamSection,
     onSuccess: (data: ExamSectionResultDto) => {
-      setExamScores((prev) => [...prev, data]);
+      setExamSectionResults((prev) => [...prev, data]);
       setCurrentSectionIndex((prev) => prev + 1);
     },
   });
@@ -103,7 +105,7 @@ export default function PredefinedSATExamPage() {
 
   useEffect(() => {
     if (currentSectionIndex === sectionsOrder.length)
-      submitExamResult(examScores);
+      submitExamResult(examSectionResults);
   }, [currentSectionIndex]);
 
   const onExamStart = (data: { examId: string }) => {
@@ -160,9 +162,9 @@ export default function PredefinedSATExamPage() {
         loader={<Loader variant="bars" size={"xl"} />}
       />
 
-      {examModule && (
+      {examSection && (
         <ExamSection
-          section={examModule}
+          section={examSection}
           title={`${sections.find(
             (s) => s.value === sectionsOrder[currentSectionIndex]
           )?.label} - Module ${(currentSectionIndex % 2) + 1}`}

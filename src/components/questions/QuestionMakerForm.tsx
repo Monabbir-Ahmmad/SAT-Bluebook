@@ -1,11 +1,4 @@
-import {
-  Button,
-  MultiSelect,
-  Paper,
-  SegmentedControl,
-  Text,
-  Title,
-} from "@mantine/core";
+import { Button, MultiSelect, Paper, Select, Text, Title } from "@mantine/core";
 import { Difficulties, OptionTypes, SectionTypes } from "@/constants/enums";
 import { FormProvider, useForm } from "react-hook-form";
 import RichEditor, { IRichEditor } from "../common/richEditor/RichEditor";
@@ -95,24 +88,61 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
             </Button>
           </div>
         </Paper>
-        <div className="p-5 space-y-5 max-w-4xl mx-auto">
-          <Paper
-            shadow="xs"
-            className="p-6 border-primary border-t-4 flex flex-col gap-4"
-          >
-            <Title order={2}>Question</Title>
 
-            <div>
-              <Text fz={"lg"} fw={500} mb={"xs"}>
-                Section
-              </Text>
-              <SegmentedControl
-                orientation={largeScreen ? "horizontal" : "vertical"}
-                fullWidth
-                size="md"
-                color="blue"
+        <div className="p-5 space-y-5">
+          <Paper className="p-6 border border-l-4 border-l-primary space-y-4">
+            <Title order={2} weight={500}>
+              Question Details
+            </Title>
+
+            <div className="flex gap-4 flex-col lg:flex-row">
+              <Select
+                className="w-full"
+                label={
+                  <Text fz={"lg"} fw={500} mb={"xs"}>
+                    Section
+                  </Text>
+                }
+                size="lg"
                 data={sections}
+                value={watch("section")}
                 onChange={(value: SectionTypes) => setValue("section", value)}
+              />
+
+              <Select
+                className="w-full"
+                label={
+                  <Text fz={"lg"} fw={500} mb={"xs"}>
+                    Difficulty
+                  </Text>
+                }
+                size="lg"
+                data={difficulties}
+                value={watch("difficulty")}
+                onChange={(value: Difficulties) =>
+                  setValue("difficulty", value)
+                }
+              />
+
+              <MultiSelect
+                className="w-full"
+                label={
+                  <Text fz={"lg"} fw={500} mb={"xs"}>
+                    Tags
+                  </Text>
+                }
+                size="lg"
+                placeholder="Create or select multiple tags"
+                searchable
+                creatable
+                data={[]}
+                getCreateLabel={(query) => `+ Create ${query}`}
+                onChange={(value) => setValue("tags", value)}
+                onCreate={(value) => {
+                  setValue("tags", [...getValues().tags, value]);
+                  return value;
+                }}
+                error={!!errors?.tags}
               />
             </div>
 
@@ -123,7 +153,7 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
                 </Text>
                 <RichEditor
                   ref={passageInputRef}
-                  minHeight="100px"
+                  minHeight="200px"
                   width="100%"
                   resizingBar={false}
                   placeholder="Write your passage here..."
@@ -148,56 +178,19 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
               </Text>
               <RichEditor
                 ref={questionInputRef}
-                minHeight="100px"
+                minHeight="150px"
                 width="100%"
                 resizingBar={false}
                 placeholder="Write your question here..."
                 buttonList={buttonListMini}
               />
             </div>
-
-            <div>
-              <Text fz={"lg"} fw={500} mb={"xs"}>
-                Difficulty
-              </Text>
-              <SegmentedControl
-                orientation={largeScreen ? "horizontal" : "vertical"}
-                fullWidth
-                size="md"
-                color="blue"
-                data={difficulties}
-                onChange={(value: Difficulties) =>
-                  setValue("difficulty", value)
-                }
-              />
-            </div>
-
-            <MultiSelect
-              size="md"
-              label={
-                <Text fz={"lg"} fw={500} mb={"xs"}>
-                  Tags
-                </Text>
-              }
-              data={[]}
-              placeholder="Create or select multiple tags"
-              searchable
-              creatable
-              getCreateLabel={(query) => `+ Create ${query}`}
-              onChange={(value) => setValue("tags", value)}
-              onCreate={(value) => {
-                setValue("tags", [...getValues().tags, value]);
-                return value;
-              }}
-              error={!!errors?.tags}
-            />
           </Paper>
 
-          <Paper
-            shadow="xs"
-            className="p-6 border-primary border-l-4 flex flex-col gap-4"
-          >
-            <Title order={2}>Answer</Title>
+          <Paper className="p-6 border border-l-4 border-l-primary space-y-4">
+            <Title order={2} weight={500}>
+              Answer Details
+            </Title>
             <QuestionOptionAdder />
           </Paper>
         </div>

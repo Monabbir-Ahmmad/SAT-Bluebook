@@ -31,7 +31,7 @@ export default function SectionExamPage({
   });
 
   const {
-    data: examModule,
+    data: examSection,
     isFetching,
     refetch,
   } = useQuery({
@@ -61,7 +61,7 @@ export default function SectionExamPage({
     submitExamSection(examSection);
   };
 
-  if (!examModule && !isFetching)
+  if (!examSection && !isFetching)
     return (
       <div className="max-w-2xl mx-auto p-8 space-y-8">
         <ExamStartGuide />
@@ -79,9 +79,9 @@ export default function SectionExamPage({
         loader={<Loader variant="bars" size={"xl"} />}
       />
 
-      {examModule && (
+      {examSection && (
         <ExamSection
-          section={examModule}
+          section={examSection}
           title={sections.find((s) => s.value === section)?.label}
           timeLimit={examSectionTime[section]}
           onSectionSubmit={onExamSectionSubmit}

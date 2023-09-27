@@ -156,7 +156,7 @@ export default function ExamSection({
             <Badge variant="dot" size="xl">
               {
                 examSection?.questions.filter(
-                  (q) => q.selectedOption !== undefined
+                  (q) => q.selectedOption !== undefined || q.textAnswer
                 ).length
               }{" "}
               answered

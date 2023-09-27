@@ -4,6 +4,7 @@ import {
   ExamAssignReqDto,
   ExamCreateReqDto,
   ExamDto,
+  ExamQuestionAnswerStatusDto,
   ExamResultDto,
   ExamSectionDto,
   ExamSectionResultDto,
@@ -195,18 +196,16 @@ export default class ExamAction {
     data: ExamSectionResultDto[],
     examId: string | null
   ) {
-    data = data.sort((a, b) => {
-      if (a.section < b.section) return -1;
-      else if (a.section > b.section) return 1;
-      else return 0;
-    });
-
     const examResult = await ExamResult.create({
       user: userId,
       results: data.map((d) => ({
-        questionSet: d.id,
+        questionSet: d.questionSetId,
         score: d.score,
         timeTaken: d.timeTaken,
+        questionAnswerStatus: d.questionAnswerStatus.map((q) => ({
+          question: q.questionId,
+          isCorrect: q.isCorrect,
+        })),
       })),
     });
 
@@ -251,19 +250,31 @@ export default class ExamAction {
 
     const questions = questionSet.questions as IQuestion[];
 
+    const questionAnswerStatus: ExamQuestionAnswerStatusDto[] = [];
+
     questions.forEach((question: IQuestion) => {
       const submittedAns = data.questions.find((q) => q.id === question.id);
 
       if (
         question.optionType === OptionTypes.GRID_IN &&
         question.options[0] === submittedAns?.textAnswer
-      )
+      ) {
         score += 1;
-      else if (
+        questionAnswerStatus.push(
+          new ExamQuestionAnswerStatusDto(question.id, true)
+        );
+      } else if (
         submittedAns?.selectedOption !== undefined &&
         question.answers.includes(submittedAns.selectedOption)
       ) {
         score += 1;
+        questionAnswerStatus.push(
+          new ExamQuestionAnswerStatusDto(question.id, true)
+        );
+      } else {
+        questionAnswerStatus.push(
+          new ExamQuestionAnswerStatusDto(question.id, false)
+        );
       }
     });
 
@@ -271,7 +282,8 @@ export default class ExamAction {
       questionSet.id,
       questionSet.section,
       score,
-      data.timeTaken
+      data.timeTaken,
+      questionAnswerStatus
     );
   }
 }

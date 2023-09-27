@@ -37,7 +37,7 @@ export default function QuestionOptionAdder() {
     <div className="space-y-4">
       <div className="space-y-2">
         <Text fz={"lg"} fw={500} mb={"xs"}>
-          Type
+          Answer Type
         </Text>
         <SegmentedControl
           orientation={largeScreen ? "horizontal" : "vertical"}
@@ -52,10 +52,11 @@ export default function QuestionOptionAdder() {
       {watch("optionType") === OptionTypes.GRID_IN && (
         <TextInput
           {...register("options.0.text")}
-          label="Text Answer"
-          labelProps={{
-            className: "font-semibold text-lg mb-2 text-text-color",
-          }}
+          label={
+            <Text fz={"lg"} fw={500} mb={"xs"}>
+              Answer
+            </Text>
+          }
           size="lg"
           placeholder="Type the answer here"
           error={!!errors?.options?.[0]?.text}
