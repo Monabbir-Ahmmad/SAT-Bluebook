@@ -19,7 +19,9 @@ import { useRouter } from "next/navigation";
 export default function DynamicSATExamPage() {
   const router = useRouter();
 
-  const [examScores, setExamScores] = useState<ExamSectionResultDto[]>([]);
+  const [examSectionResults, setExamSectionResults] = useState<
+    ExamSectionResultDto[]
+  >([]);
   const [currentSectionIndex, setCurrentSectionIndex] = useState(-1);
 
   const sectionsOrder = useMemo(
@@ -36,15 +38,15 @@ export default function DynamicSATExamPage() {
     mutationKey: ["exam-result"],
   });
 
-  const { data: examModule, isFetching } = useQuery({
+  const { data: examSection, isFetching } = useQuery({
     enabled:
       currentSectionIndex >= 0 && currentSectionIndex < sectionsOrder.length,
     queryKey: ["exam", sectionsOrder[currentSectionIndex], currentSectionIndex],
     queryFn: async () =>
       await examService.getDynamicExamSection(
         sectionsOrder[currentSectionIndex],
-        examScores.length && currentSectionIndex % 2 != 0
-          ? examScores[examScores.length - 1].score
+        examSectionResults.length && currentSectionIndex % 2 != 0
+          ? examSectionResults[examSectionResults.length - 1].score
           : undefined
       ),
   });
@@ -53,7 +55,7 @@ export default function DynamicSATExamPage() {
     mutationKey: ["exam-result"],
     mutationFn: examService.submitExamSection,
     onSuccess: (data: ExamSectionResultDto) => {
-      setExamScores((prev) => [...prev, data]);
+      setExamSectionResults((prev) => [...prev, data]);
       setCurrentSectionIndex((prev) => prev + 1);
     },
   });
@@ -67,7 +69,7 @@ export default function DynamicSATExamPage() {
 
   useEffect(() => {
     if (currentSectionIndex === sectionsOrder.length)
-      submitExamResult(examScores);
+      submitExamResult(examSectionResults);
   }, [currentSectionIndex]);
 
   const onExamStart = () => {
@@ -96,9 +98,9 @@ export default function DynamicSATExamPage() {
         loader={<Loader variant="bars" size={"xl"} />}
       />
 
-      {examModule && (
+      {examSection && (
         <ExamSection
-          section={examModule}
+          section={examSection}
           title={`${sections.find(
             (s) => s.value === sectionsOrder[currentSectionIndex]
           )?.label} - Module ${(currentSectionIndex % 2) + 1}`}

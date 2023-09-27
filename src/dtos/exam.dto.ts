@@ -67,22 +67,35 @@ export class ExamSectionSubmitDto {
   questions: ExamQuestionSubmitDto[];
 }
 
+export class ExamQuestionAnswerStatusDto {
+  questionId: string;
+  isCorrect: boolean;
+
+  constructor(questionId: string, isCorrect: boolean) {
+    this.questionId = questionId;
+    this.isCorrect = isCorrect;
+  }
+}
+
 export class ExamSectionResultDto {
-  id: string;
+  questionSetId: string;
   section: SectionTypes;
   score: number;
   timeTaken: number;
+  questionAnswerStatus: ExamQuestionAnswerStatusDto[];
 
   constructor(
-    id: string,
+    questionSetId: string,
     section: SectionTypes,
     score: number = 0,
-    timeTaken: number
+    timeTaken: number,
+    questionAnswerStatus: ExamQuestionAnswerStatusDto[]
   ) {
-    this.id = id;
+    this.questionSetId = questionSetId;
     this.section = section;
     this.score = score;
     this.timeTaken = timeTaken;
+    this.questionAnswerStatus = questionAnswerStatus;
   }
 }
 
@@ -102,7 +115,14 @@ export class ExamResultDto {
           result.questionSet._id,
           result.questionSet.section,
           result.score,
-          result.timeTaken
+          result.timeTaken,
+          result.questionAnswerStatus.map(
+            (status) =>
+              new ExamQuestionAnswerStatusDto(
+                status.question._id,
+                status.isCorrect
+              )
+          )
         )
     );
     this.createdAt = data.createdAt;

@@ -66,7 +66,8 @@ export default function QuestionOption({
         <TextInput
           {...register(`options.${index}.text`)}
           className="w-full"
-          placeholder={"Option Text"}
+          size="lg"
+          placeholder={"Option " + (index + 1)}
           error={!!errors?.options?.[index]?.text}
         />
       )}
