@@ -1,16 +1,17 @@
 "use client";
 
-import { Divider, Paper } from "@mantine/core";
+import { Button, Divider, Paper } from "@mantine/core";
+import { ExamDto, ExamResultDto } from "@/dtos/exam.dto";
 import { MRT_ColumnDef, MantineReactTable } from "mantine-react-table";
 
 import DashboardOptions from "@/components/dashboard/DashboardOptions";
 import { GiGraduateCap as EducationIcon } from "react-icons/gi";
-import { ExamResultDto } from "@/dtos/exam.dto";
 import Image from "next/image";
 import { examService } from "@/lib/client/services";
 import { secondsToMmSs } from "@/lib/client/utils/common.util";
 import { studentDashboardOptions } from "@/constants/data";
 import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 const examResultTableColumns: MRT_ColumnDef<ExamResultDto>[] = [
@@ -35,13 +36,35 @@ const examResultTableColumns: MRT_ColumnDef<ExamResultDto>[] = [
   },
 ];
 
+const assignedExamTableColumns: MRT_ColumnDef<ExamDto>[] = [
+  {
+    accessorKey: "id",
+    header: "Exam Code",
+    size: 250,
+  },
+  {
+    accessorKey: "title",
+    header: "Title",
+  },
+];
+
 export default function StudentDashboardPage() {
   const session = useSession();
+  const router = useRouter();
 
   const { data: examResults = [], isFetching } = useQuery({
     queryKey: ["exam-results"],
     queryFn: examService.getExamResults,
   });
+
+  const { data: assignedExams = [], isFetching: isAssignedExamFetching } =
+    useQuery({
+      queryKey: ["assigned-exams"],
+      queryFn: examService.getAssignedExams,
+    });
+
+  const onExamStart = async (examId: string) =>
+    router.push(`/student/exam/predefined-sat?exam-id=${examId}`);
 
   return (
     <div className="mx-auto max-w-7xl w-full flex flex-col gap-6 p-6">
@@ -88,6 +111,26 @@ export default function StudentDashboardPage() {
           columns={examResultTableColumns}
           data={examResults}
           state={{ isLoading: isFetching }}
+        />
+      </div>
+
+      <div className="space-y-4">
+        <Divider
+          label={<h1 className="text-2xl text-text-color">Assigned Exams</h1>}
+          labelPosition="left"
+        />
+
+        <MantineReactTable
+          columns={assignedExamTableColumns}
+          data={assignedExams}
+          state={{ isLoading: isAssignedExamFetching }}
+          enableRowActions
+          positionActionsColumn="last"
+          renderRowActions={({ row }) => (
+            <Button onClick={() => onExamStart(row.original.id)}>
+              Start Exam
+            </Button>
+          )}
         />
       </div>
     </div>

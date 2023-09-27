@@ -3,7 +3,6 @@ import {
   MultiSelect,
   Paper,
   SegmentedControl,
-  Select,
   Text,
   Title,
 } from "@mantine/core";
@@ -18,7 +17,7 @@ import { QuestionCreateReqDto } from "@/dtos/question.dto";
 import QuestionOptionAdder from "./QuestionOptionAdder";
 import { buttonListMini } from "../common/richEditor/buttonList";
 import { debounce } from "@/lib/client/utils/common.util";
-import { questionFormValidator } from "@/lib/client/validators/form.validator";
+import { questionCreateValidationSchema } from "@/validators/question.validator";
 import { useMediaQuery } from "@mantine/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -33,7 +32,7 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
   const passageInputRef = useRef<IRichEditor>(null);
 
   const formMethods = useForm<QuestionCreateReqDto>({
-    resolver: zodResolver(questionFormValidator),
+    resolver: zodResolver(questionCreateValidationSchema),
     defaultValues: {
       section: SectionTypes.MATH,
       difficulty: Difficulties.EASY,

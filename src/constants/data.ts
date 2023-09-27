@@ -31,7 +31,7 @@ export const adminDashboardOptions = [
   {
     id: "1",
     image: "https://img.icons8.com/clouds/256/000000/books.png",
-    label: "Add Questions",
+    label: "Create Questions",
     description: "Add questions to the question bank.",
     content: [
       {
@@ -58,7 +58,7 @@ export const adminDashboardOptions = [
       },
       {
         id: "2.2",
-        href: "/admin/question-set/create/reading-writing",
+        href: "/admin/question-set/create/reading_writing",
         label: "Create Reading & Writing Question Set",
         description: "Create a question set for reading & writing section.",
         image: "https://img.icons8.com/clouds/256/000000/book-reading.png",
@@ -122,7 +122,7 @@ export const studentDashboardOptions = [
       },
       {
         id: "2.2",
-        href: "/student/exam/section/reading-writing",
+        href: "/student/exam/section/reading_writing",
         label: "Reading & Writing",
         description: "Take a full-length reading & writing test.",
         image: "https://img.icons8.com/clouds/256/000000/book-reading.png",

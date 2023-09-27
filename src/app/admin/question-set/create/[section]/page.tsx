@@ -27,7 +27,7 @@ import { QuestionDto } from "@/dtos/question.dto";
 import QuestionItem from "@/components/question-set/QuestionItem";
 import { QuestionSetCreateReqDto } from "@/dtos/question-set.dto";
 import { notifications } from "@mantine/notifications";
-import { questionSetFormValidator } from "@/lib/client/validators/form.validator";
+import { questionSetCreateValidationSchema } from "@/validators/question-set.validator";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
@@ -58,7 +58,7 @@ export default function QuestionSetCreatePage({
       section: section,
       questions: [],
     },
-    resolver: zodResolver(questionSetFormValidator),
+    resolver: zodResolver(questionSetCreateValidationSchema),
   });
 
   useQuery({
@@ -138,7 +138,11 @@ export default function QuestionSetCreatePage({
         }}
         title={
           <p className="text-text-color text-lg font-semibold">
-            Available <span className="text-primary">{section}</span> questions
+            Available{" "}
+            <span className="text-primary">
+              {sections.find((s) => s.value === section)?.label}
+            </span>{" "}
+            questions
           </p>
         }
       >
@@ -154,7 +158,9 @@ export default function QuestionSetCreatePage({
         size={"lg"}
         opened={openedModal}
         onClose={modal.close}
-        title={`Create question set for ${section} section`}
+        title={`Create question set for ${sections.find(
+          (s) => s.value === section
+        )?.label} section`}
         centered
       >
         <form
@@ -193,8 +199,11 @@ export default function QuestionSetCreatePage({
       <Paper radius={0} className="sticky top-14 w-full border-b z-10">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-4 p-4">
           <Title order={3}>
-            Compose a <span className="text-primary">{section}</span> question
-            set
+            Compose a{" "}
+            <span className="text-primary">
+              {sections.find((s) => s.value === section)?.label}
+            </span>{" "}
+            question set
           </Title>
 
           <Badge variant="dot" size="xl">

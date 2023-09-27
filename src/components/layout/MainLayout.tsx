@@ -35,6 +35,11 @@ export default function MainLayout({ navLinks, children }: MainLayoutProps) {
   const session = useSession();
   const [navOpened, setNavOpened] = useState(false);
 
+  const onSignOut = () => {
+    signOut();
+    router.replace("/");
+  };
+
   return (
     <AppShell
       padding={0}
@@ -84,7 +89,7 @@ export default function MainLayout({ navLinks, children }: MainLayoutProps) {
                 variant="light"
                 radius={"xl"}
                 className="ml-auto"
-                onClick={() => signOut()}
+                onClick={onSignOut}
               >
                 Logout
               </Button>

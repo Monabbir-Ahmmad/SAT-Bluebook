@@ -38,23 +38,26 @@ export default function SigninPage() {
         Login to continue
       </h1>
 
-      <div className="flex flex-col gap-2">
-        {providers &&
-          Object.values(providers).map(
-            (provider: any) =>
-              provider.name !== "Credentials" && (
-                <Button
-                  variant="default"
-                  key={provider.name}
-                  onClick={() => signIn(provider.id)}
-                >
-                  Sign in with {provider.name}
-                </Button>
-              )
-          )}
-      </div>
+      {providers && (
+        <>
+          <div className="flex flex-col gap-4">
+            {Object.values(providers).map(
+              (provider: any) =>
+                provider.name !== "Credentials" && (
+                  <Button
+                    variant="default"
+                    key={provider.name}
+                    onClick={() => signIn(provider.id)}
+                  >
+                    Sign in with {provider.name}
+                  </Button>
+                )
+            )}
+          </div>
 
-      <Divider label="Or continue with email" labelPosition="center" />
+          <Divider label="Or continue with email" labelPosition="center" />
+        </>
+      )}
 
       <LoginForm onSubmit={handleSignin} />
     </Paper>

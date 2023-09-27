@@ -26,4 +26,4 @@ const startExamById = asyncHandler(
   }
 );
 
-export { startExamById as GET };
+export { startExamById as POST };

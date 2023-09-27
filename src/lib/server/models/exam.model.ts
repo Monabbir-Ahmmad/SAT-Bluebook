@@ -3,29 +3,76 @@ import { Document, Model, Schema, model, models } from "mongoose";
 
 import { IExamResult } from "./exam-result.model";
 import { IQuestionSet } from "./question-set.model";
+import { ITimeStamps } from "./base.model";
 import { IUser } from "./user.model";
-import { Types } from "mongoose";
+import autopopulate from "mongoose-autopopulate";
 
-export interface IExam extends Document {
-  title: string;
-  [SectionTypes.MATH]: {
-    [Difficulties.EASY]: IQuestionSet;
-    [Difficulties.BASE]: IQuestionSet;
-    [Difficulties.HARD]: IQuestionSet;
-  };
-  [SectionTypes.READING_WRITING]: {
-    [Difficulties.EASY]: IQuestionSet;
-    [Difficulties.BASE]: IQuestionSet;
-    [Difficulties.HARD]: IQuestionSet;
-  };
-  assignedTo: Types.Array<IUser>;
-  attendedBy: Types.Array<{
-    user: IUser;
-    result?: IExamResult;
-  }>;
-  createdAt: Date;
-  updatedAt: Date;
+interface IFullQuestionSet {
+  [Difficulties.EASY]: IQuestionSet;
+  [Difficulties.BASE]: IQuestionSet;
+  [Difficulties.HARD]: IQuestionSet;
 }
+
+interface IAttendedBy extends ITimeStamps {
+  user: IUser;
+  result?: IExamResult;
+}
+
+export interface IExam extends Document, ITimeStamps {
+  title: string;
+  [SectionTypes.MATH]: IFullQuestionSet;
+  [SectionTypes.READING_WRITING]: IFullQuestionSet;
+  assignedTo: IUser[];
+  attendedBy: IAttendedBy[];
+}
+
+const FullQuestionSetSchema = new Schema<IFullQuestionSet>(
+  {
+    [Difficulties.EASY]: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "QuestionSet",
+      autopopulate: true,
+    },
+    [Difficulties.BASE]: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "QuestionSet",
+      autopopulate: true,
+    },
+    [Difficulties.HARD]: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "QuestionSet",
+      autopopulate: true,
+    },
+  },
+  {
+    _id: false,
+    versionKey: false,
+    timestamps: false,
+  }
+);
+
+const AttendedBySchema = new Schema<IAttendedBy>(
+  {
+    user: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
+    result: {
+      type: Schema.Types.ObjectId,
+      ref: "ExamResult",
+      autopopulate: true,
+    },
+  },
+  {
+    _id: false,
+    timestamps: true,
+    versionKey: false,
+  }
+);
 
 const ExamSchema = new Schema<IExam>(
   {
@@ -33,66 +80,31 @@ const ExamSchema = new Schema<IExam>(
       type: String,
       required: true,
     },
+
     [SectionTypes.MATH]: {
-      [Difficulties.EASY]: {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: "QuestionSet",
-      },
-      [Difficulties.BASE]: {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: "QuestionSet",
-      },
-      [Difficulties.HARD]: {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: "QuestionSet",
-      },
+      type: FullQuestionSetSchema,
+      required: true,
     },
+
     [SectionTypes.READING_WRITING]: {
-      [Difficulties.EASY]: {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: "QuestionSet",
-      },
-      [Difficulties.BASE]: {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: "QuestionSet",
-      },
-      [Difficulties.HARD]: {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: "QuestionSet",
-      },
+      type: FullQuestionSetSchema,
+      required: true,
     },
-    assignedTo: [
-      {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: "User",
-      },
-    ],
-    attendedBy: [
-      {
-        user: {
-          type: Schema.Types.ObjectId,
-          required: true,
-          ref: "User",
-        },
-        result: {
-          type: Schema.Types.ObjectId,
-          ref: "ExamResult",
-        },
-      },
-    ],
+
+    assignedTo: [{ type: Schema.Types.ObjectId, ref: "User" }],
+
+    attendedBy: {
+      type: [AttendedBySchema],
+      default: [],
+    },
   },
   {
     timestamps: true,
     versionKey: false,
   }
 );
+
+ExamSchema.plugin(autopopulate);
 
 const ExamModel: Model<IExam> = models.Exam || model<IExam>("Exam", ExamSchema);
 

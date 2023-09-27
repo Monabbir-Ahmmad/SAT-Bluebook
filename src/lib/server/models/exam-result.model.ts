@@ -1,18 +1,44 @@
-import { Document, Model, Schema, Types, model, models } from "mongoose";
+import { Document, Model, Schema, model, models } from "mongoose";
 
-import { IUser } from "./user.model";
 import { IQuestionSet } from "./question-set.model";
+import { ITimeStamps } from "./base.model";
+import { IUser } from "./user.model";
+import autopopulate from "mongoose-autopopulate";
 
-export interface IExamResult extends Document {
-  user: IUser;
-  results: Types.Array<{
-    questionSet: IQuestionSet;
-    score: number;
-    timeTaken: number;
-  }>;
-  createdAt: Date;
-  updatedAt: Date;
+interface ISectionResult {
+  questionSet: IQuestionSet;
+  score: number;
+  timeTaken: number;
 }
+
+export interface IExamResult extends Document, ITimeStamps {
+  user: IUser;
+  results: ISectionResult[];
+}
+
+const SectionResultSchema = new Schema<ISectionResult>(
+  {
+    questionSet: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "QuestionSet",
+      autopopulate: true,
+    },
+    score: {
+      type: Number,
+      required: true,
+    },
+    timeTaken: {
+      type: Number,
+      required: true,
+    },
+  },
+  {
+    _id: false,
+    versionKey: false,
+    timestamps: false,
+  }
+);
 
 const ExamResultSchema = new Schema<IExamResult>(
   {
@@ -21,29 +47,18 @@ const ExamResultSchema = new Schema<IExamResult>(
       required: true,
       ref: "User",
     },
-    results: [
-      {
-        questionSet: {
-          type: Schema.Types.ObjectId,
-          required: true,
-          ref: "QuestionSet",
-        },
-        score: {
-          type: Number,
-          required: true,
-        },
-        timeTaken: {
-          type: Number,
-          required: true,
-        },
-      },
-    ],
+    results: {
+      type: [SectionResultSchema],
+      required: true,
+    },
   },
   {
     timestamps: true,
     versionKey: false,
   }
 );
+
+ExamResultSchema.plugin(autopopulate);
 
 const ExamResultModel: Model<IExamResult> =
   models.ExamResult || model<IExamResult>("ExamResult", ExamResultSchema);

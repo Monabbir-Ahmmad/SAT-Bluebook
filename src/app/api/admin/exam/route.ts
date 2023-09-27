@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 import { StatusCode } from "@/constants/status-code";
 import { asyncHandler } from "@/lib/server/utils/async.handler";
 import { examAction } from "@/lib/server/actions";
-import { examCreateValidationSchema } from "@/lib/server/validators/exam.validator";
+import { examCreateValidationSchema } from "@/validators/exam.validator";
 import { responseHandler } from "@/lib/server/utils/response.handler";
 import { validateData } from "@/lib/server/utils/validation.util";
 

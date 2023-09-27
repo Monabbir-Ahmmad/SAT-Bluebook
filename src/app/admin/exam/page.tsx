@@ -15,10 +15,12 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 
+import { RiCheckLine as CheckIcon } from "react-icons/ri";
 import DashboardCard from "@/components/dashboard/DashboardCard";
 import { ExamDto } from "@/dtos/exam.dto";
 import Link from "next/link";
 import { UserDto } from "@/dtos/user.dto";
+import { notifications } from "@mantine/notifications";
 
 const examTableColumns: MRT_ColumnDef<ExamDto>[] = [
   {
@@ -75,12 +77,38 @@ export default function AdminExamPage() {
   const { mutate: assignExamMutation } = useMutation({
     mutationKey: ["assign-exam"],
     mutationFn: examService.assignExam,
+    onMutate: () => {
+      notifications.show({
+        id: "assign-exam",
+        title: "Assigning Exam",
+        message: "Please wait while we assign the exam to the students.",
+        loading: true,
+        autoClose: false,
+        withCloseButton: false,
+      });
+    },
     onSuccess: (data) => {
+      notifications.update({
+        id: "assign-exam",
+        title: "Exam Assigned",
+        message: "Exam has been assigned to the students.",
+        color: "green",
+        icon: <CheckIcon />,
+      });
+
       setExamToAssign(undefined);
       queryClient.setQueryData<ExamDto[]>(
         ["exams"],
         (prev) => prev?.map((exam) => (exam.id === data.id ? data : exam)) || []
       );
+    },
+    onError: (err: any) => {
+      notifications.update({
+        id: "assign-exam",
+        title: "Error",
+        message: err.response?.data?.message,
+        color: "red",
+      });
     },
   });
 
