@@ -118,8 +118,12 @@ export default function ExamSection({
               setRemainingTime((remainingTime) => {
                 onSectionSubmit({
                   id: examSection?.id,
-                  questions: examSection?.questions,
                   timeTaken: timeLimit - remainingTime,
+                  questionAnswers: examSection?.questions.map((q) => ({
+                    questionId: q.id,
+                    selectedOption: q.selectedOption,
+                    textAnswer: q.textAnswer,
+                  })),
                 });
                 return remainingTime;
               });

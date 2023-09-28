@@ -1,7 +1,11 @@
 import { Difficulties, SectionTypes } from "@/constants/enums";
+import {
+  IExamQuestionAnswerResult,
+  IExamResult,
+  IExamSectionResult,
+} from "@/lib/server/models/exam-result.model";
 
 import { IExam } from "@/lib/server/models/exam.model";
-import { IExamResult } from "@/lib/server/models/exam-result.model";
 import { IQuestionSet } from "@/lib/server/models/question-set.model";
 import { QuestionDto } from "./question.dto";
 import { QuestionSetDto } from "./question-set.dto";
@@ -55,8 +59,8 @@ export class ExamSectionDto {
   }
 }
 
-export class ExamQuestionSubmitDto {
-  id: string;
+export class ExamQuestionAnswerSubmitDto {
+  questionId: string;
   selectedOption?: number;
   textAnswer?: string;
 }
@@ -64,69 +68,76 @@ export class ExamQuestionSubmitDto {
 export class ExamSectionSubmitDto {
   id: string;
   timeTaken: number;
-  questions: ExamQuestionSubmitDto[];
+  questionAnswers: ExamQuestionAnswerSubmitDto[];
 }
 
-export class ExamQuestionAnswerStatusDto {
-  questionId: string;
+export interface ExamQuestionVerifiedAnswerDto
+  extends ExamQuestionAnswerSubmitDto {
   isCorrect: boolean;
-
-  constructor(questionId: string, isCorrect: boolean) {
-    this.questionId = questionId;
-    this.isCorrect = isCorrect;
-  }
 }
 
-export class ExamSectionResultDto {
+export class ExamSectionVerifiedResultDto {
   questionSetId: string;
-  section: SectionTypes;
   score: number;
   timeTaken: number;
-  questionAnswerStatus: ExamQuestionAnswerStatusDto[];
+  verifiedAnswers: ExamQuestionVerifiedAnswerDto[];
 
   constructor(
     questionSetId: string,
-    section: SectionTypes,
     score: number = 0,
     timeTaken: number,
-    questionAnswerStatus: ExamQuestionAnswerStatusDto[]
+    verifiedAnswers: ExamQuestionVerifiedAnswerDto[]
   ) {
     this.questionSetId = questionSetId;
-    this.section = section;
     this.score = score;
     this.timeTaken = timeTaken;
-    this.questionAnswerStatus = questionAnswerStatus;
+    this.verifiedAnswers = verifiedAnswers;
+  }
+}
+
+export class ExamQuestionAnswerResultDto extends QuestionDto {
+  isCorrect: boolean;
+  selectedOption?: number;
+  textAnswer?: string;
+
+  constructor(data: IExamQuestionAnswerResult) {
+    super(data.question);
+    this.isCorrect = data.isCorrect;
+    this.selectedOption = data.selectedOption;
+    this.textAnswer = data.textAnswer;
+  }
+}
+
+export class ExamSectionResultDto extends QuestionSetDto {
+  score: number;
+  timeTaken: number;
+  questions: ExamQuestionAnswerResultDto[];
+
+  constructor(examSectionResult: IExamSectionResult) {
+    super(examSectionResult.questionSet);
+    this.score = examSectionResult.score;
+    this.timeTaken = examSectionResult.timeTaken;
+    this.questions = examSectionResult.questionAnswerResults.map(
+      (result) => new ExamQuestionAnswerResultDto(result)
+    );
   }
 }
 
 export class ExamResultDto {
   id: string;
   user: UserDto;
-  results: ExamSectionResultDto[];
   createdAt: Date;
   updatedAt: Date;
+  sectionResults: ExamSectionResultDto[];
 
   constructor(data: IExamResult) {
     this.id = data._id;
     this.user = new UserDto(data.user);
-    this.results = data.results.map(
-      (result) =>
-        new ExamSectionResultDto(
-          result.questionSet._id,
-          result.questionSet.section,
-          result.score,
-          result.timeTaken,
-          result.questionAnswerStatus.map(
-            (status) =>
-              new ExamQuestionAnswerStatusDto(
-                status.question._id,
-                status.isCorrect
-              )
-          )
-        )
-    );
     this.createdAt = data.createdAt;
     this.updatedAt = data.updatedAt;
+    this.sectionResults = data.sectionResults.map(
+      (result) => new ExamSectionResultDto(result)
+    );
   }
 }
 

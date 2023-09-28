@@ -4,11 +4,11 @@ import {
   ExamAssignReqDto,
   ExamCreateReqDto,
   ExamDto,
-  ExamQuestionAnswerStatusDto,
+  ExamQuestionVerifiedAnswerDto,
   ExamResultDto,
   ExamSectionDto,
-  ExamSectionResultDto,
   ExamSectionSubmitDto,
+  ExamSectionVerifiedResultDto,
 } from "@/dtos/exam.dto";
 
 import { HttpError } from "../utils/httpError";
@@ -193,18 +193,20 @@ export default class ExamAction {
 
   async submitExamResult(
     userId: string,
-    data: ExamSectionResultDto[],
+    data: ExamSectionVerifiedResultDto[],
     examId: string | null
   ) {
     const examResult = await ExamResult.create({
       user: userId,
-      results: data.map((d) => ({
+      sectionResults: data.map((d) => ({
         questionSet: d.questionSetId,
         score: d.score,
         timeTaken: d.timeTaken,
-        questionAnswerStatus: d.questionAnswerStatus.map((q) => ({
+        questionAnswerResults: d.verifiedAnswers.map((q) => ({
           question: q.questionId,
           isCorrect: q.isCorrect,
+          selectedOption: q.selectedOption,
+          textAnswer: q.textAnswer,
         })),
       })),
     });
@@ -250,40 +252,38 @@ export default class ExamAction {
 
     const questions = questionSet.questions as IQuestion[];
 
-    const questionAnswerStatus: ExamQuestionAnswerStatusDto[] = [];
+    const verifiedAnswers: ExamQuestionVerifiedAnswerDto[] = [];
 
     questions.forEach((question: IQuestion) => {
-      const submittedAns = data.questions.find((q) => q.id === question.id);
+      const questionAnswer = data.questionAnswers.find(
+        (q) => q.questionId === question.id
+      );
 
       if (
         question.optionType === OptionTypes.GRID_IN &&
-        question.options[0] === submittedAns?.textAnswer
+        question.options[0] === questionAnswer?.textAnswer
       ) {
         score += 1;
-        questionAnswerStatus.push(
-          new ExamQuestionAnswerStatusDto(question.id, true)
-        );
+        verifiedAnswers.push({ ...questionAnswer, isCorrect: true });
       } else if (
-        submittedAns?.selectedOption !== undefined &&
-        question.answers.includes(submittedAns.selectedOption)
+        questionAnswer?.selectedOption !== undefined &&
+        question.answers.includes(questionAnswer.selectedOption)
       ) {
         score += 1;
-        questionAnswerStatus.push(
-          new ExamQuestionAnswerStatusDto(question.id, true)
-        );
+        verifiedAnswers.push({ ...questionAnswer, isCorrect: true });
       } else {
-        questionAnswerStatus.push(
-          new ExamQuestionAnswerStatusDto(question.id, false)
-        );
+        verifiedAnswers.push({
+          ...questionAnswer!,
+          isCorrect: false,
+        });
       }
     });
 
-    return new ExamSectionResultDto(
+    return new ExamSectionVerifiedResultDto(
       questionSet.id,
-      questionSet.section,
       score,
       data.timeTaken,
-      questionAnswerStatus
+      verifiedAnswers
     );
   }
 }

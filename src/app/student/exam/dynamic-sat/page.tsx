@@ -3,8 +3,8 @@
 import { Button, Loader, LoadingOverlay } from "@mantine/core";
 import {
   ExamResultDto,
-  ExamSectionResultDto,
   ExamSectionSubmitDto,
+  ExamSectionVerifiedResultDto,
 } from "@/dtos/exam.dto";
 import { examSectionTime, sections } from "@/constants/data";
 import { useEffect, useMemo, useState } from "react";
@@ -20,7 +20,7 @@ export default function DynamicSATExamPage() {
   const router = useRouter();
 
   const [examSectionResults, setExamSectionResults] = useState<
-    ExamSectionResultDto[]
+    ExamSectionVerifiedResultDto[]
   >([]);
   const [currentSectionIndex, setCurrentSectionIndex] = useState(-1);
 
@@ -54,7 +54,7 @@ export default function DynamicSATExamPage() {
   const { mutate: submitExamSection } = useMutation({
     mutationKey: ["exam-result"],
     mutationFn: examService.submitExamSection,
-    onSuccess: (data: ExamSectionResultDto) => {
+    onSuccess: (data: ExamSectionVerifiedResultDto) => {
       setExamSectionResults((prev) => [...prev, data]);
       setCurrentSectionIndex((prev) => prev + 1);
     },

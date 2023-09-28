@@ -107,22 +107,22 @@ export default function ExamResultPage({
 
   useEffect(() => {
     if (examResult) {
-      const score = examResult?.results?.reduce(
+      const score = examResult?.sectionResults?.reduce(
         (acc, curr) => acc + curr.score,
         0
       );
 
-      const timeTaken = examResult?.results?.reduce(
+      const timeTaken = examResult?.sectionResults?.reduce(
         (acc, curr) => acc + curr.timeTaken,
         0
       );
 
-      const examScore = examResult?.results?.reduce(
+      const examScore = examResult?.sectionResults?.reduce(
         (acc, curr) => acc + questionSetSize[curr.section],
         0
       );
 
-      const examTimeLimit = examResult?.results?.reduce(
+      const examTimeLimit = examResult?.sectionResults?.reduce(
         (acc, curr) => acc + examSectionTime[curr.section],
         0
       );
@@ -163,13 +163,13 @@ export default function ExamResultPage({
           )}
 
           <SimpleGrid
-            cols={examResult?.results.length > 1 ? 2 : 1}
+            cols={examResult?.sectionResults.length > 1 ? 2 : 1}
             spacing={"lg"}
             breakpoints={[{ maxWidth: "sm", cols: 1 }]}
           >
-            {examResult?.results.map((result, index) => (
+            {examResult?.sectionResults.map((result, index) => (
               <ResultCard
-                key={result.questionSetId}
+                key={result.id}
                 score={result.score}
                 timeTaken={result.timeTaken}
                 timeLimit={examSectionTime[result.section]}
