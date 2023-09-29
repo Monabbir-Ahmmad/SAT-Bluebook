@@ -6,6 +6,7 @@ import {
   MantineReactTable,
   useMantineReactTable,
 } from "mantine-react-table";
+import { answerType, sections } from "@/constants/data";
 import { download, generateCsv, mkConfig } from "export-to-csv"; //or use your library of choice here
 import { useEffect, useState } from "react";
 
@@ -19,12 +20,18 @@ const columns: MRT_ColumnDef<ExamQuestionAnswerResultDto>[] = [
   {
     accessorKey: "section",
     header: "Section",
-    size: 120,
+    Cell: ({ row }) =>
+      sections.find((s) => s.value == row.original.section)?.label,
+  },
+  {
+    accessorKey: "optionType",
+    header: "Answer Type",
+    Cell: ({ row }) =>
+      answerType.find((a) => a.value == row.original.optionType)?.label,
   },
   {
     accessorKey: "selectedOption",
     header: "Submitted Answer",
-    size: 120,
     Cell: ({ row }) => {
       if (row.original.textAnswer) return row.original.textAnswer;
       if (!row.original.selectedOption) return "Not answered";
@@ -41,12 +48,11 @@ const columns: MRT_ColumnDef<ExamQuestionAnswerResultDto>[] = [
         .join(", ");
     },
     header: "Correct Answer",
-    size: 120,
   },
   {
-    header: "Is correct?",
-    size: 120,
-    accessorFn: (row) => (row.isCorrect ? "Yes" : "No"),
+    accessorKey: "isCorrect",
+    header: "Is Correct?",
+    Cell: ({ row }) => (row.original.isCorrect ? "Yes" : "No"),
   },
 ];
 
