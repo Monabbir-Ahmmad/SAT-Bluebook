@@ -60,6 +60,7 @@ const AttendedBySchema = new Schema<IAttendedBy>(
       type: Schema.Types.ObjectId,
       required: true,
       ref: "User",
+      autopopulate: true,
     },
     result: {
       type: Schema.Types.ObjectId,
