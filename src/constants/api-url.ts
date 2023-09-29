@@ -28,6 +28,7 @@ const apiUrl = {
     createExam: "/admin/exam",
     assignExam: "/admin/exam/assign",
     getExamList: "/admin/exam",
+    getExamResultByStudentId: "/admin/exam",
     getAssignedExams: "/student/exam/predefined-sat",
     startExamById: "/student/exam/predefined-sat",
     getExamSectionByExamId: "/student/exam/predefined-sat",
@@ -37,6 +38,7 @@ const apiUrl = {
     submitExamResult: "/student/exam/result",
     getExamResult: "/student/exam/result",
     getExamResults: "/student/exam/result",
+    getExamById: "/admin/exam",
   },
 
   // User Management

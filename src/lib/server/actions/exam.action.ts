@@ -2,6 +2,7 @@ import { Difficulties, OptionTypes, SectionTypes } from "@/constants/enums";
 import { Exam, ExamResult, QuestionSet } from "../models";
 import {
   ExamAssignReqDto,
+  ExamAttendedByDto,
   ExamCreateReqDto,
   ExamDto,
   ExamQuestionVerifiedAnswerDto,
@@ -104,6 +105,29 @@ export default class ExamAction {
     const exams = await Exam.find();
 
     return exams.map((exam) => new ExamDto(exam));
+  }
+
+  async getExamResultByUserId(userId: string, examId: string) {
+    const examResult = await Exam.findOne({
+      _id: examId,
+      attendedBy: {
+        $elemMatch: {
+          user: userId,
+        },
+      },
+    });
+
+    const userExamResult = examResult?.attendedBy?.find(
+      (val) => val.user.id == userId
+    );
+
+    if (!userExamResult?.result)
+      throw new HttpError(
+        StatusCode.NOT_FOUND,
+        "Exam result not found for user."
+      );
+
+    return new ExamResultDto(userExamResult.result);
   }
 
   async getExamResult(examId: string) {

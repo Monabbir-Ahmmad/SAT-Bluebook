@@ -21,6 +21,7 @@ import { ExamDto } from "@/dtos/exam.dto";
 import Link from "next/link";
 import { UserDto } from "@/dtos/user.dto";
 import { notifications } from "@mantine/notifications";
+import { useRouter } from "next/navigation";
 
 const examTableColumns: MRT_ColumnDef<ExamDto>[] = [
   {
@@ -58,6 +59,7 @@ const userTableColumns: MRT_ColumnDef<UserDto>[] = [
 ];
 
 export default function AdminExamPage() {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const isMutating = useIsMutating({ mutationKey: ["assign-exam"] });
 
@@ -181,9 +183,18 @@ export default function AdminExamPage() {
         enableRowActions
         positionActionsColumn="last"
         renderRowActions={({ row }) => (
-          <Button onClick={() => onAssignToStudentClick(row.original)}>
-            Assign To Student
-          </Button>
+          <div className="flex gap-4 items-center">
+            <Button onClick={() => onAssignToStudentClick(row.original)}>
+              Assign To Student
+            </Button>
+            <Button
+              onClick={() =>
+                router.push(`/admin/exam/details/${row.original.id}`)
+              }
+            >
+              View Details
+            </Button>
+          </div>
         )}
       />
     </div>

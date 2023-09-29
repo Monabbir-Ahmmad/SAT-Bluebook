@@ -13,7 +13,7 @@ interface IFullQuestionSet {
   [Difficulties.HARD]: IQuestionSet;
 }
 
-interface IAttendedBy extends ITimeStamps {
+export interface IAttendedBy extends ITimeStamps {
   user: IUser;
   result?: IExamResult;
 }
@@ -60,6 +60,7 @@ const AttendedBySchema = new Schema<IAttendedBy>(
       type: Schema.Types.ObjectId,
       required: true,
       ref: "User",
+      autopopulate: true,
     },
     result: {
       type: Schema.Types.ObjectId,

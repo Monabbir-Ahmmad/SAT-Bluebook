@@ -1,11 +1,11 @@
 import { Difficulties, SectionTypes } from "@/constants/enums";
+import { IAttendedBy, IExam } from "@/lib/server/models/exam.model";
 import {
   IExamQuestionAnswerResult,
   IExamResult,
   IExamSectionResult,
 } from "@/lib/server/models/exam-result.model";
 
-import { IExam } from "@/lib/server/models/exam.model";
 import { IQuestionSet } from "@/lib/server/models/question-set.model";
 import { QuestionDto } from "./question.dto";
 import { QuestionSetDto } from "./question-set.dto";
@@ -141,6 +141,16 @@ export class ExamResultDto {
   }
 }
 
+export class ExamAttendedByDto {
+  user: UserDto;
+  result?: ExamResultDto;
+
+  constructor(data: IAttendedBy) {
+    this.user = new UserDto(data.user);
+    this.result = data.result ? new ExamResultDto(data.result) : undefined;
+  }
+}
+
 export class ExamDto {
   id: string;
   title: string;
@@ -158,10 +168,7 @@ export class ExamDto {
     [Difficulties.HARD]: QuestionSetDto;
   };
   assignedTo: UserDto[];
-  attendedBy: Array<{
-    user: UserDto;
-    result?: ExamResultDto;
-  }>;
+  attendedBy: Array<ExamAttendedByDto>;
 
   constructor(data: IExam) {
     this.id = data._id;
