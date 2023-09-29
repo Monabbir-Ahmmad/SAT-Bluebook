@@ -3,6 +3,7 @@
 import { Box, Button } from "@mantine/core";
 import {
   MRT_ColumnDef,
+  MRT_Row,
   MantineReactTable,
   useMantineReactTable,
 } from "mantine-react-table";
@@ -11,82 +12,102 @@ import { download, generateCsv, mkConfig } from "export-to-csv"; //or use your l
 import { IconDownload } from "@tabler/icons-react";
 import { examService } from "@/lib/client/services";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { answerType } from "../../../../../../constants/data";
+import {
+  ExamQuestionAnswerResultDto,
+  ExamResultDto,
+  ExamSectionResultDto,
+} from "@/dtos/exam.dto";
+import { OptionTypes } from "@/constants/enums";
+import { useRouter } from "next/navigation";
 
-const columns = [
-  {
-    accessorKey: "question_id",
-    header: "Question ID",
-    size: 40,
-  },
+const columns: MRT_ColumnDef<ExamQuestionAnswerResultDto>[] = [
   {
     accessorKey: "section",
     header: "Section",
     size: 120,
   },
   {
-    accessorKey: "selected_option",
-    header: "Selected Option",
+    accessorKey: "selectedOption",
+    header: "Submitted Answer",
+    size: 120,
+    Cell: ({ row }) => {
+      if (row.original.textAnswer) return row.original.textAnswer;
+      if (!row.original.selectedOption) return "Not answered";
+      return String.fromCharCode(97 + row.original.selectedOption);
+    },
+  },
+  {
+    accessorFn: (row) => {
+      if (row.optionType == OptionTypes.GRID_IN) {
+        return row.options[0].text;
+      }
+      return row?.answers
+        ?.map((answer) => String.fromCharCode(97 + answer))
+        .join(", ");
+    },
+    header: "Correct Answer",
     size: 120,
   },
   {
-    accessorKey: "correct_option",
-    header: "Correct option",
-    size: 120,
-  },
-  {
-    accessorKey: "is_correct",
     header: "Is correct?",
     size: 120,
-    accessorFn: (row) => (row.is_correct ? "Yes" : "No"),
+    accessorFn: (row) => (row.isCorrect ? "Yes" : "No"),
   },
 ];
 
-const csvConfig = mkConfig({
-  fieldSeparator: ",",
-  decimalSeparator: ".",
-  useKeysAsHeaders: true,
-//   filename: `exam-results-for-${examForStudent.attendedBy.}`,
-});
+const csvConfig = (fileName: string) =>
+  mkConfig({
+    fieldSeparator: ",",
+    decimalSeparator: ".",
+    useKeysAsHeaders: true,
+    filename: fileName,
+  });
 
 export default function AdminExamDetailsByStudentPage({
-  params: { examId },
+  params: { examId, studentId },
 }: {
-  params: { examId: string };
+  params: { examId: string; studentId: string };
 }) {
+  const [examTableData, setExamTableData] = useState<
+    ExamQuestionAnswerResultDto[]
+  >([]);
+
   const { data: exam, isFetching } = useQuery({
     enabled: !!examId,
     queryKey: ["exam-results-details", examId],
     queryFn: async () => await examService.getExamById(examId),
   });
   const examForStudent = exam?.attendedBy?.find(
-    (result) => result.user.id === "6516c6491f4e241d2ddd0fd5"
+    (result) => result.user.id === studentId
   );
-  const examResult = examForStudent?.result;
-  const data = examResult?.sectionResults.flatMap((sectionResult) =>
-    sectionResult.questions.map((question) => ({
-      question_id: question.id,
-      section: sectionResult.section,
-      selected_option: question.selectedOption,
-      correct_option: question.answers[0],
-      is_correct: question.isCorrect,
-    }))
-  );
-  console.log("🚀 ~ file: page.tsx:173 ~ data:\n", data);
-  const handleExportRows = (rows) => {
-    const rowData = rows.map((row) => row.original);
-    const csv = generateCsv(csvConfig)(rowData);
-    download(csvConfig)(csv);
+
+  useEffect(() => {
+    let tableData: ExamQuestionAnswerResultDto[] = [];
+
+    examForStudent?.result?.sectionResults.forEach((sectionResult) => {
+      tableData.push(...sectionResult.questions);
+    });
+    setExamTableData(tableData);
+  }, [exam]);
+
+  const handleExportRows = (rows: any) => {
+    const rowData = rows.map((row: any) => row.original);
+    const csv = generateCsv(csvConfig("bal"))(rowData);
+    download(csvConfig("bal"))(csv);
   };
 
   const handleExportData = () => {
-    const csv = generateCsv(csvConfig)(data);
-    download(csvConfig)(csv);
+    const csv = generateCsv(csvConfig("bal"))(examTableData as any);
+    download(csvConfig("bal"))(csv);
   };
 
   const table = useMantineReactTable({
     columns,
-    data: data || [],
+    data: examTableData || [],
     enableRowSelection: true,
+    state: { isLoading: isFetching },
     columnFilterDisplayMode: "popover",
     paginationDisplayMode: "pages",
     positionToolbarAlertBanner: "bottom",
