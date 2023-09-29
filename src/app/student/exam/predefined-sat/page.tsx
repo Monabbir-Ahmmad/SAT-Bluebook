@@ -4,8 +4,8 @@ import { Button, Loader, LoadingOverlay, Text, TextInput } from "@mantine/core";
 import {
   ExamDto,
   ExamResultDto,
-  ExamSectionResultDto,
   ExamSectionSubmitDto,
+  ExamSectionVerifiedResultDto,
 } from "@/dtos/exam.dto";
 import { examSectionTime, sections } from "@/constants/data";
 import { useEffect, useMemo, useState } from "react";
@@ -26,10 +26,10 @@ export default function PredefinedSATExamPage() {
   const examId = searchParams.get("exam-id") || "";
 
   const [examSectionResults, setExamSectionResults] = useState<
-    ExamSectionResultDto[]
+    ExamSectionVerifiedResultDto[]
   >([]);
   const [currentSectionIndex, setCurrentSectionIndex] = useState(-1);
-  
+
   const {
     handleSubmit,
     register,
@@ -89,7 +89,7 @@ export default function PredefinedSATExamPage() {
   const { mutate: submitExamSection } = useMutation({
     mutationKey: ["exam-result"],
     mutationFn: examService.submitExamSection,
-    onSuccess: (data: ExamSectionResultDto) => {
+    onSuccess: (data: ExamSectionVerifiedResultDto) => {
       setExamSectionResults((prev) => [...prev, data]);
       setCurrentSectionIndex((prev) => prev + 1);
     },
@@ -97,7 +97,7 @@ export default function PredefinedSATExamPage() {
 
   const { mutate: submitExamResult } = useMutation({
     mutationKey: ["exam-result"],
-    mutationFn: async (data: ExamSectionResultDto[]) =>
+    mutationFn: async (data: ExamSectionVerifiedResultDto[]) =>
       await examService.submitExamResult(data, exam?.id!),
     onSuccess: (data: ExamResultDto) =>
       router.push(`/student/exam/result/${data.id}`),

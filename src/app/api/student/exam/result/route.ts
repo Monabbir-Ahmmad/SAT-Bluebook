@@ -1,4 +1,4 @@
-import { ExamSectionResultDto } from "@/dtos/exam.dto";
+import { ExamSectionVerifiedResultDto } from "@/dtos/exam.dto";
 import { NextRequest } from "next/server";
 import { StatusCode } from "@/constants/status-code";
 import { asyncHandler } from "@/lib/server/utils/async.handler";
@@ -10,7 +10,7 @@ import { responseHandler } from "@/lib/server/utils/response.handler";
 const submitExamResult = asyncHandler(async (req: NextRequest) => {
   const examId = req.nextUrl.searchParams.get("examId");
 
-  const data: ExamSectionResultDto[] = await req.json();
+  const data: ExamSectionVerifiedResultDto[] = await req.json();
 
   const session = await getServerSession(authOptions);
 

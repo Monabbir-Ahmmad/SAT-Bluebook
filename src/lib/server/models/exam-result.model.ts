@@ -6,33 +6,42 @@ import { ITimeStamps } from "./base.model";
 import { IUser } from "./user.model";
 import autopopulate from "mongoose-autopopulate";
 
-interface IQuestionAnswerStatus {
+export interface IExamQuestionAnswerResult {
   question: IQuestion;
   isCorrect: boolean;
+  selectedOption?: number;
+  textAnswer?: string;
 }
 
-interface ISectionResult {
+export interface IExamSectionResult {
   questionSet: IQuestionSet;
   score: number;
   timeTaken: number;
-  questionAnswerStatus: IQuestionAnswerStatus[];
+  questionAnswerResults: IExamQuestionAnswerResult[];
 }
 
 export interface IExamResult extends Document, ITimeStamps {
   user: IUser;
-  results: ISectionResult[];
+  sectionResults: IExamSectionResult[];
 }
 
-const QuestionAnswerStatusSchema = new Schema<IQuestionAnswerStatus>(
+const ExamQuestionAnswerResultSchema = new Schema<IExamQuestionAnswerResult>(
   {
     question: {
       type: Schema.Types.ObjectId,
       required: true,
       ref: "Question",
+      autopopulate: true,
     },
     isCorrect: {
       type: Boolean,
       required: true,
+    },
+    selectedOption: {
+      type: Number,
+    },
+    textAnswer: {
+      type: String,
     },
   },
   {
@@ -42,7 +51,7 @@ const QuestionAnswerStatusSchema = new Schema<IQuestionAnswerStatus>(
   }
 );
 
-const SectionResultSchema = new Schema<ISectionResult>(
+const ExamSectionResultSchema = new Schema<IExamSectionResult>(
   {
     questionSet: {
       type: Schema.Types.ObjectId,
@@ -58,8 +67,8 @@ const SectionResultSchema = new Schema<ISectionResult>(
       type: Number,
       required: true,
     },
-    questionAnswerStatus: {
-      type: [QuestionAnswerStatusSchema],
+    questionAnswerResults: {
+      type: [ExamQuestionAnswerResultSchema],
       required: true,
     },
   },
@@ -77,8 +86,8 @@ const ExamResultSchema = new Schema<IExamResult>(
       required: true,
       ref: "User",
     },
-    results: {
-      type: [SectionResultSchema],
+    sectionResults: {
+      type: [ExamSectionResultSchema],
       required: true,
     },
   },
@@ -87,7 +96,6 @@ const ExamResultSchema = new Schema<IExamResult>(
     versionKey: false,
   }
 );
-
 ExamResultSchema.plugin(autopopulate);
 
 const ExamResultModel: Model<IExamResult> =

@@ -4,8 +4,8 @@ import {
   ExamDto,
   ExamResultDto,
   ExamSectionDto,
-  ExamSectionResultDto,
   ExamSectionSubmitDto,
+  ExamSectionVerifiedResultDto,
 } from "@/dtos/exam.dto";
 
 import { SectionTypes } from "@/constants/enums";
@@ -89,7 +89,10 @@ export default class ExamService {
     return res.data;
   }
 
-  async submitExamResult(data: ExamSectionResultDto[], examId?: string) {
+  async submitExamResult(
+    data: ExamSectionVerifiedResultDto[],
+    examId?: string
+  ) {
     const res = await httpClient.post<ExamResultDto>(
       apiUrl.exam.submitExamResult,
       data,
@@ -103,7 +106,7 @@ export default class ExamService {
   }
 
   async submitExamSection(data: ExamSectionSubmitDto) {
-    const res = await httpClient.post<ExamSectionResultDto>(
+    const res = await httpClient.post<ExamSectionVerifiedResultDto>(
       apiUrl.exam.verifySection,
       data
     );

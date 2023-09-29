@@ -26,12 +26,14 @@ const examResultTableColumns: MRT_ColumnDef<ExamResultDto>[] = [
     Cell: ({ row }) => new Date(row.original.createdAt).toLocaleString(),
   },
   {
-    accessorFn: ({ results }) => results?.reduce((a, b) => a + b.score, 0),
+    accessorFn: ({ sectionResults }) =>
+      sectionResults?.reduce((a, b) => a + b.score, 0),
     header: "Total Score",
   },
   {
-    accessorFn: ({ results }) =>
-      secondsToMmSs(results?.reduce((a, b) => a + b.timeTaken, 0)) + " mins",
+    accessorFn: ({ sectionResults }) =>
+      secondsToMmSs(sectionResults?.reduce((a, b) => a + b.timeTaken, 0)) +
+      " mins",
     header: "Total Time Taken",
   },
 ];

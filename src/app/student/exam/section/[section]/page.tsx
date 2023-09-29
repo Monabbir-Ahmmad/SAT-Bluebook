@@ -3,8 +3,8 @@
 import { Button, Loader, LoadingOverlay } from "@mantine/core";
 import {
   ExamResultDto,
-  ExamSectionResultDto,
   ExamSectionSubmitDto,
+  ExamSectionVerifiedResultDto,
 } from "@/dtos/exam.dto";
 import { examSectionTime, sections } from "@/constants/data";
 import { useIsMutating, useMutation, useQuery } from "@tanstack/react-query";
@@ -43,7 +43,7 @@ export default function SectionExamPage({
   const { mutate: submitExamSection } = useMutation({
     mutationKey: ["exam-result"],
     mutationFn: examService.submitExamSection,
-    onSuccess: (data: ExamSectionResultDto) => submitExamResult([data]),
+    onSuccess: (data: ExamSectionVerifiedResultDto) => submitExamResult([data]),
   });
 
   const { mutate: submitExamResult } = useMutation({
