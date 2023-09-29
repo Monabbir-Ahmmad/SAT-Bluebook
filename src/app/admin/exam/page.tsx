@@ -181,9 +181,17 @@ export default function AdminExamPage() {
         enableRowActions
         positionActionsColumn="last"
         renderRowActions={({ row }) => (
-          <Button onClick={() => onAssignToStudentClick(row.original)}>
-            Assign To Student
-          </Button>
+          <div className="flex gap-4 items-center">
+            <Button onClick={() => onAssignToStudentClick(row.original)}>
+              Assign To Student
+            </Button>
+            <Link
+              href={`/admin/exam/details/${row.original.id}`}
+              className="text-blue-500 hover:text-blue-600 underline"
+            >
+              Details
+            </Link>
+          </div>
         )}
       />
     </div>
