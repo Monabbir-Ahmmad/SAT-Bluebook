@@ -118,7 +118,7 @@ const columns = [
   },
   {
     accessorKey: "Total Score",
-    header: "Last Name",
+    header: "Total Score",
     size: 120,
   },
   {
@@ -217,6 +217,16 @@ export default function AdminExamDetailsPage() {
           Export Selected Rows
         </Button>
       </Box>
+    ),
+    enableRowActions: true,
+    positionActionsColumn: "last",
+    renderRowActions: ({ row }) => (
+      <Button
+        onClick={() => alert(`You clicked on row ${row.original.id}`)}
+        variant="link"
+      >
+        Click Me
+      </Button>
     ),
   });
 
