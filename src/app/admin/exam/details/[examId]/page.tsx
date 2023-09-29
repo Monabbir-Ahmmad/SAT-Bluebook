@@ -1,12 +1,17 @@
 "use client";
 
 import { Box, Button } from "@mantine/core";
-import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
+import {
+  MRT_ColumnDef,
+  MantineReactTable,
+  useMantineReactTable,
+} from "mantine-react-table";
 import { download, generateCsv, mkConfig } from "export-to-csv"; //or use your library of choice here
 
 import { IconDownload } from "@tabler/icons-react";
 import { examService } from "@/lib/client/services";
 import { useQuery } from "@tanstack/react-query";
+import { ExamDto } from "@/dtos/exam.dto";
 
 const data = [
   {
@@ -107,7 +112,7 @@ const data = [
   },
 ];
 //defining columns outside of the component is fine, is stable
-const columns = [
+const columns: MRT_ColumnDef<ExamDto>[] = [
   {
     accessorKey: "id",
     header: "ID",
@@ -117,25 +122,12 @@ const columns = [
     accessorKey: "studentId",
     header: "Student ID",
     size: 120,
+    Cell: ({ row }) => row.original.attendedBy,
   },
   {
     accessorKey: "Total Score",
     header: "Total Score",
     size: 120,
-  },
-  {
-    accessorKey: "company",
-    header: "Company",
-    size: 300,
-  },
-  {
-    accessorKey: "city",
-    header: "City",
-  },
-  {
-    accessorKey: "country",
-    header: "Country",
-    size: 220,
   },
 ];
 
@@ -150,11 +142,12 @@ export default function AdminExamDetailsPage({
 }: {
   params: { examId: string };
 }) {
-  const { data: examResults = [], isFetching } = useQuery({
+  const { data: exam, isFetching } = useQuery({
     enabled: !!examId,
     queryKey: ["exam-results-details", examId],
     queryFn: async () => await examService.getExamById(examId),
   });
+  console.log("🚀 ~ file: page.tsx:158 ~ exam:\n", exam);
 
   const handleExportRows = (rows) => {
     const rowData = rows.map((row) => row.original);
