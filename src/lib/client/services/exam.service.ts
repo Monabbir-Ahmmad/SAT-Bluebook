@@ -47,6 +47,13 @@ export default class ExamService {
     return res.data;
   }
 
+  async getExamResultByStudent(userId: string, examId: string) {
+    const res = await httpClient.get<ExamResultDto>(
+      apiUrl.exam.getExamResultByStudentId + `/${examId}/result/${userId}`
+    );
+    return res.data;
+  }
+
   async getExamResults() {
     const res = await httpClient.get<ExamResultDto[]>(
       apiUrl.exam.getExamResults

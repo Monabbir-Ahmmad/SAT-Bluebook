@@ -7,13 +7,13 @@ import {
   useMantineReactTable,
 } from "mantine-react-table";
 import { download, generateCsv, mkConfig } from "export-to-csv"; //or use your library of choice here
+import { useEffect, useState } from "react";
 
+import { ExamQuestionAnswerResultDto } from "@/dtos/exam.dto";
 import { IconDownload } from "@tabler/icons-react";
+import { OptionTypes } from "@/constants/enums";
 import { examService } from "@/lib/client/services";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { ExamQuestionAnswerResultDto } from "@/dtos/exam.dto";
-import { OptionTypes } from "@/constants/enums";
 
 const columns: MRT_ColumnDef<ExamQuestionAnswerResultDto>[] = [
   {
@@ -67,23 +67,22 @@ export default function AdminExamDetailsByStudentPage({
     ExamQuestionAnswerResultDto[]
   >([]);
 
-  const { data: exam, isFetching } = useQuery({
-    enabled: !!examId,
-    queryKey: ["exam-results-details", examId],
-    queryFn: async () => await examService.getExamById(examId),
+  const { data: examResult, isFetching } = useQuery({
+    enabled: !!examId && !!studentId,
+    queryKey: ["exam-results-details", examId, studentId],
+    queryFn: async () =>
+      await examService.getExamResultByStudent(studentId, examId),
   });
-  const examForStudent = exam?.attendedBy?.find(
-    (result) => result.user.id === studentId
-  );
 
   useEffect(() => {
     let tableData: ExamQuestionAnswerResultDto[] = [];
 
-    examForStudent?.result?.sectionResults.forEach((sectionResult) => {
+    examResult?.sectionResults.forEach((sectionResult) => {
       tableData.push(...sectionResult.questions);
     });
+
     setExamTableData(tableData);
-  }, [exam]);
+  }, [examResult]);
 
   const handleExportRows = (rows: any) => {
     const rowData = rows.map((row: any) => row.original);
