@@ -4,6 +4,8 @@ import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import { Box, Button } from "@mantine/core";
 import { IconDownload } from "@tabler/icons-react";
 import { mkConfig, generateCsv, download } from "export-to-csv"; //or use your library of choice here
+import { useQuery } from "@tanstack/react-query";
+import { examService } from "@/lib/client/services";
 const data = [
   {
     id: 1,
@@ -110,12 +112,12 @@ const columns = [
     size: 40,
   },
   {
-    accessorKey: "firstName",
-    header: "First Name",
+    accessorKey: "studentId",
+    header: "Student ID",
     size: 120,
   },
   {
-    accessorKey: "lastName",
+    accessorKey: "Total Score",
     header: "Last Name",
     size: 120,
   },
@@ -142,6 +144,11 @@ const csvConfig = mkConfig({
 });
 
 export default function AdminExamDetailsPage() {
+  const { data: examResults = [], isFetching } = useQuery({
+    queryKey: ["exam-results-details"],
+    queryFn: examService.getExamById,
+  });
+
   const handleExportRows = (rows) => {
     const rowData = rows.map((row) => row.original);
     const csv = generateCsv(csvConfig)(rowData);

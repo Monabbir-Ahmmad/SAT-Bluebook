@@ -37,6 +37,7 @@ const apiUrl = {
     submitExamResult: "/student/exam/result",
     getExamResult: "/student/exam/result",
     getExamResults: "/student/exam/result",
+    getExamById: "/admin/exam",
   },
 
   // User Management
