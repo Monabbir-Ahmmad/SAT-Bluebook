@@ -21,6 +21,7 @@ import { ExamDto } from "@/dtos/exam.dto";
 import Link from "next/link";
 import { UserDto } from "@/dtos/user.dto";
 import { notifications } from "@mantine/notifications";
+import { useRouter } from "next/navigation";
 
 const examTableColumns: MRT_ColumnDef<ExamDto>[] = [
   {
@@ -58,6 +59,7 @@ const userTableColumns: MRT_ColumnDef<UserDto>[] = [
 ];
 
 export default function AdminExamPage() {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const isMutating = useIsMutating({ mutationKey: ["assign-exam"] });
 
@@ -185,12 +187,13 @@ export default function AdminExamPage() {
             <Button onClick={() => onAssignToStudentClick(row.original)}>
               Assign To Student
             </Button>
-            <Link
-              href={`/admin/exam/details/${row.original.id}`}
-              className="text-blue-500 hover:text-blue-600 underline"
+            <Button
+              onClick={() =>
+                router.push(`/admin/exam/details/${row.original.id}`)
+              }
             >
-              Details
-            </Link>
+              View Details
+            </Button>
           </div>
         )}
       />
