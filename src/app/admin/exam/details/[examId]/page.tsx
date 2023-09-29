@@ -1,11 +1,13 @@
 "use client";
 
-import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import { Box, Button } from "@mantine/core";
+import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
+import { download, generateCsv, mkConfig } from "export-to-csv"; //or use your library of choice here
+
 import { IconDownload } from "@tabler/icons-react";
-import { mkConfig, generateCsv, download } from "export-to-csv"; //or use your library of choice here
-import { useQuery } from "@tanstack/react-query";
 import { examService } from "@/lib/client/services";
+import { useQuery } from "@tanstack/react-query";
+
 const data = [
   {
     id: 1,
@@ -143,10 +145,15 @@ const csvConfig = mkConfig({
   useKeysAsHeaders: true,
 });
 
-export default function AdminExamDetailsPage() {
+export default function AdminExamDetailsPage({
+  params: { examId },
+}: {
+  params: { examId: string };
+}) {
   const { data: examResults = [], isFetching } = useQuery({
-    queryKey: ["exam-results-details"],
-    queryFn: examService.getExamById,
+    enabled: !!examId,
+    queryKey: ["exam-results-details", examId],
+    queryFn: async () => await examService.getExamById(examId),
   });
 
   const handleExportRows = (rows) => {
