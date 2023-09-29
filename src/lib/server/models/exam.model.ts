@@ -13,7 +13,7 @@ interface IFullQuestionSet {
   [Difficulties.HARD]: IQuestionSet;
 }
 
-interface IAttendedBy extends ITimeStamps {
+export interface IAttendedBy extends ITimeStamps {
   user: IUser;
   result?: IExamResult;
 }
