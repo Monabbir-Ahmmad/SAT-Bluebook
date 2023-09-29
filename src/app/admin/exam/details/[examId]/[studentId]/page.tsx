@@ -3,7 +3,6 @@
 import { Box, Button } from "@mantine/core";
 import {
   MRT_ColumnDef,
-  MRT_Row,
   MantineReactTable,
   useMantineReactTable,
 } from "mantine-react-table";
@@ -13,14 +12,8 @@ import { IconDownload } from "@tabler/icons-react";
 import { examService } from "@/lib/client/services";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { answerType } from "../../../../../../constants/data";
-import {
-  ExamQuestionAnswerResultDto,
-  ExamResultDto,
-  ExamSectionResultDto,
-} from "@/dtos/exam.dto";
+import { ExamQuestionAnswerResultDto } from "@/dtos/exam.dto";
 import { OptionTypes } from "@/constants/enums";
-import { useRouter } from "next/navigation";
 
 const columns: MRT_ColumnDef<ExamQuestionAnswerResultDto>[] = [
   {
