@@ -1,9 +1,12 @@
-import { Checkbox, CloseButton, TextInput } from "@mantine/core";
+import { ChangeEvent, useEffect, useRef } from "react";
+import { Checkbox, CloseButton } from "@mantine/core";
+import RichEditor, { IRichEditor } from "../common/richEditor/RichEditor";
 
-import { ChangeEvent } from "react";
 import FileDrop from "../common/fileDrop/FileDrop";
 import { OptionTypes } from "@/constants/enums";
 import { QuestionCreateReqDto } from "@/dtos/question.dto";
+import { buttonListMini } from "../common/richEditor/buttonList";
+import { debounce } from "@/lib/client/utils/common.util";
 import { useFormContext } from "react-hook-form";
 
 interface QuestionOptionProps {
@@ -16,12 +19,31 @@ export default function QuestionOption({
   onRemoveClick,
 }: QuestionOptionProps) {
   const {
-    register,
     formState: { errors },
     setValue,
     getValues,
     watch,
   } = useFormContext<QuestionCreateReqDto>();
+
+  const textOptionRef = useRef<IRichEditor>(null);
+
+  useEffect(() => {
+    if (textOptionRef.current) {
+      textOptionRef.current.onChange = debounce((content) => {
+        setValue(
+          `options.${index}.text`,
+          textOptionRef.current?.getCharCount?.() ? content : undefined
+        );
+      }, 200);
+    }
+  }, [setValue, textOptionRef]);
+
+  useEffect(() => {
+    if (errors?.options?.[index]?.text)
+      textOptionRef.current?.noticeOpen?.(
+        errors?.options?.[index]?.text?.message!
+      );
+  }, [errors?.options?.[index]?.text]);
 
   const pickAnswer = (e: ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
@@ -37,11 +59,7 @@ export default function QuestionOption({
   };
 
   const handleFileChange = (blob?: string) => {
-    const options = getValues("options");
-    const newOptions = options.map((option: any, i: number) =>
-      i === index ? { ...option, image: blob } : option
-    );
-    setValue("options", newOptions);
+    setValue(`options.${index}.image`, blob);
   };
 
   return (
@@ -63,12 +81,13 @@ export default function QuestionOption({
       )}
 
       {watch("optionType") === OptionTypes.MCQ_TEXT && (
-        <TextInput
-          {...register(`options.${index}.text`)}
-          className="w-full"
-          size="lg"
+        <RichEditor
+          ref={textOptionRef}
+          minHeight="60px"
+          width="100%"
+          resizingBar={false}
           placeholder={"Option " + (index + 1)}
-          error={!!errors?.options?.[index]?.text}
+          buttonList={buttonListMini}
         />
       )}
 

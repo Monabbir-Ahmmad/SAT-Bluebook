@@ -61,7 +61,7 @@ export default function QuestionSetCreatePage({
     resolver: zodResolver(questionSetCreateValidationSchema),
   });
 
-  useQuery({
+  const { isFetching } = useQuery({
     enabled: !!section,
     queryKey: ["questions", section],
     queryFn: () => questionService.getList(section),
@@ -212,7 +212,12 @@ export default function QuestionSetCreatePage({
           </Badge>
 
           <SimpleGrid cols={2}>
-            <Button variant="gradient" uppercase onClick={drawer.open}>
+            <Button
+              variant="gradient"
+              loading={isFetching}
+              uppercase
+              onClick={drawer.open}
+            >
               Add Questions
             </Button>
 

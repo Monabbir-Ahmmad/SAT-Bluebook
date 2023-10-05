@@ -11,7 +11,6 @@ import QuestionOptionAdder from "./QuestionOptionAdder";
 import { buttonListMini } from "../common/richEditor/buttonList";
 import { debounce } from "@/lib/client/utils/common.util";
 import { questionCreateValidationSchema } from "@/validators/question.validator";
-import { useMediaQuery } from "@mantine/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 type AddQuestionFormProps = {
@@ -19,8 +18,6 @@ type AddQuestionFormProps = {
 };
 
 export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
-  const largeScreen = useMediaQuery("(min-width: 60em)");
-
   const questionInputRef = useRef<IRichEditor>(null);
   const passageInputRef = useRef<IRichEditor>(null);
 
