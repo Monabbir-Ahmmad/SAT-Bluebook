@@ -1,5 +1,5 @@
-import fs from "fs/promises";
-import path from "path";
+import { S3_BUCKET_NAME, s3 } from "../config/s3.config";
+
 import { randomUUID } from "crypto";
 
 export const storeBase64AsFile = async (base64: string) => {
@@ -15,19 +15,16 @@ export const storeBase64AsFile = async (base64: string) => {
 
   const fileExtension = mimeArr[1].split("/")[1];
 
-  const filePath = path.join("images", `${randomUUID()}.${fileExtension}`);
+  const fileName = `${randomUUID()}.${fileExtension}`;
 
-  await fs.writeFile(path.join(process.cwd(), "public", filePath), buffer);
+  const uploadedFile = await s3
+    .upload({
+      Bucket: S3_BUCKET_NAME,
+      Key: fileName,
+      Body: buffer,
+      ContentType: mimeArr[1],
+    })
+    .promise();
 
-  return filePath;
-};
-
-export const deleteFile = async (filePath: string) => {
-  await fs.unlink(path.join(process.cwd(), "public", filePath));
-};
-
-export const deleteFiles = async (filePaths: string[]) => {
-  await Promise.all(
-    filePaths.map(async (filePath) => await deleteFile(filePath))
-  );
+  return uploadedFile.Location;
 };

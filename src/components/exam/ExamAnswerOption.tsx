@@ -54,9 +54,12 @@ function ExamAnswerOption({
         )}
         onClick={onSelect}
       >
-        {markedWrong && (
-          <Divider className="absolute -inset-x-2 top-1/2" color="dark" />
-        )}
+        <Divider
+          hidden={!markedWrong}
+          className="absolute -inset-x-2 top-1/2 z-10"
+          color="dark"
+        />
+
         <span
           className={twMerge(
             "min-w-[2rem] w-8 aspect-square flex items-center justify-center rounded-full border-2 border-slate-300 transition-all",
