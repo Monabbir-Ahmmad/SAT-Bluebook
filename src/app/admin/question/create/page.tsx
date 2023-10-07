@@ -3,6 +3,9 @@
 import { RiCheckLine as CheckIcon } from "react-icons/ri";
 import { QuestionCreateReqDto } from "@/dtos/question.dto";
 import QuestionMakerForm from "@/components/questions/QuestionMakerForm";
+import QuestionPreview from "@/components/questions/QuestionPreview";
+import { ScrollArea } from "@mantine/core";
+import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { questionService } from "@/lib/client/services";
 import { useMutation } from "@tanstack/react-query";
@@ -45,7 +48,26 @@ export default function QuestionCreatePage() {
   });
 
   const onSubmit = async (data: QuestionCreateReqDto) => {
-    createQuestion(data);
+    modals.openConfirmModal({
+      title: "Question Preview",
+      size: "xl",
+      centered: true,
+      children: (
+        <ScrollArea.Autosize mah={"70vh"}>
+          <QuestionPreview
+            data={{
+              id: "1",
+              ...data,
+            }}
+          />
+        </ScrollArea.Autosize>
+      ),
+      labels: {
+        confirm: "Create this question",
+        cancel: "Cancel",
+      },
+      onConfirm: () => createQuestion(data),
+    });
   };
 
   return (

@@ -1,4 +1,4 @@
-import { ActionIcon, Divider, Image, Text, Tooltip } from "@mantine/core";
+import { ActionIcon, Divider, Image, Tooltip } from "@mantine/core";
 import {
   RiCloseFill as CloseIcon,
   RiArrowGoBackFill as UndoIcon,
@@ -6,6 +6,7 @@ import {
 
 import { OptionTypes } from "@/constants/enums";
 import { QuestionOptionDto } from "@/dtos/question.dto";
+import RichContentRenderer from "../common/richEditor/RichContentRenderer";
 import { twMerge } from "tailwind-merge";
 
 type ExamAnswerOptionProps = {
@@ -53,9 +54,12 @@ function ExamAnswerOption({
         )}
         onClick={onSelect}
       >
-        {markedWrong && (
-          <Divider className="absolute -inset-x-2 top-1/2" color="dark" />
-        )}
+        <Divider
+          hidden={!markedWrong}
+          className="absolute -inset-x-2 top-1/2 z-10"
+          color="dark"
+        />
+
         <span
           className={twMerge(
             "min-w-[2rem] w-8 aspect-square flex items-center justify-center rounded-full border-2 border-slate-300 transition-all",
@@ -65,7 +69,9 @@ function ExamAnswerOption({
           {index + 1}
         </span>
 
-        {optionType === OptionTypes.MCQ_TEXT && <Text>{option?.text}</Text>}
+        {optionType === OptionTypes.MCQ_TEXT && (
+          <RichContentRenderer content={option?.text!} className="text-base" />
+        )}
 
         {optionType === OptionTypes.MCQ_IMAGE && (
           <Image src={option?.image} alt="" height={200} />

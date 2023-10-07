@@ -43,7 +43,12 @@ function AnswerOption({ optionType, option, selected }: AnswerOptionProps) {
             {selected ? <CheckIcon size={25} /> : ""}
           </ThemeIcon>
 
-          {optionType === OptionTypes.MCQ_TEXT && <Text>{option?.text}</Text>}
+          {optionType === OptionTypes.MCQ_TEXT && (
+            <RichContentRenderer
+              content={option?.text!}
+              className="text-base"
+            />
+          )}
 
           {optionType === OptionTypes.MCQ_IMAGE && (
             <Image src={option?.image} alt="" height={200} />

@@ -65,7 +65,7 @@ export default function QuestionOptionAdder() {
 
       {watch("optionType") !== OptionTypes.GRID_IN && (
         <>
-          <div className="space-y-2">
+          <div className="space-y-4">
             <Text fz={"lg"} fw={500} mb={"xs"}>
               Options
             </Text>
@@ -79,6 +79,8 @@ export default function QuestionOptionAdder() {
           </div>
           <Button
             onClick={() => append({})}
+            fullWidth
+            size="md"
             variant="light"
             leftIcon={<AddIcon size={25} />}
           >
