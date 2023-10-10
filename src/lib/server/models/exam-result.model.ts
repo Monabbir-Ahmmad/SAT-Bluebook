@@ -17,6 +17,7 @@ export interface IExamSectionResult {
   questionSet: IQuestionSet;
   score: number;
   timeTaken: number;
+  timeLimit?: number;
   questionAnswerResults: IExamQuestionAnswerResult[];
 }
 
@@ -66,6 +67,9 @@ const ExamSectionResultSchema = new Schema<IExamSectionResult>(
     timeTaken: {
       type: Number,
       required: true,
+    },
+    timeLimit: {
+      type: Number,
     },
     questionAnswerResults: {
       type: [ExamQuestionAnswerResultSchema],

@@ -18,7 +18,7 @@ import {
   RiCheckLine as CheckIcon,
 } from "react-icons/ri";
 import { Difficulties, SectionTypes } from "@/constants/enums";
-import { difficulties, questionSetSize, sections } from "@/constants/data";
+import { QUESTION_SET_SIZE, difficulties, sections } from "@/constants/data";
 import { questionService, questionSetService } from "@/lib/client/services";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -43,7 +43,7 @@ interface PageProps {
 export default function QuestionSetCreatePage({
   params: { section },
 }: PageProps) {
-  const sectionLimit = questionSetSize[section];
+  const sectionLimit = QUESTION_SET_SIZE[section];
 
   const router = useRouter();
   const [openedModal, modal] = useDisclosure(false);

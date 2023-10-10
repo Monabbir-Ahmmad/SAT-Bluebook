@@ -15,9 +15,9 @@ import {
 import { HttpError } from "../utils/httpError";
 import { IQuestion } from "../models/question.model";
 import { IQuestionSet } from "../models/question-set.model";
+import { QUESTION_SET_SIZE } from "@/constants/data";
 import { StatusCode } from "@/constants/status-code";
 import { Types } from "mongoose";
-import { questionSetSize } from "@/constants/data";
 
 export default class ExamAction {
   async assignExam(examAssignReq: ExamAssignReqDto) {
@@ -61,7 +61,7 @@ export default class ExamAction {
     let difficulty;
 
     if (score === undefined) difficulty = Difficulties.BASE;
-    else if (score / questionSetSize[section] > 0.6)
+    else if (score / QUESTION_SET_SIZE[section] > 0.6)
       difficulty = Difficulties.HARD;
     else difficulty = Difficulties.EASY;
 
@@ -179,7 +179,7 @@ export default class ExamAction {
     let difficulty;
 
     if (score === undefined) difficulty = Difficulties.BASE;
-    else if (score / questionSetSize[section] > 0.6)
+    else if (score / QUESTION_SET_SIZE[section] > 0.6)
       difficulty = Difficulties.HARD;
     else difficulty = Difficulties.EASY;
 
@@ -197,7 +197,11 @@ export default class ExamAction {
     if (!questionSet)
       throw new HttpError(StatusCode.NOT_FOUND, "Exam section not found.");
 
-    return new ExamSectionDto(questionSet);
+    return new ExamSectionDto(
+      questionSet,
+      exam[section][difficulty].timeLimit,
+      exam[section][difficulty].breakTime
+    );
   }
 
   async startExamById(examId: string, userId: string) {
@@ -226,6 +230,7 @@ export default class ExamAction {
         questionSet: d.questionSetId,
         score: d.score,
         timeTaken: d.timeTaken,
+        timeLimit: d.timeLimit,
         questionAnswerResults: d.verifiedAnswers.map((q) => ({
           question: q.questionId,
           isCorrect: q.isCorrect,
@@ -307,7 +312,8 @@ export default class ExamAction {
       questionSet.id,
       score,
       data.timeTaken,
-      verifiedAnswers
+      verifiedAnswers,
+      data.timeLimit
     );
   }
 }

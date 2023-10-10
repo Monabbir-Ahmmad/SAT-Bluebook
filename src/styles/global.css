@@ -1,5 +1,7 @@
-@import url("normalize.css");
-
+/* @import url("normalize.css"); */
+@layer {
+  @tailwind base;
+}
 @tailwind components;
 @tailwind utilities;
 

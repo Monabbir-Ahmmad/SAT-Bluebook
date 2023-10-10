@@ -1,19 +1,21 @@
 "use client";
 
 import { Button, Loader, LoadingOverlay } from "@mantine/core";
+import { DEFAULT_EXAM_BREAK_TIME, sections } from "@/constants/data";
 import {
   ExamResultDto,
   ExamSectionSubmitDto,
   ExamSectionVerifiedResultDto,
 } from "@/dtos/exam.dto";
-import { examSectionTime, sections } from "@/constants/data";
 import { useEffect, useMemo, useState } from "react";
 import { useIsMutating, useMutation, useQuery } from "@tanstack/react-query";
 
+import ExamBreakSection from "@/components/exam/ExamBreakSection";
 import ExamSection from "@/components/exam/ExamSection";
 import ExamStartGuide from "@/components/exam/ExamStartGuide";
 import { SectionTypes } from "@/constants/enums";
 import { examService } from "@/lib/client/services";
+import { useInterval } from "@mantine/hooks";
 import { useRouter } from "next/navigation";
 
 export default function DynamicSATExamPage() {
@@ -23,6 +25,13 @@ export default function DynamicSATExamPage() {
     ExamSectionVerifiedResultDto[]
   >([]);
   const [currentSectionIndex, setCurrentSectionIndex] = useState(-1);
+
+  const [remainingBreakTime, setRemainingBreakTime] = useState(0);
+
+  const timer = useInterval(
+    () => setRemainingBreakTime((prev) => prev - 1),
+    1000
+  );
 
   const sectionsOrder = useMemo(
     () => [
@@ -56,7 +65,13 @@ export default function DynamicSATExamPage() {
     mutationFn: examService.submitExamSection,
     onSuccess: (data: ExamSectionVerifiedResultDto) => {
       setExamSectionResults((prev) => [...prev, data]);
-      setCurrentSectionIndex((prev) => prev + 1);
+
+      if (currentSectionIndex === sectionsOrder.length - 1)
+        setCurrentSectionIndex((prev) => prev + 1);
+      else {
+        setRemainingBreakTime(DEFAULT_EXAM_BREAK_TIME);
+        timer.start();
+      }
     },
   });
 
@@ -71,6 +86,13 @@ export default function DynamicSATExamPage() {
     if (currentSectionIndex === sectionsOrder.length)
       submitExamResult(examSectionResults);
   }, [currentSectionIndex]);
+
+  useEffect(() => {
+    if (remainingBreakTime <= 0 && timer.active) {
+      timer.stop();
+      setCurrentSectionIndex((prev) => prev + 1);
+    }
+  }, [remainingBreakTime]);
 
   const onExamStart = () => {
     setCurrentSectionIndex((prev) => prev + 1);
@@ -90,6 +112,14 @@ export default function DynamicSATExamPage() {
       </div>
     );
 
+  if (remainingBreakTime > 0)
+    return (
+      <ExamBreakSection
+        remainingBreakTime={remainingBreakTime}
+        onEndBreak={() => setRemainingBreakTime(0)}
+      />
+    );
+
   return (
     <div>
       <LoadingOverlay
@@ -104,7 +134,6 @@ export default function DynamicSATExamPage() {
           title={`${sections.find(
             (s) => s.value === sectionsOrder[currentSectionIndex]
           )?.label} - Module ${(currentSectionIndex % 2) + 1}`}
-          timeLimit={examSectionTime[sectionsOrder[currentSectionIndex]]}
           onSectionSubmit={onExamSectionSubmit}
         />
       )}

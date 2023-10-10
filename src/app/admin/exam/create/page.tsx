@@ -21,7 +21,7 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { ExamCreateReqDto } from "@/dtos/exam.dto";
-import { QuestionDto } from "@/dtos/question.dto";
+import ExamCreateTimingForm from "@/components/exam/ExamCreateTimingForm";
 import { QuestionSetDto } from "@/dtos/question-set.dto";
 import { examCreateValidationSchema } from "@/validators/exam.validator";
 import { modals } from "@mantine/modals";
@@ -29,6 +29,18 @@ import { notifications } from "@mantine/notifications";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
+
+const defaultFullQuestionSet = {
+  [Difficulties.EASY]: {
+    questionSet: "",
+  },
+  [Difficulties.BASE]: {
+    questionSet: "",
+  },
+  [Difficulties.HARD]: {
+    questionSet: "",
+  },
+};
 
 const questionSetTableColumns: MRT_ColumnDef<QuestionSetDto>[] = [
   {
@@ -88,16 +100,8 @@ export default function ExamCreatePage() {
   } = useForm<ExamCreateReqDto>({
     resolver: zodResolver(examCreateValidationSchema),
     defaultValues: {
-      [SectionTypes.MATH]: {
-        [Difficulties.EASY]: "",
-        [Difficulties.BASE]: "",
-        [Difficulties.HARD]: "",
-      },
-      [SectionTypes.READING_WRITING]: {
-        [Difficulties.EASY]: "",
-        [Difficulties.BASE]: "",
-        [Difficulties.HARD]: "",
-      },
+      [SectionTypes.MATH]: defaultFullQuestionSet,
+      [SectionTypes.READING_WRITING]: defaultFullQuestionSet,
     },
   });
 
@@ -149,7 +153,7 @@ export default function ExamCreatePage() {
 
   const onQuestionSetAdd = (questionSet: QuestionSetDto) => {
     const section = getValues(questionSet.section);
-    section[questionSet.difficulty] = questionSet.id;
+    section[questionSet.difficulty].questionSet = questionSet.id;
     setValue(questionSet.section, section, {
       shouldValidate: true,
     });
@@ -184,7 +188,7 @@ export default function ExamCreatePage() {
 
   const onQuestionSetRemove = (questionSet: QuestionSetDto) => {
     const section = getValues(questionSet.section);
-    section[questionSet.difficulty] = "";
+    section[questionSet.difficulty].questionSet = "";
     setValue(questionSet.section, section, {
       shouldValidate: true,
     });
@@ -225,6 +229,39 @@ export default function ExamCreatePage() {
     });
   };
 
+  const onTimeLimitChange = (
+    section: SectionTypes,
+    difficulty: Difficulties,
+    time?: number
+  ) => {
+    const sectionData = getValues(section);
+
+    if (difficulty === Difficulties.BASE)
+      sectionData[difficulty].timeLimit = time;
+    else {
+      sectionData[Difficulties.EASY].timeLimit = time;
+      sectionData[Difficulties.HARD].timeLimit = time;
+    }
+    setValue(section, sectionData);
+  };
+
+  const onBreakTimeChange = (
+    section: SectionTypes,
+    difficulty: Difficulties,
+    time?: number
+  ) => {
+    const sectionData = getValues(section);
+
+    if (difficulty === Difficulties.BASE)
+      sectionData[difficulty].breakTime = time;
+    else {
+      sectionData[Difficulties.EASY].breakTime = time;
+      sectionData[Difficulties.HARD].breakTime = time;
+    }
+
+    setValue(section, sectionData);
+  };
+
   const onSubmit = (data: ExamCreateReqDto) => createExamMutation(data);
 
   return (
@@ -256,13 +293,18 @@ export default function ExamCreatePage() {
         </div>
       </Paper>
 
-      <div className="p-6 space-y-6">
+      <div className="p-6 space-y-8">
         <TextInput
           {...register("title")}
           size="lg"
           label="Exam Title"
           placeholder="Enter Exam Title"
           error={errors.title?.message}
+        />
+
+        <ExamCreateTimingForm
+          onTimeLimitChange={onTimeLimitChange}
+          onBreakTimeChange={onBreakTimeChange}
         />
 
         <div className="flex gap-8">
@@ -272,7 +314,9 @@ export default function ExamCreatePage() {
                 key={`${SectionTypes.MATH}-${difficulty}`}
                 icon={
                   <ValidationIcon
-                    valid={!errors?.[SectionTypes.MATH]?.[difficulty]}
+                    valid={
+                      !errors?.[SectionTypes.MATH]?.[difficulty]?.questionSet
+                    }
                   />
                 }
               >
@@ -292,6 +336,7 @@ export default function ExamCreatePage() {
                   <ValidationIcon
                     valid={
                       !errors?.[SectionTypes.READING_WRITING]?.[difficulty]
+                        ?.questionSet
                     }
                   />
                 }
@@ -310,7 +355,6 @@ export default function ExamCreatePage() {
 
         <div className="space-y-4">
           <Title order={4}>Selected question sets</Title>
-
           <MantineReactTable
             columns={questionSetTableColumns}
             data={selectedQuestionSets}

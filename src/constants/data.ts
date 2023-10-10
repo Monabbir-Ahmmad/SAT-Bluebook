@@ -1,14 +1,16 @@
 import { Difficulties, OptionTypes, SectionTypes } from "./enums";
 
-export const questionSetSize = {
+export const QUESTION_SET_SIZE = {
   [SectionTypes.MATH]: 22,
   [SectionTypes.READING_WRITING]: 27,
 };
 
-export const examSectionTime = {
+export const EXAM_SECTION_DEFAULT_TIME = {
   [SectionTypes.MATH]: 35 * 60,
   [SectionTypes.READING_WRITING]: 32 * 60,
 };
+
+export const DEFAULT_EXAM_BREAK_TIME = 5 * 60;
 
 export const answerType: { value: OptionTypes; label: string }[] = [
   { value: OptionTypes.MCQ_TEXT, label: "Multiple Choice Text" },

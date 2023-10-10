@@ -9,7 +9,7 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { examSectionTime, questionSetSize, sections } from "@/constants/data";
+import { QUESTION_SET_SIZE, sections } from "@/constants/data";
 import { useEffect, useState } from "react";
 
 import { examService } from "@/lib/client/services";
@@ -118,12 +118,12 @@ export default function ExamResultPage({
       );
 
       const examScore = examResult?.sectionResults?.reduce(
-        (acc, curr) => acc + questionSetSize[curr.section],
+        (acc, curr) => acc + QUESTION_SET_SIZE[curr.section],
         0
       );
 
       const examTimeLimit = examResult?.sectionResults?.reduce(
-        (acc, curr) => acc + examSectionTime[curr.section],
+        (acc, curr) => acc + curr.timeLimit,
         0
       );
 
@@ -172,8 +172,8 @@ export default function ExamResultPage({
                 key={result.id}
                 score={result.score}
                 timeTaken={result.timeTaken}
-                timeLimit={examSectionTime[result.section]}
-                totalScore={questionSetSize[result.section]}
+                timeLimit={result.timeLimit}
+                totalScore={result.questions.length}
                 title={`Exam ${index + 1} - ${sections.find(
                   (s) => result.section === s.value
                 )?.label}`}

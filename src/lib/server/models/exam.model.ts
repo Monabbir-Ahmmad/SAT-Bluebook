@@ -7,10 +7,16 @@ import { ITimeStamps } from "./base.model";
 import { IUser } from "./user.model";
 import autopopulate from "mongoose-autopopulate";
 
-interface IFullQuestionSet {
-  [Difficulties.EASY]: IQuestionSet;
-  [Difficulties.BASE]: IQuestionSet;
-  [Difficulties.HARD]: IQuestionSet;
+export interface IQuestionSetWithTime {
+  questionSet: IQuestionSet;
+  timeLimit?: number;
+  breakTime?: number;
+}
+
+export interface IFullQuestionSet {
+  [Difficulties.EASY]: IQuestionSetWithTime;
+  [Difficulties.BASE]: IQuestionSetWithTime;
+  [Difficulties.HARD]: IQuestionSetWithTime;
 }
 
 export interface IAttendedBy extends ITimeStamps {
@@ -26,25 +32,41 @@ export interface IExam extends Document, ITimeStamps {
   attendedBy: IAttendedBy[];
 }
 
+const QuestionSetWithTimeLimitSchema = new Schema<IQuestionSetWithTime>(
+  {
+    questionSet: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "QuestionSet",
+      autopopulate: true,
+    },
+    timeLimit: {
+      type: Number,
+    },
+    breakTime: {
+      type: Number,
+    },
+  },
+  {
+    _id: false,
+    versionKey: false,
+    timestamps: false,
+  }
+);
+
 const FullQuestionSetSchema = new Schema<IFullQuestionSet>(
   {
     [Difficulties.EASY]: {
-      type: Schema.Types.ObjectId,
+      type: QuestionSetWithTimeLimitSchema,
       required: true,
-      ref: "QuestionSet",
-      autopopulate: true,
     },
     [Difficulties.BASE]: {
-      type: Schema.Types.ObjectId,
+      type: QuestionSetWithTimeLimitSchema,
       required: true,
-      ref: "QuestionSet",
-      autopopulate: true,
     },
     [Difficulties.HARD]: {
-      type: Schema.Types.ObjectId,
+      type: QuestionSetWithTimeLimitSchema,
       required: true,
-      ref: "QuestionSet",
-      autopopulate: true,
     },
   },
   {
@@ -85,11 +107,13 @@ const ExamSchema = new Schema<IExam>(
     [SectionTypes.MATH]: {
       type: FullQuestionSetSchema,
       required: true,
+      autopopulate: true,
     },
 
     [SectionTypes.READING_WRITING]: {
       type: FullQuestionSetSchema,
       required: true,
+      autopopulate: true,
     },
 
     assignedTo: [{ type: Schema.Types.ObjectId, ref: "User" }],
@@ -104,7 +128,6 @@ const ExamSchema = new Schema<IExam>(
     versionKey: false,
   }
 );
-
 ExamSchema.plugin(autopopulate);
 
 const ExamModel: Model<IExam> = models.Exam || model<IExam>("Exam", ExamSchema);

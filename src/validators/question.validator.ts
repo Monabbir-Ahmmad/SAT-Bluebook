@@ -9,7 +9,7 @@ export const questionCreateValidationSchema = z
     questionImage: z.string().optional(),
     section: z.nativeEnum(SectionTypes),
     difficulty: z.nativeEnum(Difficulties),
-    tags: z.array(z.string()).min(1),
+    tags: z.array(z.string()).optional(),
     optionType: z.nativeEnum(OptionTypes),
     options: z
       .array(

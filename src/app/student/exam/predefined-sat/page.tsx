@@ -7,18 +7,20 @@ import {
   ExamSectionSubmitDto,
   ExamSectionVerifiedResultDto,
 } from "@/dtos/exam.dto";
-import { examSectionTime, sections } from "@/constants/data";
 import { useEffect, useMemo, useState } from "react";
 import { useIsMutating, useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { AxiosError } from "axios";
+import ExamBreakSection from "@/components/exam/ExamBreakSection";
 import ExamSection from "@/components/exam/ExamSection";
 import ExamStartGuide from "@/components/exam/ExamStartGuide";
 import { SectionTypes } from "@/constants/enums";
 import { examService } from "@/lib/client/services";
 import { modals } from "@mantine/modals";
+import { sections } from "@/constants/data";
 import { useForm } from "react-hook-form";
+import { useInterval } from "@mantine/hooks";
 
 export default function PredefinedSATExamPage() {
   const router = useRouter();
@@ -29,6 +31,13 @@ export default function PredefinedSATExamPage() {
     ExamSectionVerifiedResultDto[]
   >([]);
   const [currentSectionIndex, setCurrentSectionIndex] = useState(-1);
+
+  const [remainingBreakTime, setRemainingBreakTime] = useState(0);
+
+  const timer = useInterval(
+    () => setRemainingBreakTime((prev) => prev - 1),
+    1000
+  );
 
   const {
     handleSubmit,
@@ -68,10 +77,6 @@ export default function PredefinedSATExamPage() {
     queryFn: async () => await examService.startExamById(getValues("examId")),
   });
 
-  useEffect(() => {
-    if (exam) setCurrentSectionIndex(0);
-  }, [exam]);
-
   const { data: examSection, isFetching } = useQuery({
     enabled:
       currentSectionIndex >= 0 && currentSectionIndex < sectionsOrder.length,
@@ -91,7 +96,13 @@ export default function PredefinedSATExamPage() {
     mutationFn: examService.submitExamSection,
     onSuccess: (data: ExamSectionVerifiedResultDto) => {
       setExamSectionResults((prev) => [...prev, data]);
-      setCurrentSectionIndex((prev) => prev + 1);
+
+      if (currentSectionIndex === sectionsOrder.length - 1)
+        setCurrentSectionIndex((prev) => prev + 1);
+      else {
+        setRemainingBreakTime(examSection?.breakTime || 0);
+        timer.start();
+      }
     },
   });
 
@@ -102,6 +113,17 @@ export default function PredefinedSATExamPage() {
     onSuccess: (data: ExamResultDto) =>
       router.push(`/student/exam/result/${data.id}`),
   });
+
+  useEffect(() => {
+    if (exam) setCurrentSectionIndex(0);
+  }, [exam]);
+
+  useEffect(() => {
+    if (remainingBreakTime <= 0 && timer.active) {
+      timer.stop();
+      setCurrentSectionIndex((prev) => prev + 1);
+    }
+  }, [remainingBreakTime]);
 
   useEffect(() => {
     if (currentSectionIndex === sectionsOrder.length)
@@ -125,8 +147,11 @@ export default function PredefinedSATExamPage() {
     });
   };
 
-  const onExamSectionSubmit = (examSection: ExamSectionSubmitDto) => {
-    submitExamSection(examSection);
+  const onExamSectionSubmit = (examSectionSubmitDto: ExamSectionSubmitDto) => {
+    submitExamSection({
+      ...examSectionSubmitDto,
+      timeLimit: examSection?.timeLimit,
+    });
   };
 
   if (currentSectionIndex === -1)
@@ -154,6 +179,14 @@ export default function PredefinedSATExamPage() {
       </form>
     );
 
+  if (remainingBreakTime > 0)
+    return (
+      <ExamBreakSection
+        remainingBreakTime={remainingBreakTime}
+        onEndBreak={() => setRemainingBreakTime(0)}
+      />
+    );
+
   return (
     <div>
       <LoadingOverlay
@@ -168,7 +201,6 @@ export default function PredefinedSATExamPage() {
           title={`${sections.find(
             (s) => s.value === sectionsOrder[currentSectionIndex]
           )?.label} - Module ${(currentSectionIndex % 2) + 1}`}
-          timeLimit={examSectionTime[sectionsOrder[currentSectionIndex]]}
           onSectionSubmit={onExamSectionSubmit}
         />
       )}

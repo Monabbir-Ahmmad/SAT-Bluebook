@@ -20,19 +20,17 @@ import { useInterval } from "@mantine/hooks";
 export interface ExamSectionProps {
   section: ExamSectionDto;
   title?: string;
-  timeLimit: number;
   onSectionSubmit: (examSection: ExamSectionSubmitDto) => any;
 }
 
 export default function ExamSection({
   section,
   title,
-  timeLimit,
   onSectionSubmit,
 }: ExamSectionProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [remainingTime, setRemainingTime] = useState(0);
   const [examSection, setExamSection] = useState<ExamSectionDto>();
+  const [remainingTime, setRemainingTime] = useState(0);
 
   const timer = useInterval(() => setRemainingTime((prev) => prev - 1), 1000);
 
@@ -40,7 +38,7 @@ export default function ExamSection({
     if (section) {
       setCurrentQuestionIndex(0);
       setExamSection(section);
-      setRemainingTime(timeLimit);
+      setRemainingTime(section.timeLimit);
       timer.start();
     }
   }, [section]);
@@ -118,7 +116,7 @@ export default function ExamSection({
               setRemainingTime((remainingTime) => {
                 onSectionSubmit({
                   id: examSection?.id,
-                  timeTaken: timeLimit - remainingTime,
+                  timeTaken: examSection.timeLimit - remainingTime,
                   questionAnswers: examSection?.questions.map((q) => ({
                     questionId: q.id,
                     selectedOption: q.selectedOption,

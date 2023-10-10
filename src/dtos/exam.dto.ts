@@ -1,11 +1,17 @@
 import { Difficulties, SectionTypes } from "@/constants/enums";
-import { IAttendedBy, IExam } from "@/lib/server/models/exam.model";
+import {
+  IAttendedBy,
+  IExam,
+  IFullQuestionSet,
+  IQuestionSetWithTime,
+} from "@/lib/server/models/exam.model";
 import {
   IExamQuestionAnswerResult,
   IExamResult,
   IExamSectionResult,
 } from "@/lib/server/models/exam-result.model";
 
+import { EXAM_SECTION_DEFAULT_TIME } from "@/constants/data";
 import { IQuestionSet } from "@/lib/server/models/question-set.model";
 import { QuestionDto } from "./question.dto";
 import { QuestionSetDto } from "./question-set.dto";
@@ -14,14 +20,38 @@ import { UserDto } from "./user.dto";
 export interface ExamCreateReqDto {
   title: string;
   [SectionTypes.MATH]: {
-    [Difficulties.EASY]: string;
-    [Difficulties.BASE]: string;
-    [Difficulties.HARD]: string;
+    [Difficulties.EASY]: {
+      questionSet: string;
+      timeLimit?: number;
+      breakTime?: number;
+    };
+    [Difficulties.BASE]: {
+      questionSet: string;
+      timeLimit?: number;
+      breakTime?: number;
+    };
+    [Difficulties.HARD]: {
+      questionSet: string;
+      timeLimit?: number;
+      breakTime?: number;
+    };
   };
   [SectionTypes.READING_WRITING]: {
-    [Difficulties.EASY]: string;
-    [Difficulties.BASE]: string;
-    [Difficulties.HARD]: string;
+    [Difficulties.EASY]: {
+      questionSet: string;
+      timeLimit?: number;
+      breakTime?: number;
+    };
+    [Difficulties.BASE]: {
+      questionSet: string;
+      timeLimit?: number;
+      breakTime?: number;
+    };
+    [Difficulties.HARD]: {
+      questionSet: string;
+      timeLimit?: number;
+      breakTime?: number;
+    };
   };
 }
 
@@ -44,8 +74,10 @@ export class ExamSectionDto {
   questions: ExamQuestionDto[];
   score?: number = 0;
   timeTaken?: number = 0;
+  timeLimit: number = 0;
+  breakTime: number = 0;
 
-  constructor(data: IQuestionSet) {
+  constructor(data: IQuestionSet, timeLimit?: number, breakTime?: number) {
     this.id = data._id;
     this.title = data.title;
     this.section = data.section;
@@ -56,6 +88,11 @@ export class ExamSectionDto {
       markedWrong: [],
       markedForReview: false,
     }));
+
+    if (timeLimit) this.timeLimit = timeLimit;
+    else this.timeLimit = EXAM_SECTION_DEFAULT_TIME[data.section];
+
+    if (breakTime) this.breakTime = breakTime;
   }
 }
 
@@ -68,6 +105,7 @@ export class ExamQuestionAnswerSubmitDto {
 export class ExamSectionSubmitDto {
   id: string;
   timeTaken: number;
+  timeLimit?: number;
   questionAnswers: ExamQuestionAnswerSubmitDto[];
 }
 
@@ -80,18 +118,21 @@ export class ExamSectionVerifiedResultDto {
   questionSetId: string;
   score: number;
   timeTaken: number;
+  timeLimit?: number;
   verifiedAnswers: ExamQuestionVerifiedAnswerDto[];
 
   constructor(
     questionSetId: string,
     score: number = 0,
     timeTaken: number,
-    verifiedAnswers: ExamQuestionVerifiedAnswerDto[]
+    verifiedAnswers: ExamQuestionVerifiedAnswerDto[],
+    timeLimit?: number
   ) {
     this.questionSetId = questionSetId;
     this.score = score;
     this.timeTaken = timeTaken;
     this.verifiedAnswers = verifiedAnswers;
+    this.timeLimit = timeLimit;
   }
 }
 
@@ -111,6 +152,7 @@ export class ExamQuestionAnswerResultDto extends QuestionDto {
 export class ExamSectionResultDto extends QuestionSetDto {
   score: number;
   timeTaken: number;
+  timeLimit: number;
   questions: ExamQuestionAnswerResultDto[];
 
   constructor(examSectionResult: IExamSectionResult) {
@@ -120,6 +162,12 @@ export class ExamSectionResultDto extends QuestionSetDto {
     this.questions = examSectionResult.questionAnswerResults.map(
       (result) => new ExamQuestionAnswerResultDto(result)
     );
+
+    if (examSectionResult.timeLimit)
+      this.timeLimit = examSectionResult.timeLimit;
+    else
+      this.timeLimit =
+        EXAM_SECTION_DEFAULT_TIME[examSectionResult.questionSet.section];
   }
 }
 
@@ -151,22 +199,42 @@ export class ExamAttendedByDto {
   }
 }
 
+export class QuestionSetWithTimeDto extends QuestionSetDto {
+  timeLimit?: number;
+  breakTime?: number;
+
+  constructor(data: IQuestionSetWithTime) {
+    super(data.questionSet);
+    this.timeLimit = data.timeLimit;
+    this.breakTime = data.breakTime;
+  }
+}
+
+export class FullQuestionSetDto {
+  [Difficulties.EASY]: QuestionSetWithTimeDto;
+  [Difficulties.BASE]: QuestionSetWithTimeDto;
+  [Difficulties.HARD]: QuestionSetWithTimeDto;
+
+  constructor(data: IFullQuestionSet) {
+    this[Difficulties.EASY] = new QuestionSetWithTimeDto(
+      data[Difficulties.EASY]
+    );
+    this[Difficulties.BASE] = new QuestionSetWithTimeDto(
+      data[Difficulties.BASE]
+    );
+    this[Difficulties.HARD] = new QuestionSetWithTimeDto(
+      data[Difficulties.HARD]
+    );
+  }
+}
+
 export class ExamDto {
   id: string;
   title: string;
   createdAt: Date;
   updatedAt: Date;
-  [SectionTypes.MATH]: {
-    [Difficulties.EASY]: QuestionSetDto;
-    [Difficulties.BASE]: QuestionSetDto;
-    [Difficulties.HARD]: QuestionSetDto;
-  };
-
-  [SectionTypes.READING_WRITING]: {
-    [Difficulties.EASY]: QuestionSetDto;
-    [Difficulties.BASE]: QuestionSetDto;
-    [Difficulties.HARD]: QuestionSetDto;
-  };
+  [SectionTypes.MATH]: FullQuestionSetDto;
+  [SectionTypes.READING_WRITING]: FullQuestionSetDto;
   assignedTo: UserDto[];
   attendedBy: Array<ExamAttendedByDto>;
 
@@ -175,29 +243,11 @@ export class ExamDto {
     this.title = data.title;
     this.createdAt = data.createdAt;
     this.updatedAt = data.updatedAt;
-    this[SectionTypes.MATH] = {
-      [Difficulties.EASY]: new QuestionSetDto(
-        data[SectionTypes.MATH][Difficulties.EASY]
-      ),
-      [Difficulties.BASE]: new QuestionSetDto(
-        data[SectionTypes.MATH][Difficulties.BASE]
-      ),
-      [Difficulties.HARD]: new QuestionSetDto(
-        data[SectionTypes.MATH][Difficulties.HARD]
-      ),
-    };
+    this[SectionTypes.MATH] = new FullQuestionSetDto(data[SectionTypes.MATH]);
 
-    this[SectionTypes.READING_WRITING] = {
-      [Difficulties.EASY]: new QuestionSetDto(
-        data[SectionTypes.READING_WRITING][Difficulties.EASY]
-      ),
-      [Difficulties.BASE]: new QuestionSetDto(
-        data[SectionTypes.READING_WRITING][Difficulties.BASE]
-      ),
-      [Difficulties.HARD]: new QuestionSetDto(
-        data[SectionTypes.READING_WRITING][Difficulties.HARD]
-      ),
-    };
+    this[SectionTypes.READING_WRITING] = new FullQuestionSetDto(
+      data[SectionTypes.READING_WRITING]
+    );
 
     this.assignedTo = data.assignedTo.map((user) => new UserDto(user));
 

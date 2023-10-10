@@ -6,13 +6,13 @@ import {
   ExamSectionSubmitDto,
   ExamSectionVerifiedResultDto,
 } from "@/dtos/exam.dto";
-import { examSectionTime, sections } from "@/constants/data";
 import { useIsMutating, useMutation, useQuery } from "@tanstack/react-query";
 
 import ExamSection from "@/components/exam/ExamSection";
 import ExamStartGuide from "@/components/exam/ExamStartGuide";
 import { SectionTypes } from "@/constants/enums";
 import { examService } from "@/lib/client/services";
+import { sections } from "@/constants/data";
 import { useRouter } from "next/navigation";
 
 interface SectionExamPageProps {
@@ -83,7 +83,6 @@ export default function SectionExamPage({
         <ExamSection
           section={examSection}
           title={sections.find((s) => s.value === section)?.label}
-          timeLimit={examSectionTime[section]}
           onSectionSubmit={onExamSectionSubmit}
         />
       )}
