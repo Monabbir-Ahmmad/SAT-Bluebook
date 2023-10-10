@@ -17,7 +17,7 @@ export interface QuestionCreateReqDto {
   questionImage?: string;
   section: SectionTypes;
   difficulty: Difficulties;
-  tags: string[];
+  tags?: string[];
   optionType: OptionTypes;
   options: QuestionOptionDto[];
   answers: number[]; //Index of the correct answer
@@ -30,7 +30,7 @@ export class QuestionDto {
   questionImage?: string;
   section: SectionTypes;
   difficulty: Difficulties;
-  tags: string[];
+  tags?: string[];
   optionType: OptionTypes;
   options: QuestionOptionDto[];
   answers: number[];

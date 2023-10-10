@@ -129,7 +129,7 @@ export default function QuestionItem({
 
       <div className="flex flex-wrap items-center gap-2">
         Tags:{" "}
-        {data.tags.map((tag: string) => (
+        {data.tags?.map((tag: string) => (
           <Badge key={tag} size="lg">
             {tag}
           </Badge>

@@ -38,7 +38,7 @@ const questionTableColumns: MRT_ColumnDef<QuestionDto>[] = [
     accessorKey: "tags",
     header: "Tags",
     Cell: ({ row }) =>
-      row.original.tags.map((tag) => (
+      row.original.tags?.map((tag) => (
         <Badge key={tag} m={4}>
           {tag}
         </Badge>

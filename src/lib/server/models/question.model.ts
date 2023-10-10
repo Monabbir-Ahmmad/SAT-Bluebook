@@ -14,7 +14,7 @@ export interface IQuestion extends Document, ITimeStamps {
   passage?: string;
   section: SectionTypes;
   difficulty: Difficulties;
-  tags: string[];
+  tags?: string[];
   optionType: OptionTypes;
   options: IQuestionOption[];
   answers: number[];
@@ -58,7 +58,6 @@ const QuestionSchema = new Schema<IQuestion>(
     },
     tags: {
       type: [String],
-      required: true,
     },
     optionType: {
       type: String,

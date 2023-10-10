@@ -136,7 +136,8 @@ export default function QuestionMakerForm({ onSubmit }: AddQuestionFormProps) {
                 getCreateLabel={(query) => `+ Create ${query}`}
                 onChange={(value) => setValue("tags", value)}
                 onCreate={(value) => {
-                  setValue("tags", [...getValues().tags, value]);
+                  const tags = getValues("tags") ?? [];
+                  setValue("tags", [...tags, value]);
                   return value;
                 }}
                 error={!!errors?.tags}
