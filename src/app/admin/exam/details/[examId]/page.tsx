@@ -1,10 +1,11 @@
 "use client";
 
-import { Button } from "@mantine/core";
+import { Button, Title } from "@mantine/core";
 import { MRT_ColumnDef, MantineReactTable } from "mantine-react-table";
-import { mkConfig } from "export-to-csv";
+
 import { ExamAttendedByDto } from "@/dtos/exam.dto";
 import { examService } from "@/lib/client/services";
+import { mkConfig } from "export-to-csv";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
@@ -64,24 +65,35 @@ export default function AdminExamDetailsPage({
   };
 
   return (
-    <MantineReactTable
-      columns={examDetailsTableColumns}
-      data={exam?.attendedBy || []}
-      state={{ isLoading: isFetching }}
-      enableRowActions
-      positionActionsColumn="last"
-      columnFilterDisplayMode="popover"
-      paginationDisplayMode="pages"
-      positionToolbarAlertBanner="bottom"
-      renderRowActions={({ row }) => (
-        <Button
-          onClick={() =>
-            router.push(`/admin/exam/details/${examId}/${row.original.user.id}`)
-          }
-        >
-          View details
-        </Button>
-      )}
-    />
+    <div className="p-6 space-y-6">
+      <Title order={3}>Exam Details #{examId}</Title>
+
+      <div className="space-y-3">
+        <Title order={4}>Submitted Results</Title>
+
+        <MantineReactTable
+          columns={examDetailsTableColumns}
+          data={exam?.attendedBy || []}
+          state={{ isLoading: isFetching }}
+          enableRowActions
+          positionActionsColumn="last"
+          columnFilterDisplayMode="popover"
+          paginationDisplayMode="pages"
+          positionToolbarAlertBanner="bottom"
+          renderRowActions={({ row }) => (
+            <Button
+              disabled={!row.original.result}
+              onClick={() =>
+                router.push(
+                  `/admin/exam/details/${examId}/${row.original.user.id}`
+                )
+              }
+            >
+              View details
+            </Button>
+          )}
+        />
+      </div>
+    </div>
   );
 }

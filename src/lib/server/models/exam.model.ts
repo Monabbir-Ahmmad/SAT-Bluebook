@@ -116,11 +116,14 @@ const ExamSchema = new Schema<IExam>(
       autopopulate: true,
     },
 
-    assignedTo: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    assignedTo: [
+      { type: Schema.Types.ObjectId, ref: "User", autopopulate: true },
+    ],
 
     attendedBy: {
       type: [AttendedBySchema],
       default: [],
+      autopopulate: true,
     },
   },
   {

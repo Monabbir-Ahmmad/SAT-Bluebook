@@ -89,6 +89,7 @@ const ExamResultSchema = new Schema<IExamResult>(
       type: Schema.Types.ObjectId,
       required: true,
       ref: "User",
+      autopopulate: true,
     },
     sectionResults: {
       type: [ExamSectionResultSchema],

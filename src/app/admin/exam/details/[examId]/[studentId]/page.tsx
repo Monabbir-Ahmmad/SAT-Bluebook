@@ -1,11 +1,7 @@
 "use client";
 
-import { Box, Button } from "@mantine/core";
-import {
-  MRT_ColumnDef,
-  MantineReactTable,
-  useMantineReactTable,
-} from "mantine-react-table";
+import { Button, Title } from "@mantine/core";
+import { MRT_ColumnDef, MantineReactTable } from "mantine-react-table";
 import { answerType, sections } from "@/constants/data";
 import { download, generateCsv, mkConfig } from "export-to-csv"; //or use your library of choice here
 import { useEffect, useState } from "react";
@@ -30,15 +26,6 @@ const columns: MRT_ColumnDef<ExamQuestionAnswerResultDto>[] = [
       answerType.find((a) => a.value == row.original.optionType)?.label,
   },
   {
-    accessorKey: "selectedOption",
-    header: "Submitted Answer",
-    Cell: ({ row }) => {
-      if (row.original.textAnswer) return row.original.textAnswer;
-      if (!row.original.selectedOption) return "Not answered";
-      return String.fromCharCode(97 + row.original.selectedOption);
-    },
-  },
-  {
     accessorFn: (row) => {
       if (row.optionType == OptionTypes.GRID_IN) {
         return row.options[0].text;
@@ -50,9 +37,18 @@ const columns: MRT_ColumnDef<ExamQuestionAnswerResultDto>[] = [
     header: "Correct Answer",
   },
   {
+    accessorKey: "selectedOption",
+    header: "Submitted Answer",
+    Cell: ({ row }) => {
+      if (row.original.textAnswer) return row.original.textAnswer;
+      if (row.original.selectedOption === undefined) return "Not answered";
+      return String.fromCharCode(97 + row.original.selectedOption);
+    },
+  },
+  {
     accessorKey: "isCorrect",
-    header: "Is Correct?",
-    Cell: ({ row }) => (row.original.isCorrect ? "Yes" : "No"),
+    header: "Answer Status",
+    Cell: ({ row }) => (row.original.isCorrect ? "Correct" : "Incorrect"),
   },
 ];
 
@@ -101,62 +97,68 @@ export default function AdminExamDetailsByStudentPage({
     download(csvConfig("bal"))(csv);
   };
 
-  const table = useMantineReactTable({
-    columns,
-    data: examTableData || [],
-    enableRowSelection: true,
-    state: { isLoading: isFetching },
-    columnFilterDisplayMode: "popover",
-    paginationDisplayMode: "pages",
-    positionToolbarAlertBanner: "bottom",
-    renderTopToolbarCustomActions: ({ table }) => (
-      <Box
-        sx={{
-          display: "flex",
-          gap: "16px",
-          padding: "8px",
-          flexWrap: "wrap",
-        }}
-      >
-        <Button
-          color="lightblue"
-          onClick={handleExportData}
-          leftIcon={<IconDownload />}
-          variant="filled"
-        >
-          Export All Data
-        </Button>
-        <Button
-          disabled={table.getPrePaginationRowModel().rows.length === 0}
-          onClick={() =>
-            handleExportRows(table.getPrePaginationRowModel().rows)
-          }
-          leftIcon={<IconDownload />}
-          variant="filled"
-        >
-          Export All Rows
-        </Button>
-        <Button
-          disabled={table.getRowModel().rows.length === 0}
-          onClick={() => handleExportRows(table.getRowModel().rows)}
-          leftIcon={<IconDownload />}
-          variant="filled"
-        >
-          Export Page Rows
-        </Button>
-        <Button
-          disabled={
-            !table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()
-          }
-          onClick={() => handleExportRows(table.getSelectedRowModel().rows)}
-          leftIcon={<IconDownload />}
-          variant="filled"
-        >
-          Export Selected Rows
-        </Button>
-      </Box>
-    ),
-  });
+  return (
+    <div className="p-6 space-y-6">
+      <Title order={3}>Student Exam Result Details</Title>
 
-  return <MantineReactTable table={table} />;
+      <div className="space-y-3">
+        <Title order={4}>Answered Question Details</Title>
+
+        <MantineReactTable
+          columns={columns}
+          data={examTableData || []}
+          enableRowSelection={true}
+          state={{ isLoading: isFetching }}
+          columnFilterDisplayMode="popover"
+          paginationDisplayMode="pages"
+          positionToolbarAlertBanner="bottom"
+          renderTopToolbarCustomActions={({ table }) => (
+            <div className="flex gap-4 flex-wrap">
+              <Button
+                disabled={!examTableData.length}
+                onClick={handleExportData}
+                leftIcon={<IconDownload />}
+              >
+                Export All Data
+              </Button>
+              <Button
+                disabled={
+                  !examTableData.length ||
+                  !table.getPrePaginationRowModel().rows.length
+                }
+                onClick={() =>
+                  handleExportRows(table.getPrePaginationRowModel().rows)
+                }
+                leftIcon={<IconDownload />}
+              >
+                Export All Rows
+              </Button>
+              <Button
+                disabled={
+                  !examTableData.length || !table.getRowModel().rows.length
+                }
+                onClick={() => handleExportRows(table.getRowModel().rows)}
+                leftIcon={<IconDownload />}
+              >
+                Export Page Rows
+              </Button>
+              <Button
+                disabled={
+                  !examTableData.length ||
+                  (!table.getIsSomeRowsSelected() &&
+                    !table.getIsAllRowsSelected())
+                }
+                onClick={() =>
+                  handleExportRows(table.getSelectedRowModel().rows)
+                }
+                leftIcon={<IconDownload />}
+              >
+                Export Selected Rows
+              </Button>
+            </div>
+          )}
+        />
+      </div>
+    </div>
+  );
 }

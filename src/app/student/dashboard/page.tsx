@@ -113,6 +113,17 @@ export default function StudentDashboardPage() {
           columns={examResultTableColumns}
           data={examResults}
           state={{ isLoading: isFetching }}
+          enableRowActions
+          positionActionsColumn="last"
+          renderRowActions={({ row }) => (
+            <Button
+              onClick={() =>
+                router.push(`/student/exam/result/${row.original.id}`)
+              }
+            >
+              View Result
+            </Button>
+          )}
         />
       </div>
 

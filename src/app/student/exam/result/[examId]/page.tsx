@@ -1,94 +1,16 @@
 "use client";
 
-import {
-  Loader,
-  LoadingOverlay,
-  Paper,
-  RingProgress,
-  SimpleGrid,
-  Text,
-  Title,
-} from "@mantine/core";
+import { Loader, LoadingOverlay, SimpleGrid, Title } from "@mantine/core";
 import { QUESTION_SET_SIZE, sections } from "@/constants/data";
 import { useEffect, useState } from "react";
 
+import ExamResultCard from "@/components/exam-result/ExamResultCard";
 import { examService } from "@/lib/client/services";
-import { secondsToMmSs } from "@/lib/client/utils/common.util";
 import { useQuery } from "@tanstack/react-query";
 
 interface ExamResultPageProps {
   params: { examId: string };
 }
-
-const ScoreProgressBar = ({
-  score,
-  totalScore,
-}: {
-  score: number;
-  totalScore: number;
-}) => (
-  <RingProgress
-    size={200}
-    thickness={6}
-    sections={[{ value: (score / totalScore) * 100, color: "blue" }]}
-    label={
-      <div className="text-center font-semibold">
-        <Text>Score</Text>
-        <Title order={3} color="blue">
-          {score} / {totalScore}
-        </Title>
-      </div>
-    }
-  />
-);
-
-const TimeTakenProgressBar = ({
-  timeTaken,
-  timeLimit,
-}: {
-  timeTaken: number;
-  timeLimit: number;
-}) => (
-  <RingProgress
-    size={200}
-    thickness={6}
-    sections={[{ value: (timeTaken / timeLimit) * 100, color: "blue" }]}
-    label={
-      <div className="text-center font-semibold">
-        <Text>Time Taken</Text>
-        <Title order={3} color="blue">
-          {secondsToMmSs(timeTaken)} mins
-        </Title>
-        <Text>{secondsToMmSs(timeLimit)} mins</Text>
-      </div>
-    }
-  />
-);
-
-const ResultCard = ({
-  score,
-  timeTaken,
-  timeLimit,
-  totalScore,
-  title,
-}: {
-  score: number;
-  timeTaken: number;
-  timeLimit: number;
-  totalScore: number;
-  title: string;
-}) => (
-  <Paper
-    withBorder
-    className="w-full p-6 flex flex-col gap-4 items-center justify-center"
-  >
-    <Title order={3}>{title}</Title>
-    <div className="flex flex-col md:flex-row">
-      <ScoreProgressBar score={score} totalScore={totalScore} />
-      <TimeTakenProgressBar timeTaken={timeTaken} timeLimit={timeLimit} />
-    </div>
-  </Paper>
-);
 
 export default function ExamResultPage({
   params: { examId },
@@ -153,7 +75,7 @@ export default function ExamResultPage({
           </Title>
 
           {totalResult.examScore > 0 && (
-            <ResultCard
+            <ExamResultCard
               score={totalResult.score}
               timeTaken={totalResult.timeTaken}
               timeLimit={totalResult.examTimeLimit}
@@ -168,7 +90,7 @@ export default function ExamResultPage({
             breakpoints={[{ maxWidth: "sm", cols: 1 }]}
           >
             {examResult?.sectionResults.map((result, index) => (
-              <ResultCard
+              <ExamResultCard
                 key={result.id}
                 score={result.score}
                 timeTaken={result.timeTaken}
