@@ -1,34 +1,86 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# SAT-Bluebook
 
-## Getting Started
+SAT-Bluebook is an online SAT exam platform built using Next.js.
 
-First, run the development server:
+## Features
+
+- Create and manage SAT exam questions.
+- Organize questions into sets for easy retrieval.
+- Create and configure SAT exams for students.
+- Dynamically generate exams with random questions.
+- Allow students to take SAT exams assigned to them.
+- View SAT exam results by section.
+- Export exam results as CSV files.
+
+## Technologies Used
+
+- [Next.js](https://nextjs.org/) - A popular React framework for building modern web applications.
+- [Mantine UI](https://mantine.dev/) - A modern React component library.
+- [MongoDB](https://www.mongodb.com/) - A NoSQL database for storing exam questions and student information.
+- [Mongoose](https://mongoosejs.com/) - An ODM for MongoDB, used for schema and data validation.
+- [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework for styling.
+- [NextAuth.js](https://next-auth.js.org/) - Authentication and authorization library for Next.js applications.
+
+## Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/SAT-Bluebook.git
+cd SAT-Bluebook
+```
+
+2. Install the dependencies:
+
+```bash
+npm install
+```
+
+3. Set up the environment variables:
+
+Create a `.env.local` file in the project root and add the following variables:
+
+```plaintext
+NEXTAUTH_SECRET=your_secret_key_here
+NEXTAUTH_URL=your_app_base_url
+
+GITHUB_ID=your_github_client_id
+GITHUB_SECRET=your_github_client_secret
+
+MONGODB_URI=your_mongodb_uri
+
+S3_BUCKET_NAME=your_s3_bucket_name
+S3_REGION=your_s3_bucket_region
+S3_ACCESS_KEY=your_s3_access_key
+S3_SECRET_KEY=your_s3_secret_key
+```
+
+4. Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The application will be available at `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Usage
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+1. **Create Questions:** Use the admin dashboard to create SAT exam questions. These questions can be added to question sets for easy organization.
 
-## Learn More
+2. **Create Question Sets:** Group related questions into sets for creating exams. Question sets help in managing and assigning questions.
 
-To learn more about Next.js, take a look at the following resources:
+3. **Create Exams:** Configure and create SAT exams for students. Assign question sets to each exam.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. **Student Access:** Students can log in using NextAuth.js and access assigned exams. They can take exams that are assigned to them or take dynamic exams, view results, and export results as CSV.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Contributing
 
-## Deploy on Vercel
+Contributions are welcome! If you want to contribute to this project, please follow our [Contributing Guidelines](CONTRIBUTING.md).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+Enjoy using SAT-Bluebook to provide online SAT exams for students! If you encounter any issues or have any suggestions, please feel free to raise an issue on GitHub.
